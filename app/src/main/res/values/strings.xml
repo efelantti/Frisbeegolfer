@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Frisbeegolfer</string>
+    <string name="button_newRound_text">New Round</string>
+    <string name="button_courses_text">Courses</string>
+    <string name="button_players_text">Players</string>
+    <string name="button_statistics_text">Statistics</string>
+    <string name="button_settings_text">Settings</string>
+</resources>

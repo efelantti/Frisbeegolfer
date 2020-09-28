@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/button_newRound"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginStart="@dimen/button_margin_horizontal"
+        android:layout_marginTop="@dimen/button_margin_between"
+        android:layout_marginEnd="@dimen/button_margin_horizontal"
+        android:text="@string/button_newRound_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_courses"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginStart="@dimen/button_margin_horizontal"
+        android:layout_marginTop="@dimen/button_margin_between"
+        android:layout_marginEnd="@dimen/button_margin_horizontal"
+        android:text="@string/button_courses_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_newRound" />
+
+    <Button
+        android:id="@+id/button_players"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginStart="@dimen/button_margin_horizontal"
+        android:layout_marginTop="@dimen/button_margin_between"
+        android:layout_marginEnd="@dimen/button_margin_horizontal"
+        android:text="@string/button_players_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_courses" />
+
+    <Button
+        android:id="@+id/button_statistics"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginStart="@dimen/button_margin_horizontal"
+        android:layout_marginTop="@dimen/button_margin_between"
+        android:layout_marginEnd="@dimen/button_margin_horizontal"
+        android:text="@string/button_statistics_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_players" />
+
+    <Button
+        android:id="@+id/button_settings"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginStart="@dimen/button_margin_horizontal"
+        android:layout_marginTop="@dimen/button_margin_between"
+        android:layout_marginEnd="@dimen/button_margin_horizontal"
+        android:text="@string/button_settings_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_statistics" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
