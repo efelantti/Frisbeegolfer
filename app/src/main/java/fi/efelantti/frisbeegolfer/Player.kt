@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 @Entity
 class Player(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
-    val firstName: String?,
-    val lastName: String?,
-    val nickName: String?,
-    val email: String?
+    val id: Int = 0,
+    val firstName: String? = "",
+    val nickName: String? = "",
+    val lastName: String? = "",
+    val email: String? = ""
 )

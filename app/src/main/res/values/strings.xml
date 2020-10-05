@@ -1,8 +1,25 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Frisbeegolfer</string>
     <string name="button_newRound_text">New Round</string>
     <string name="button_courses_text">Courses</string>
     <string name="button_players_text">Players</string>
     <string name="button_statistics_text">Statistics</string>
     <string name="button_settings_text">Settings</string>
+    <string name="add_player">Add player</string>
+    <string name="hint_word">First name</string>
+    <string name="button_save">Save</string>
+    <string name="empty_not_saved">Empty not saved.</string>
+    <string name="text_playerlistheader_firstname">First name</string>
+    <string name="text_playerlistheader_nickname">Nick name</string>
+    <string name="text_playerlistheader_lastname">Last name</string>
+    <string name="text_playerlistheader_email">Email</string>
+    <string name="fullname_with_nickname"><xliff:g id="first name" example="John">%1$s</xliff:g> \"<xliff:g id="nick name" example="Johnny">%2$s</xliff:g>\" <xliff:g id="last name" example="Smith">%3$s</xliff:g></string>
+    <string name="fullname_without_nickname"><xliff:g id="first name" example="John">%s</xliff:g> <xliff:g id="last name" example="Smith">%s</xliff:g></string>
+    <string name="email_descriptor">Email: <xliff:g id="email" example="example@example.com">%s</xliff:g></string>
+    <string name="hint_word_first_name">First name</string>
+    <string name="hint_word_nickname">Nickname</string>
+    <string name="hint_word_email">Email</string>
+    <string name="hint_word_lastname">Last name</string>
+    <string name="invalid_field">Please enter a valid <xliff:g id="Field name" example="First name">%1$s</xliff:g></string>
+    <string name="error_message_requiredFields">Please fill in at least first name and last name.</string>
 </resources>
