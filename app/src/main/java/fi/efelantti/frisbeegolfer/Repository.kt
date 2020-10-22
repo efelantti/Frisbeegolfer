@@ -13,4 +13,8 @@ class Repository(private val playerDao: PlayerDao) {
     suspend fun insert(player: Player) {
         playerDao.insert(player)
     }
+
+    suspend fun update(player: Player) {
+        playerDao.update(player)
+    }
 }

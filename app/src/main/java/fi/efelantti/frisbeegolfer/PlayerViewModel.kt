@@ -27,4 +27,11 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application){
     fun insert(player: Player) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(player)
     }
+
+    /**
+     * Launching a new coroutine to update the data in a non-blocking way
+     */
+    fun update(player: Player) = viewModelScope.launch(Dispatchers.IO) {
+        repository.update(player)
+    }
 }

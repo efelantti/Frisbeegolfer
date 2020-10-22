@@ -21,5 +21,14 @@
     <string name="hint_word_email">Email</string>
     <string name="hint_word_lastname">Last name</string>
     <string name="invalid_field">Please enter a valid <xliff:g id="Field name" example="First name">%1$s</xliff:g></string>
-    <string name="error_message_requiredFields">Please fill in at least first name and last name.</string>
+    <string name="text_activity_new_player_title_add">Add player</string>
+    <string name="text_activity_new_player_title_edit">Edit player</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
+    <string name="action_edit">Edit</string>
+    <string name="players_activity_title">Players</string>
+    <string name="error_message_requiredFields">Please verify validity of fields.</string>
+    <string name="no_players_available">There are no players added yet.</string>
+    <string name="error_duplicate_player">A player with same details already exists!</string>
 </resources>

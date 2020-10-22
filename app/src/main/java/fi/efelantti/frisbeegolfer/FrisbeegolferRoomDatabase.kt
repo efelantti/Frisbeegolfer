@@ -4,13 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 //TODO - Add to entities rest of entities when they are done
 //TODO - Consider export schema
-@Database(entities = arrayOf(Player::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(Player::class), version = 4, exportSchema = false)
 public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
 
     //TODO - Add rest of DAO's when they are done
@@ -35,7 +36,7 @@ public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     FrisbeegolferRoomDatabase::class.java,
                     "frisbeegolfer_database"
-                ).addCallback(FrisbeegolferDatabaseCallback(scope)).build()
+                ).addCallback(FrisbeegolferDatabaseCallback(scope)).fallbackToDestructiveMigrationFrom(3).build()
                 INSTANCE = instance
                 return instance
             }
