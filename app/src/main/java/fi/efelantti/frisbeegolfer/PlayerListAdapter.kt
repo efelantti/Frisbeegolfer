@@ -31,6 +31,7 @@ class PlayerListAdapter internal constructor(
             // Inflate a menu resource providing context menu items
             val inflater: MenuInflater = mode.menuInflater
             inflater.inflate(R.menu.appbar_actions, menu)
+            mode.title = context.getString(R.string.player_selected)
             return true
         }
 
@@ -81,7 +82,7 @@ class PlayerListAdapter internal constructor(
         return PlayerViewHolder(itemView)
     }
 
-    // TODO - Change setBackgroundColor to Select
+    // TODO - Change setBackgroundColor to Select?
     override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
         if (selected_position == position) {
             holder.playerCard.setBackgroundColor(Color.YELLOW)

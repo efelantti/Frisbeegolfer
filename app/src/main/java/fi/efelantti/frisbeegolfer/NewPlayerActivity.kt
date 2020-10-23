@@ -58,10 +58,10 @@ class NewPlayerActivity : AppCompatActivity() {
             val replyIntent = Intent()
             if (areValidFields(requiredFields) and isValidEmail(emailView)) {
 
-                val firstName = firstNameView.text.toString()
-                val nickName = nickNameView.text.toString()
-                val lastName = lastNameView.text.toString()
-                val email = emailView.text.toString()
+                val firstName = firstNameView.text.toString().trim()
+                val nickName = nickNameView.text.toString().trim()
+                val lastName = lastNameView.text.toString().trim()
+                val email = emailView.text.toString().trim()
 
                 val newPlayerData = Player(
                     firstName = firstName,
@@ -69,29 +69,30 @@ class NewPlayerActivity : AppCompatActivity() {
                     lastName = lastName,
                     email = email
                 )
-                if(intentCategory == NewPlayerAction.EDIT)
-                {
+
+                if (intentCategory == NewPlayerAction.EDIT) {
                     if(oldPlayerData == null) throw IllegalArgumentException("Cannot edit player data - it was null.")
                     else newPlayerData.id = oldPlayerData.id // Take id from old player in order to update it to database.
+                    if(Player.equals(newPlayerData, oldPlayerData)){
+                        Toast.makeText(this, getString(R.string.player_data_not_edited), Toast.LENGTH_LONG).show()
+                    }
+                    else{
+                        AlertDialog.Builder(this)
+                            .setTitle("Overwrite")
+                            .setMessage("Are you sure you want to overwrite existing data? Please note that previous data can not be recovered.") // Specifying a listener allows you to take an action before dismissing the dialog.
+                            // The dialog is automatically dismissed when a dialog button is clicked.
+                            .setPositiveButton(R.string.button_yes,
+                                DialogInterface.OnClickListener { dialog, which ->
+                                    replyIntent.putExtra("playerData", newPlayerData)
+                                    setResult(Activity.RESULT_OK, replyIntent)
+                                    finish()
+                                }) // A null listener allows the button to dismiss the dialog and take no further action.
+                            .setNegativeButton(R.string.button_no, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show()
+                    }
                 }
-
-                // TODO - Add check if data has changed? If not, no reason to update in database.
-                if (intentCategory == NewPlayerAction.EDIT) {
-                    AlertDialog.Builder(this)
-                        .setTitle("Overwrite")
-                        .setMessage("Are you sure you want to overwrite existing data? Please note that previous data can not be recovered.") // Specifying a listener allows you to take an action before dismissing the dialog.
-                        // The dialog is automatically dismissed when a dialog button is clicked.
-                        .setPositiveButton(R.string.button_yes,
-                            DialogInterface.OnClickListener { dialog, which ->
-                                replyIntent.putExtra("playerData", newPlayerData)
-                                setResult(Activity.RESULT_OK, replyIntent)
-                                finish()
-                            }) // A null listener allows the button to dismiss the dialog and take no further action.
-                        .setNegativeButton(R.string.button_no, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show()
-                } else {
-
+                else {
                     replyIntent.putExtra("playerData", newPlayerData)
                     setResult(Activity.RESULT_OK, replyIntent)
                     finish()

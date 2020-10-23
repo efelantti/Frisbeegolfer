@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 //TODO - Add to entities rest of entities when they are done
 //TODO - Consider export schema
-@Database(entities = arrayOf(Player::class), version = 4, exportSchema = false)
+@Database(entities = arrayOf(Player::class), version = 5, exportSchema = false)
 public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
 
     //TODO - Add rest of DAO's when they are done
@@ -36,7 +36,7 @@ public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     FrisbeegolferRoomDatabase::class.java,
                     "frisbeegolfer_database"
-                ).addCallback(FrisbeegolferDatabaseCallback(scope)).fallbackToDestructiveMigrationFrom(3).build()
+                ).addCallback(FrisbeegolferDatabaseCallback(scope)).fallbackToDestructiveMigrationFrom(4).build()
                 INSTANCE = instance
                 return instance
             }

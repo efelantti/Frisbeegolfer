@@ -5,7 +5,6 @@
         android:icon="@drawable/ic_edit"
         android:title="@string/action_edit"
         app:showAsAction="ifRoom" />
-
 </menu>
 
 

@@ -2,6 +2,7 @@ package fi.efelantti.frisbeegolfer
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
+import androidx.core.view.get
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +23,7 @@ class ActivityPlayers : AppCompatActivity() {
     private val TAG = "ActivityPlayers"
     private val frisbeegolferViewModel: PlayerViewModel by viewModels()
 
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: EmptyRecyclerView
     private lateinit var emptyView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,9 +32,10 @@ class ActivityPlayers : AppCompatActivity() {
         supportActionBar?.title = getString(R.string.players_activity_title)
 
         var adapter = PlayerListAdapter(this)
-        recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        recyclerView = findViewById<EmptyRecyclerView>(R.id.recyclerview)
         emptyView = findViewById<TextView>(R.id.empty_view)
 
+        recyclerView.setEmptyView(emptyView)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -64,8 +67,7 @@ class ActivityPlayers : AppCompatActivity() {
                 var duplicateFound: Boolean = false
                 if (players != null) {
                     for(existingPlayer: Player in players) {
-                        // TODO - Equals for player?
-                        if(player.firstName == existingPlayer.firstName && player.nickName == existingPlayer.nickName && player.lastName == existingPlayer.lastName && player.email == existingPlayer.email){
+                        if(Player.equals(player, existingPlayer)){
                             Log.e(TAG, "Could not add player data to database - duplicate.")
                             val toast = Toast.makeText(this, HtmlCompat.fromHtml("<font color='#FF0000' ><b>" + getString(R.string.error_duplicate_player) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
                             val indexOfPlayer = players.indexOf(existingPlayer)
@@ -75,7 +77,6 @@ class ActivityPlayers : AppCompatActivity() {
                             break
                     }
                 }
-                    // Crashes when updating player (ID is same as with existing).
                     if(!duplicateFound)
                     {
                         when(requestCode)
@@ -87,6 +88,10 @@ class ActivityPlayers : AppCompatActivity() {
                     }
                     }
                 }
+            }
+            else if(resultCode == Activity.RESULT_CANCELED)
+            {
+                // Do nothing when canceled
             }
             else throw(IllegalArgumentException("Player data not returned from activity as expected."))
          }

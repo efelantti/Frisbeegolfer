@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-// TODO - Use this in place of RecyclerView in code.
 // https://www.akbaribrahim.com/empty-view-for-androids-recyclerview/
 class EmptyRecyclerView : RecyclerView {
     private var emptyView: View? = null

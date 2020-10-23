@@ -31,4 +31,6 @@
     <string name="error_message_requiredFields">Please verify validity of fields.</string>
     <string name="no_players_available">There are no players added yet.</string>
     <string name="error_duplicate_player">A player with same details already exists!</string>
+    <string name="player_data_not_edited">No value was changed</string>
+    <string name="player_selected">Player selected</string>
 </resources>
