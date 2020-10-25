@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 
-// TODO - Transparent background
+// TODO - Transparent background?
 class NewPlayerActivity : AppCompatActivity() {
 
     private val frisbeegolferViewModel: PlayerViewModel by viewModels()

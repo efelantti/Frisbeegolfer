@@ -8,6 +8,7 @@
 
     <Button
         android:id="@+id/button_newRound"
+        android:backgroundTint="@color/colorPrimary"
         android:layout_width="0dp"
         android:layout_height="@dimen/button_height"
         android:layout_marginStart="@dimen/button_margin_horizontal"
@@ -20,6 +21,7 @@
 
     <Button
         android:id="@+id/button_courses"
+        android:backgroundTint="?attr/colorSecondary"
         android:layout_width="0dp"
         android:layout_height="@dimen/button_height"
         android:layout_marginStart="@dimen/button_margin_horizontal"
@@ -32,6 +34,7 @@
 
     <Button
         android:id="@+id/button_players"
+        android:backgroundTint="?attr/colorSecondary"
         android:layout_width="0dp"
         android:layout_height="@dimen/button_height"
         android:layout_marginStart="@dimen/button_margin_horizontal"
@@ -46,6 +49,7 @@
 
     <Button
         android:id="@+id/button_statistics"
+        android:backgroundTint="?attr/colorSecondary"
         android:layout_width="0dp"
         android:layout_height="@dimen/button_height"
         android:layout_marginStart="@dimen/button_margin_horizontal"
@@ -59,6 +63,7 @@
 
     <Button
         android:id="@+id/button_settings"
+        android:backgroundTint="?attr/colorSecondary"
         android:layout_width="0dp"
         android:layout_height="@dimen/button_height"
         android:layout_marginStart="@dimen/button_margin_horizontal"

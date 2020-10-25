@@ -52,8 +52,8 @@ class ActivityPlayers : AppCompatActivity() {
         }
         }
 
-    // TODO - Highlight the already existing item.
-    // TODO - Refactor.
+    // TODO - Highlight the already existing item?
+    // TODO - Refactor?
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
