@@ -7,11 +7,10 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.view.*
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
-import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.selects.select
 
 
 class PlayerListAdapter internal constructor(
@@ -63,10 +62,9 @@ class PlayerListAdapter internal constructor(
 
     private fun editSelectedPlayer() {
         val player = players[selected_position]
-        val intent = Intent(context, NewPlayerActivity::class.java)
-        intent.putExtra("action", NewPlayerAction.EDIT.toString())
-        intent.putExtra("playerData", player)
-        (context as Activity).startActivityForResult(intent, NewPlayerAction.EDIT.id)
+        val fm: FragmentManager = (context as FragmentActivity).supportFragmentManager
+        val dialog: FragmentNewPlayer = FragmentNewPlayer.newInstance(NewPlayerAction.EDIT.toString(), player)
+        dialog.show(fm, "fragment_newPlayer")
     }
 
 

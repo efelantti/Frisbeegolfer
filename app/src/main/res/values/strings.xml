@@ -33,4 +33,7 @@
     <string name="error_duplicate_player">A player with same details already exists!</string>
     <string name="player_data_not_edited">No value was changed</string>
     <string name="player_selected">Player selected</string>
+    <string name="action_close">Close</string>
+    <string name="action_accept">Accept</string>
+    <string name="action_save">Save</string>
 </resources>
