@@ -12,17 +12,17 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import fi.efelantti.frisbeegolfer.fragment.FragmentNewPlayer
-import fi.efelantti.frisbeegolfer.model.Player
+import fi.efelantti.frisbeegolfer.fragment.FragmentNewCourse
+import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 
 
-class PlayerListAdapter internal constructor(
+class CourseListAdapter internal constructor(
     context: Context
-) : RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolder>() {
+) : RecyclerView.Adapter<CourseListAdapter.CourseViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val res: Resources = context.resources
-    private var players = emptyList<Player>() // Cached copy of words
+    private var courses = emptyList<CourseWithHoles>() // Cached copy of words
     private val context = context
     private var selected_position = -1
     private var actionMode: ActionMode? = null
@@ -33,7 +33,7 @@ class PlayerListAdapter internal constructor(
             // Inflate a menu resource providing context menu items
             val inflater: MenuInflater = mode.menuInflater
             inflater.inflate(R.menu.appbar_actions, menu)
-            mode.title = context.getString(R.string.player_selected)
+            mode.title = context.getString(R.string.course_selected)
             return true
         }
 
@@ -47,7 +47,7 @@ class PlayerListAdapter internal constructor(
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             return when (item.itemId) {
                 R.id.action_edit -> {
-                    editSelectedPlayer()
+                    editSelectedCourse()
                     mode.finish() // Action picked, so close the CAB
                     true
                 }
@@ -63,36 +63,37 @@ class PlayerListAdapter internal constructor(
         }
     }
 
-    private fun editSelectedPlayer() {
-        val player = players[selected_position]
+    private fun editSelectedCourse() {
+        val course = courses[selected_position]
         val fm: FragmentManager = (context as FragmentActivity).supportFragmentManager
-        val dialog: FragmentNewPlayer = FragmentNewPlayer.newInstance(NewPlayerAction.EDIT.toString(), player)
+        val dialog: FragmentNewCourse = FragmentNewCourse.newInstance(NewCourseAction.EDIT.toString(), course)
         dialog.show(fm, "fragment_newPlayer")
     }
 
 
-    inner class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val playerCard: CardView = itemView.findViewById(R.id.playerCard)
-        val originalBackgroundColor: Int = playerCard.cardBackgroundColor.defaultColor
-        val playerItemViewFullName: TextView = itemView.findViewById(R.id.txtFullName)
-        val playerItemViewEmail: TextView = itemView.findViewById(R.id.txtEmail)
+    inner class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val courseCard: CardView = itemView.findViewById(R.id.courseCard)
+        val originalBackgroundColor: Int = courseCard.cardBackgroundColor.defaultColor
+        val courseItemViewCourseName: TextView = itemView.findViewById(R.id.txtCourseName)
+        val courseItemViewCity: TextView = itemView.findViewById(R.id.txtCity)
+        val courseItemViewNumberOfHoles: TextView = itemView.findViewById(R.id.txtNumberOfHoles)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_player, parent, false)
-        return PlayerViewHolder(itemView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
+        val itemView = inflater.inflate(R.layout.recyclerview_course, parent, false)
+        return CourseViewHolder(itemView)
     }
 
     // TODO - Change setBackgroundColor to Select?
-    override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
         if (selected_position == position) {
-            holder.playerCard.setBackgroundColor(Color.YELLOW)
+            holder.courseCard.setBackgroundColor(Color.YELLOW)
 
         } else {
-            holder.playerCard.setBackgroundColor(holder.originalBackgroundColor)
+            holder.courseCard.setBackgroundColor(holder.originalBackgroundColor)
         }
 
-         holder.playerCard.setOnClickListener(View.OnClickListener {
+         holder.courseCard.setOnClickListener(View.OnClickListener {
             if (selected_position === position) {
                 selected_position = -1
                 notifyDataSetChanged()
@@ -112,18 +113,14 @@ class PlayerListAdapter internal constructor(
             }
         })
 
-        val current = players[position]
-        if(current.nickName.isNullOrBlank()) {
-            holder.playerItemViewFullName.text = res.getString(R.string.fullname_without_nickname, current.firstName, current.lastName)
-        } else
-            holder.playerItemViewFullName.text = res.getString(R.string.fullname_with_nickname, current.firstName, current.nickName, current.lastName)
-        var email = current.email?.trim()
-        if(email.isNullOrBlank()) email = "-"
-        holder.playerItemViewEmail.text = res.getString(R.string.email_descriptor, email)
+        val current = courses[position]
+        holder.courseItemViewCourseName.text = res.getString(R.string.courseName, current.course.name)
+        holder.courseItemViewCity.text = res.getString(R.string.city, current.course.city)
+        holder.courseItemViewNumberOfHoles.text = res.getString(R.string.numberOfHoles, current.holes.count())
     }
 
-    internal fun setPlayers(players: List<Player>) {
-        this.players = players
+    internal fun setCourses(courses: List<CourseWithHoles>) {
+        this.courses = courses
         notifyDataSetChanged()
     }
 
@@ -136,5 +133,5 @@ class PlayerListAdapter internal constructor(
         return color
     }
 
-    override fun getItemCount() = players.size
+    override fun getItemCount() = courses.size
 }

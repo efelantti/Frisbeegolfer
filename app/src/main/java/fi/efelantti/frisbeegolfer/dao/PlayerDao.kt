@@ -1,7 +1,8 @@
-package fi.efelantti.frisbeegolfer
+package fi.efelantti.frisbeegolfer.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import fi.efelantti.frisbeegolfer.model.Player
 
 @Dao
 interface PlayerDao {

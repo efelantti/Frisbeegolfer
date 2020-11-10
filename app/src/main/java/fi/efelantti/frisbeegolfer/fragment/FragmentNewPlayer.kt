@@ -1,20 +1,21 @@
-package fi.efelantti.frisbeegolfer
+package fi.efelantti.frisbeegolfer.fragment
 
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
+import fi.efelantti.frisbeegolfer.NewPlayerAction
+import fi.efelantti.frisbeegolfer.model.Player
+import fi.efelantti.frisbeegolfer.R
 
-
+// TODO - Replace hard coded strings with resource strings
 class FragmentNewPlayer : DialogFragment() {
 
     private lateinit var firstNameView: EditText
@@ -110,15 +111,20 @@ class FragmentNewPlayer : DialogFragment() {
                         if (actionCategory == NewPlayerAction.EDIT) {
                             if(oldPlayerData == null) throw IllegalArgumentException("Cannot edit player data - it was null.")
                             else playerData.id = oldPlayerData.id // Take id from old player in order to update it to database.
-                            if(Player.equals(playerData, oldPlayerData)){
+                            if(Player.equals(
+                                    playerData,
+                                    oldPlayerData
+                                )
+                            ){
                                 Toast.makeText(context, getString(R.string.player_data_not_edited), Toast.LENGTH_LONG).show()
                             }
                             else{
                                 AlertDialog.Builder(context)
-                                    .setTitle("Overwrite")
-                                    .setMessage("Are you sure you want to overwrite existing data? Please note that previous data can not be recovered.") // Specifying a listener allows you to take an action before dismissing the dialog.
+                                    .setTitle(getString(R.string.dialog_title_overwrite))
+                                    .setMessage(getString(R.string.dialog_message_confirm_overwrite)) // Specifying a listener allows you to take an action before dismissing the dialog.
                                     // The dialog is automatically dismissed when a dialog button is clicked.
-                                    .setPositiveButton(R.string.button_yes,
+                                    .setPositiveButton(
+                                        R.string.button_yes,
                                         DialogInterface.OnClickListener { dialog, which ->
                                             sendBackResult(Activity.RESULT_OK, actionCategory)
                                         }) // A null listener allows the button to dismiss the dialog and take no further action.
@@ -142,10 +148,11 @@ class FragmentNewPlayer : DialogFragment() {
         })
         toolbar.setNavigationOnClickListener{
             AlertDialog.Builder(context)
-                .setTitle("Cancel")
-                .setMessage("Are you sure you want to cancel? Any unsaved data will be lost.") // Specifying a listener allows you to take an action before dismissing the dialog.
+                .setTitle(getString(R.string.dialog_title_cancel))
+                .setMessage(getString(R.string.dialog_message_cancel)) // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton(R.string.button_yes,
+                .setPositiveButton(
+                    R.string.button_yes,
                     DialogInterface.OnClickListener { dialog, which ->
                         playerData = Player()
                         sendBackResult(Activity.RESULT_CANCELED, actionCategory)

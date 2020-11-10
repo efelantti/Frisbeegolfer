@@ -1,9 +1,12 @@
-package fi.efelantti.frisbeegolfer
+package fi.efelantti.frisbeegolfer.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import fi.efelantti.frisbeegolfer.FrisbeegolferRoomDatabase
+import fi.efelantti.frisbeegolfer.Repository
+import fi.efelantti.frisbeegolfer.model.Player
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -16,8 +19,11 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application){
     val allPlayers: LiveData<List<Player>>
 
     init {
-        val playerDao = FrisbeegolferRoomDatabase.getDatabase(application, viewModelScope).playerDao()
-        repository = Repository(playerDao)
+        val database = FrisbeegolferRoomDatabase.getDatabase(
+            application,
+            viewModelScope
+        )
+        repository = Repository(database)
         allPlayers = repository.allPlayers
     }
 

@@ -4,18 +4,23 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import fi.efelantti.frisbeegolfer.dao.CourseDao
+import fi.efelantti.frisbeegolfer.dao.PlayerDao
+import fi.efelantti.frisbeegolfer.model.Course
+import fi.efelantti.frisbeegolfer.model.Hole
+import fi.efelantti.frisbeegolfer.model.Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 //TODO - Add to entities rest of entities when they are done
 //TODO - Consider export schema
-@Database(entities = arrayOf(Player::class), version = 5, exportSchema = false)
+@Database(entities = arrayOf(Player::class, Course::class, Hole::class), version = 6, exportSchema = false)
 public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
 
     //TODO - Add rest of DAO's when they are done
     abstract fun playerDao(): PlayerDao
+    abstract fun courseDao(): CourseDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the
@@ -36,7 +41,7 @@ public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     FrisbeegolferRoomDatabase::class.java,
                     "frisbeegolfer_database"
-                ).addCallback(FrisbeegolferDatabaseCallback(scope)).fallbackToDestructiveMigrationFrom(4).build()
+                ).addCallback(FrisbeegolferDatabaseCallback(scope)).fallbackToDestructiveMigrationFrom(5).build()
                 INSTANCE = instance
                 return instance
             }

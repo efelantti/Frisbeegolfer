@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <Button
         android:id="@+id/button_newRound"
@@ -27,6 +27,7 @@
         android:layout_marginStart="@dimen/button_margin_horizontal"
         android:layout_marginTop="@dimen/button_margin_between"
         android:layout_marginEnd="@dimen/button_margin_horizontal"
+        android:onClick="navigateToCourses"
         android:text="@string/button_courses_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
