@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--LinearLayout that has 3 constraint layouts?-->
+<androidx.cardview.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/holeCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:gravity="center_vertical"
+    card_view:cardCornerRadius="6dp"
+    card_view:cardElevation="6dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintlayout_hole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="7">
+
+        <TextView
+            android:id="@+id/hole_number_header"
+            android:layout_marginStart="4dp"
+            android:textStyle="bold"
+            android:text="@string/hole_number_header"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+        </TextView>
+
+        <TextView
+            android:id="@+id/par_count_header"
+            card_view:layout_constraintStart_toStartOf="@id/parCount"
+            android:textStyle="bold"
+            android:text="@string/par_count_header"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+        </TextView>
+
+        <TextView
+            android:id="@+id/hole_length_header"
+            card_view:layout_constraintBottom_toTopOf="@+id/edit_length"
+            card_view:layout_constraintStart_toStartOf="@id/edit_length"
+            android:textStyle="bold"
+            android:text="@string/hint_word_length"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/recyclerView_hole_item_hole_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="Hole number"
+            card_view:layout_constraintTop_toBottomOf="@+id/hole_number_header"
+            card_view:layout_constraintStart_toStartOf="parent" />
+
+
+        <Button
+            android:id="@+id/decrement_par"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/ic_minus"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toEndOf="@id/recyclerView_hole_item_hole_index"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/parCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            card_view:layout_constraintStart_toEndOf="@id/decrement_par"
+            card_view:layout_constraintTop_toBottomOf="@id/par_count_header"
+            android:gravity="center_horizontal"
+            android:text="@string/default_par"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/increment_par"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/ic_plus"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toEndOf="@id/parCount"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+
+        <EditText
+            android:id="@+id/edit_length"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="sans-serif-light"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:minHeight="@dimen/min_height"
+            android:textSize="16sp"
+            card_view:layout_constraintStart_toEndOf="@+id/increment_par"
+            card_view:layout_constraintTop_toBottomOf="@id/hole_number_header" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

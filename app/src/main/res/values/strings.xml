@@ -53,4 +53,13 @@
     <string name="dialog_message_confirm_overwrite">Are you sure you want to overwrite existing data? Please note that previous data can not be recovered.</string>
     <string name="dialog_title_cancel">Cancel</string>
     <string name="dialog_message_cancel">Are you sure you want to cancel? Any unsaved data will be lost.</string>
+    <string name="new_course_fragment_header_course_data">Course</string>
+    <string name="new_course_fragment_header_holes_data">Holes</string>
+    <string name="hint_word_number_of_holes">Number of holes</string>
+    <string name="create_holes">Apply</string>
+    <string name="hint_word_length">Length (meters)</string>
+    <string name="hint_word_par">Par</string>
+    <string name="default_par">3</string>
+    <string name="hole_number_header">#</string>
+    <string name="par_count_header">Par</string>
 </resources>

@@ -6,4 +6,5 @@
     <dimen name="big_padding">16dp</dimen>
     <dimen name="min_height">48dp</dimen>
     <dimen name="text_margin">16dp</dimen>
-</resources>
+    <dimen name="font_size_subheader">16sp</dimen>
+    </resources>

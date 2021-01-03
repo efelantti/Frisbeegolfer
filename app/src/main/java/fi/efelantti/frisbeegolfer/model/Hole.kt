@@ -11,7 +11,7 @@ class Hole(
     @PrimaryKey(autoGenerate = true)
     var holeId: Int = 0,
     var parentCourseId: Int = 0,
-    var par: Int = 0,
+    var par: Int = 3,
     var lengthMeters: Int = 0
 ): Parcelable
 {

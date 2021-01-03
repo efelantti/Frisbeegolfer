@@ -2,26 +2,29 @@ package fi.efelantti.frisbeegolfer.fragment
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
-import fi.efelantti.frisbeegolfer.NewCourseAction
-import fi.efelantti.frisbeegolfer.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
+import fi.efelantti.frisbeegolfer.model.Hole
 
-// TODO - Edit for course
 // TODO - Replace hard coded strings with resource strings
 class FragmentNewCourse : DialogFragment() {
 
     private lateinit var courseNameView: EditText
     private lateinit var cityView: EditText
     private lateinit var courseData: CourseWithHoles
+    private lateinit var recyclerView: EmptyRecyclerView
 
     interface FragmentNewCourseListener {
         fun onCourseAdded(
@@ -74,16 +77,30 @@ class FragmentNewCourse : DialogFragment() {
 
         val oldCourseData = arguments!!.getParcelable<CourseWithHoles>("courseData")
 
+        var adapter = HoleListAdapter(activity as Context)
+        recyclerView = view.findViewById<EmptyRecyclerView>(
+            R.id.recyclerview_holes
+        )
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+
+        // TODO - Set holes in a separate fragment!
+
         if (actionCategory == NewCourseAction.ADD)
         {
             toolbar.setTitle(getString(R.string.text_activity_new_course_title_add))
+            adapter.setHoles(List(getResources().getInteger(R.integer.default_amount_of_holes)){Hole()})
         }
         else if (actionCategory == NewCourseAction.EDIT)
         {
             toolbar.setTitle(getString(R.string.text_activity_new_course_title_edit))
             courseNameView.setText(oldCourseData?.course?.name)
             cityView.setText(oldCourseData?.course?.city)
+            oldCourseData?.holes?.let { adapter.setHoles(it) }
         }
+
+
 
         toolbar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item ->
             when (item.itemId) {

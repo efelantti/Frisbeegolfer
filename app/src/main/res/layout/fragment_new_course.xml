@@ -1,3 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,7 +20,15 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
     </Toolbar>
+    <TextView
+        android:text="@string/new_course_fragment_header_course_data"
+        android:textSize="@dimen/font_size_subheader"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -23,9 +36,9 @@
             android:id="@+id/edit_course_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/button_margin_horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="@dimen/button_margin_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:importantForAutofill="no"
             android:fontFamily="sans-serif-light"
             android:hint="@string/hint_word_course_name"
@@ -35,6 +48,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -42,9 +56,9 @@
             android:id="@+id/edit_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/button_margin_horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="@dimen/button_margin_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
             android:importantForAutofill="no"
             android:fontFamily="sans-serif-light"
             android:hint="@string/hint_word_city"
@@ -52,7 +66,57 @@
             android:minHeight="@dimen/min_height"
             android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
+    <View
+        style="@style/Divider"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"/>
+    <TextView
+        android:text="@string/new_course_fragment_header_holes_data"
+        android:textSize="@dimen/font_size_subheader"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
+    <LinearLayout
+        android:weightSum="5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_weight="3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+             android:id="@+id/edit_number_of_holes"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginStart="8dp"
+             android:layout_marginBottom="8dp"
+             android:layout_marginEnd="4dp"
+             android:importantForAutofill="no"
+             android:fontFamily="sans-serif-light"
+             android:hint="@string/hint_word_number_of_holes"
+             android:inputType="number"
+             android:minHeight="@dimen/min_height"
+             android:textSize="18sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:layout_weight="2"
+            android:text="@string/create_holes"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+    <fi.efelantti.frisbeegolfer.EmptyRecyclerView
+        android:layout_marginBottom="8dp"
+        android:id="@+id/recyclerview_holes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/recyclerview_hole" />
     <!--
         <LinearLayout
             android:layout_width="fill_parent"
@@ -142,3 +206,4 @@
     -->
 
 </LinearLayout>
+</androidx.core.widget.NestedScrollView>
