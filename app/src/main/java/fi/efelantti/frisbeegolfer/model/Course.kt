@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
 // TODO - Figure out how to parcelize
 class Course(
     @PrimaryKey(autoGenerate = true)
-    var courseId: Int = 0,
+    var courseId: Long = 0,
     var name: String? = "",
     var city: String? = ""
 ) : Parcelable {

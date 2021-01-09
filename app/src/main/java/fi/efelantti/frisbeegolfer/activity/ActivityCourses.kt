@@ -62,6 +62,8 @@ class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourse
         dialog.show(fm, "fragment_newCourse")
     }
 
+    // TODO - Probably course information (Name, City) should be unique.
+    // TODO - This fires even when editing existing course details and only holes are changed. Probably because the dataset is altered on-the-go.
     private fun checkIfCourseAlreadyExists(course: CourseWithHoles, courses: List<CourseWithHoles>?): Boolean {
         if (courses == null) return false
         for(existingCourse: CourseWithHoles in courses) {

@@ -9,8 +9,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class Hole(
     @PrimaryKey(autoGenerate = true)
-    var holeId: Int = 0,
-    var parentCourseId: Int = 0,
+    var holeId: Long = 0,
+    var parentCourseId: Long = 0,
     var par: Int = 3,
     var lengthMeters: Int = 0
 ): Parcelable
@@ -34,4 +34,13 @@ class Hole(
             return hole1.lengthMeters == hole2.lengthMeters && hole1.par == hole2.par
         }
 }
+}
+
+fun Hole.clone(): Hole {
+    val hole = Hole()
+    hole.holeId = holeId
+    hole.parentCourseId = parentCourseId
+    hole.par = par
+    hole.lengthMeters = lengthMeters
+    return hole
 }

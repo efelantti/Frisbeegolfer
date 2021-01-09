@@ -12,7 +12,7 @@ class CourseWithHoles(
         parentColumn = "courseId",
         entityColumn = "parentCourseId"
     )
-    val holes: List<Hole>
+    var holes: List<Hole>
 ) : Parcelable
 {
     companion object {

@@ -1,5 +1,6 @@
 package fi.efelantti.frisbeegolfer
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Player
@@ -31,10 +32,10 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
     }
 
     suspend fun insertCourseWithHoles(course: CourseWithHoles) {
+        var courseId = courseDao.insert(course.course)
         for (hole in course.holes) {
-            hole.parentCourseId = course.course.courseId
+            hole.parentCourseId = courseId
         }
         courseDao.insertAll(course.holes)
-        courseDao.insert(course.course)
     }
 }

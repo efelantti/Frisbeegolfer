@@ -17,7 +17,7 @@ interface CourseDao {
 
     //TODO - Figure out how to insert holes to a course
     @Insert
-    suspend fun insert(course: Course)
+    suspend fun insert(course: Course): Long
 
     //TODO - When deleting a course, also its holes should be deleted.
     //TODO - What happens to stats when a course is deleted?
