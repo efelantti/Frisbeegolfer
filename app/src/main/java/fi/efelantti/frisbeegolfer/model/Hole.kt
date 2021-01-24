@@ -12,7 +12,7 @@ class Hole(
     var holeId: Long = 0,
     var parentCourseId: Long = 0,
     var par: Int = 3,
-    var lengthMeters: Int = 0
+    var lengthMeters: Int? = 0
 ): Parcelable
 {
     companion object {

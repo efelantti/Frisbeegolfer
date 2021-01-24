@@ -84,11 +84,6 @@ class HoleListAdapter internal constructor(
         })
     }
 
-    internal fun getHoles(): List<Hole>
-    {
-        return this.holes
-    }
-
     internal fun setHoles(holes: List<Hole>) {
         this.holes = holes
         notifyDataSetChanged()

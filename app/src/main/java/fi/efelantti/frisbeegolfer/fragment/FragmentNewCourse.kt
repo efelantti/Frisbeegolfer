@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Hole
+import fi.efelantti.frisbeegolfer.model.clone
 
 
 // TODO - Replace hard coded strings with resource strings
@@ -31,7 +33,9 @@ class FragmentNewCourse : DialogFragment() {
     private lateinit var courseNameView: EditText
     private lateinit var cityView: EditText
     private lateinit var courseData: CourseWithHoles
+    private lateinit var oldCourseData: CourseWithHoles
     private lateinit var recyclerView: EmptyRecyclerView
+    private lateinit var newHoles: List<Hole>
 
     interface FragmentNewCourseListener {
         fun onCourseAdded(
@@ -82,7 +86,7 @@ class FragmentNewCourse : DialogFragment() {
         courseNameView = view.findViewById(R.id.edit_course_name)
         cityView = view.findViewById(R.id.edit_city)
 
-        val oldCourseData = arguments!!.getParcelable<CourseWithHoles>("courseData")
+        oldCourseData = arguments!!.getParcelable<CourseWithHoles>("courseData")!!
         val oldHolePars = oldCourseData?.holes?.map{it.par}
         val oldHoleLengthMeter = oldCourseData?.holes?.map{it.lengthMeters}
 
@@ -99,8 +103,8 @@ class FragmentNewCourse : DialogFragment() {
         if (actionCategory == NewCourseAction.ADD)
         {
             toolbar.setTitle(getString(R.string.text_activity_new_course_title_add))
-            var holes = List(getResources().getInteger(R.integer.default_amount_of_holes)){Hole()}
-            adapter.setHoles(holes)
+            newHoles = List(getResources().getInteger(R.integer.default_amount_of_holes)){Hole()}
+            adapter.setHoles(newHoles)
         }
         else if (actionCategory == NewCourseAction.EDIT)
         {
@@ -118,8 +122,8 @@ class FragmentNewCourse : DialogFragment() {
 
                         val courseName = courseNameView.text.toString().trim()
                         val city = cityView.text.toString().trim()
-
-                        updateHoles(oldCourseData?.holes!!)
+                        val holes: List<Hole>
+                        if (actionCategory == NewCourseAction.ADD) holes = getHoles(newHoles) else holes = getHoles(oldCourseData.holes)
 
                         courseData = CourseWithHoles(
                             course = Course
@@ -127,8 +131,9 @@ class FragmentNewCourse : DialogFragment() {
                                 name = courseName,
                                 city = city
                             ),
-                            holes = adapter.getHoles()
+                            holes = holes
                         )
+
 
                         if (actionCategory == NewCourseAction.EDIT) {
                             if(oldCourseData == null) throw IllegalArgumentException("Cannot edit course data - it was null.")
@@ -186,17 +191,23 @@ class FragmentNewCourse : DialogFragment() {
         }
     }
 
-    private fun updateHoles(holes: List<Hole>) {
+    /**
+     * Function to get the current values of holes from the UI.
+     */
+    private fun getHoles(holes: List<Hole>): List<Hole> {
+        var listToReturn: MutableList<Hole> = mutableListOf<Hole>()
+        holes.forEach{listToReturn.add(it.clone())}
         for (index: Int in 0..recyclerView.childCount-1)
         {
             val viewHolder: RecyclerView.ViewHolder = recyclerView.findViewHolderForAdapterPosition(index)!!
             val view: View = viewHolder.itemView
             val textViewPar = view.findViewById<View>(R.id.parCount) as TextView
             val textViewLength = view.findViewById<View>(R.id.edit_length) as TextView
-            holes[index].par = textViewPar.text.toString().toInt()
+            listToReturn[index].par = textViewPar.text.toString().toInt()
             // TODO - Causes exception -> "" cannot be converted to int
             //holes[index].lengthMeters = textViewLength.text.toString().toInt()
         }
+        return listToReturn
     }
 
     // Call this method to send the data back to the parent fragment
