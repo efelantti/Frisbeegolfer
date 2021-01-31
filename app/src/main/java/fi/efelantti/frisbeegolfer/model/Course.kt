@@ -7,7 +7,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Entity
 @Parcelize
-// TODO - Figure out how to parcelize
 class Course(
     @PrimaryKey(autoGenerate = true)
     var courseId: Long = 0,

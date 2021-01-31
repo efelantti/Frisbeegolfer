@@ -8,6 +8,7 @@ import fi.efelantti.frisbeegolfer.FrisbeegolferRoomDatabase
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
+import fi.efelantti.frisbeegolfer.model.Hole
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -27,6 +28,12 @@ class CourseViewModel(application: Application) : AndroidViewModel(application){
         repository = Repository(database)
         allCourses = repository.allCourses
     }
+
+    fun delete(hole: Hole) = viewModelScope.launch(Dispatchers.IO) {
+        repository.delete(hole)
+    }
+
+
 
     /**
      * Launching a new coroutine to insert the data in a non-blocking way

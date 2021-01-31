@@ -26,8 +26,8 @@ class HoleListAdapter internal constructor(
         val decrementButton: Button = itemView.findViewById(R.id.decrement_par)
         val incrementButton: Button = itemView.findViewById(R.id.increment_par)
         val parCountView: TextView = itemView.findViewById(R.id.parCount)
+        val holeLengthView: TextView = itemView.findViewById(R.id.edit_length)
         var par: Int = 3
-        var isInitialized: Boolean = false
 
         fun incrementPar()
         {
@@ -62,12 +62,9 @@ class HoleListAdapter internal constructor(
     override fun onBindViewHolder(holder: HoleViewHolder, position: Int) {
         var hole: Hole = holes[position]
         holder.holeIndexTextView.text = (position+1).toString() //res.getString(R.string.courseName, current.course.name)
-        if (!holder.isInitialized)
-        {
-            holder.parCountView.text = hole.par.toString()
-            holder.isInitialized = true
-        }
+        holder.parCountView.text = hole.par.toString()
         holder.par = holder.parCountView.text.toString().toInt()
+        holder.holeLengthView.text = hole.lengthMeters?.toString()
 
         if(holder.par == 9) holder.incrementButton.setVisibility(View.INVISIBLE)
         else holder.incrementButton.setVisibility(View.VISIBLE)

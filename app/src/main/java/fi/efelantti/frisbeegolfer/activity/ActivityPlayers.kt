@@ -72,7 +72,7 @@ class ActivityPlayers : AppCompatActivity(),
                 )
             ){
                 Log.e(TAG, "Could not add player data to database - duplicate.")
-                val toast = Toast.makeText(this, HtmlCompat.fromHtml("<font color='#FF0000' ><b>" + getString(
+                val toast = Toast.makeText(this, HtmlCompat.fromHtml("<font color='" + getColor(R.color.colorErrorMessage) +"' ><b>" + getString(
                     R.string.error_duplicate_player
                 ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
                 val indexOfPlayer = players.indexOf(existingPlayer)

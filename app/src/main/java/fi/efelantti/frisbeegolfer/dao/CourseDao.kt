@@ -15,20 +15,27 @@ interface CourseDao {
     @Update
     suspend fun updateAll(holes: List<Hole>)
 
-    //TODO - Figure out how to insert holes to a course
     @Insert
     suspend fun insert(course: Course): Long
 
+    //TODO - Figure out how to delete a course.
     //TODO - When deleting a course, also its holes should be deleted.
     //TODO - What happens to stats when a course is deleted?
     @Delete
     suspend fun delete(course: Course)
 
-    //TODO - How to update course with its holes?
     @Update
     fun update(course: Course)
 
     @Transaction
     @Query("SELECT * FROM Course")
     fun getCoursesWithHoles(): LiveData<List<CourseWithHoles>>
+
+    @Transaction
+    @Query("SELECT * FROM Hole")
+    fun getHoles(): LiveData<List<Hole>>
+
+    //TODO - What happens to stats when a hole is deleted?
+    @Delete
+    suspend fun delete(hole: Hole)
 }

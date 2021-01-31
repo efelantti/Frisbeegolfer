@@ -94,11 +94,11 @@
             card_view:layout_constraintStart_toEndOf="@id/parCount"
             card_view:layout_constraintTop_toTopOf="parent" />
 
-
+        <!-- TODO: Field moves a bit to the right after 10th hole. -->
         <EditText
             android:id="@+id/edit_length"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:fontFamily="sans-serif-light"
@@ -106,7 +106,9 @@
             android:inputType="number"
             android:minHeight="@dimen/min_height"
             android:textSize="16sp"
+            android:background="@android:color/transparent"
             card_view:layout_constraintStart_toEndOf="@+id/increment_par"
+            card_view:layout_constraintEnd_toEndOf="@+id/hole_length_header"
             card_view:layout_constraintTop_toBottomOf="@id/hole_number_header" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

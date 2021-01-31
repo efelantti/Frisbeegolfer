@@ -62,4 +62,7 @@
     <string name="default_par">3</string>
     <string name="hole_number_header">#</string>
     <string name="par_count_header">Par</string>
+    <string name="invalid_number_of_holes" formatted="true">Only values in the range 1-<xliff:g id="maximumNumberOfHoles" example="99">%d</xliff:g> are valid.</string>
+    <string name="remove_holes">Remove holes?</string>
+    <string name="dialog_message_confirm_remove_holes">Proceeding will delete holes from the end of the list. Are you want to continue?</string>
 </resources>

@@ -16,6 +16,7 @@ import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.fragment.FragmentNewCourse
 import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
+import fi.efelantti.frisbeegolfer.model.Hole
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 
 class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourseListener {
@@ -62,25 +63,26 @@ class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourse
         dialog.show(fm, "fragment_newCourse")
     }
 
-    // TODO - Probably course information (Name, City) should be unique.
-    // TODO - This fires even when editing existing course details and only holes are changed. Probably because the dataset is altered on-the-go.
     private fun checkIfCourseAlreadyExists(course: CourseWithHoles, courses: List<CourseWithHoles>?): Boolean {
         if (courses == null) return false
+        var isDuplicate = false
+        var indexOfDuplicate = 0
         for(existingCourse: CourseWithHoles in courses) {
-            if(CourseWithHoles.equals(
-                    course,
-                    existingCourse
-                )
-            ){
-                Log.e(TAG, "Could not add course data to database - duplicate.")
-                val toast = Toast.makeText(this, HtmlCompat.fromHtml("<font color='#FF0000' ><b>" + getString(
+            if (Course.equals(course.course, existingCourse.course))
+            {
+                isDuplicate = true
+                indexOfDuplicate = courses.indexOf(existingCourse)
+            }
+        }
+        if(isDuplicate)
+        {
+            Log.e(TAG, "Could not add course data to database - duplicate.")
+            val toast = Toast.makeText(this, HtmlCompat.fromHtml("<font color='" + getColor(R.color.colorErrorMessage) + "' ><b>" + getString(
                     R.string.error_duplicate_course
                 ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
-                val indexOfCourse = courses.indexOf(existingCourse)
-                recyclerView.scrollToPosition(indexOfCourse)
-                toast.show()
-                return true
-            }
+            recyclerView.scrollToPosition(indexOfDuplicate)
+            toast.show()
+            return true
         }
         return false
     }
@@ -101,7 +103,7 @@ class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourse
         }
         else if(result == Activity.RESULT_CANCELED)
         {
-            // Do nothing when canceled
+            this.recreate() // Recreate makes sure that the dialogfragment is recreated as well.
         }
         else throw(IllegalArgumentException("Course data not returned from activity as expected."))
     }
@@ -112,17 +114,12 @@ class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourse
             if(course == null) throw IllegalArgumentException("Course data was null.")
             else
             {
-                val courses = frisbeegolferViewModel.allCourses.value
-                var duplicateFound = checkIfCourseAlreadyExists(course, courses)
-                if(!duplicateFound)
-                {
-                    frisbeegolferViewModel.update(course)
-                }
+                frisbeegolferViewModel.update(course)
             }
         }
         else if(result == Activity.RESULT_CANCELED)
         {
-            // Do nothing when canceled
+            this.recreate()
         }
         else throw(IllegalArgumentException("Course data not returned from activity as expected."))
     }

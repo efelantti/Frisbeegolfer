@@ -5,15 +5,13 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
-import android.widget.Toolbar
+import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,8 +24,6 @@ import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Hole
 import fi.efelantti.frisbeegolfer.model.clone
 
-
-// TODO - Replace hard coded strings with resource strings
 class FragmentNewCourse : DialogFragment() {
 
     private lateinit var courseNameView: EditText
@@ -98,12 +94,10 @@ class FragmentNewCourse : DialogFragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        // TODO - Set holes in a separate fragment!
-
         if (actionCategory == NewCourseAction.ADD)
         {
             toolbar.setTitle(getString(R.string.text_activity_new_course_title_add))
-            newHoles = List(getResources().getInteger(R.integer.default_amount_of_holes)){Hole()}
+            newHoles = emptyList<Hole>()
             adapter.setHoles(newHoles)
         }
         else if (actionCategory == NewCourseAction.EDIT)
@@ -114,6 +108,56 @@ class FragmentNewCourse : DialogFragment() {
             oldCourseData?.holes?.let { adapter.setHoles(it) }
         }
 
+        val applyHolesButton: Button = view.findViewById(R.id.apply_holes)
+        val numberOfHolesView: EditText = view.findViewById(R.id.edit_number_of_holes)
+        // TODO - Should editing number of holes in an existing course be allowed?
+        if (actionCategory == NewCourseAction.EDIT)
+        {
+            applyHolesButton.isEnabled = false
+            numberOfHolesView.isEnabled = false
+        }
+
+        applyHolesButton.setOnClickListener{
+            var numberOfHolesToSet: Int? = numberOfHolesView.text.toString().toIntOrNull()
+            var maximumNumberOfHoles: Int = getResources().getInteger(R.integer.max_amount_of_holes)
+            if(numberOfHolesToSet == null || numberOfHolesToSet <= 0 || numberOfHolesToSet > maximumNumberOfHoles)
+            {
+                numberOfHolesView.setError(getString(R.string.invalid_number_of_holes, maximumNumberOfHoles))
+            }
+            else
+            {
+                val holesBefore = adapter.itemCount
+                if(numberOfHolesToSet == holesBefore)
+                {
+                    // Nothing needs to be done
+                }
+                else if(numberOfHolesToSet > holesBefore)
+                {
+                    // Take existing holes and add new ones after them.
+                    var holesToSet: List<Hole> = getHoles(List(holesBefore){Hole()}) + List(numberOfHolesToSet-holesBefore){Hole()}
+                    adapter.setHoles(holesToSet)
+                }
+                else if (numberOfHolesToSet < holesBefore)
+                {
+                    // Take existing holes and remove items from the end of the list.
+                    var holesToSet: List<Hole> = getHoles(List(holesBefore){Hole()}).subList(0, numberOfHolesToSet)
+                    // Require confirmation from user to remove holes
+                    AlertDialog.Builder(context)
+                        .setTitle(getString(R.string.remove_holes))
+                        .setMessage(getString(R.string.dialog_message_confirm_remove_holes)) // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(
+                            R.string.button_yes,
+                            DialogInterface.OnClickListener { dialog, which ->
+                                adapter.setHoles(holesToSet)
+                            }) // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton(R.string.button_no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show()
+                }
+            }
+        }
+
         toolbar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_save -> {
@@ -122,8 +166,7 @@ class FragmentNewCourse : DialogFragment() {
 
                         val courseName = courseNameView.text.toString().trim()
                         val city = cityView.text.toString().trim()
-                        val holes: List<Hole>
-                        if (actionCategory == NewCourseAction.ADD) holes = getHoles(newHoles) else holes = getHoles(oldCourseData.holes)
+                        val holes = getHoleInformation()
 
                         courseData = CourseWithHoles(
                             course = Course
@@ -141,7 +184,8 @@ class FragmentNewCourse : DialogFragment() {
                             if(CourseWithHoles.equals(
                                     courseData,
                                     oldCourseData
-                                ) && courseData.holes.withIndex().all{it -> it.value.par == oldHolePars?.get(it.index) ?: null }
+                                ) && courseData.holes.count() == oldHolePars.count()
+                                && courseData.holes.withIndex().all{it -> it.value.par == oldHolePars?.get(it.index) ?: null }
                                 && courseData.holes.withIndex().all{it -> it.value.lengthMeters == oldHoleLengthMeter?.get(it.index) ?: null }
                             ){
                                 Toast.makeText(context, getString(R.string.player_data_not_edited), Toast.LENGTH_LONG).show()
@@ -154,6 +198,11 @@ class FragmentNewCourse : DialogFragment() {
                                     .setPositiveButton(
                                         R.string.button_yes,
                                         DialogInterface.OnClickListener { dialog, which ->
+                                            // Update the holes
+                                            oldCourseData.holes.forEachIndexed(){index, hole ->
+                                                hole.par = holes[index].par
+                                                hole.lengthMeters = holes[index].lengthMeters
+                                            }
                                             sendBackResult(Activity.RESULT_OK, actionCategory)
                                         }) // A null listener allows the button to dismiss the dialog and take no further action.
                                     .setNegativeButton(R.string.button_no, null)
@@ -192,20 +241,40 @@ class FragmentNewCourse : DialogFragment() {
     }
 
     /**
-     * Function to get the current values of holes from the UI.
+     * Function to get hole attributes updated in the UI. Note that the ID should not be used (since
+     * it is not taken from the UI).
      */
-    private fun getHoles(holes: List<Hole>): List<Hole> {
+    private fun getHoleInformation(): List<Hole>
+    {
         var listToReturn: MutableList<Hole> = mutableListOf<Hole>()
-        holes.forEach{listToReturn.add(it.clone())}
         for (index: Int in 0..recyclerView.childCount-1)
         {
+            listToReturn.add(Hole())
             val viewHolder: RecyclerView.ViewHolder = recyclerView.findViewHolderForAdapterPosition(index)!!
             val view: View = viewHolder.itemView
             val textViewPar = view.findViewById<View>(R.id.parCount) as TextView
             val textViewLength = view.findViewById<View>(R.id.edit_length) as TextView
             listToReturn[index].par = textViewPar.text.toString().toInt()
-            // TODO - Causes exception -> "" cannot be converted to int
-            //holes[index].lengthMeters = textViewLength.text.toString().toInt()
+            listToReturn[index].lengthMeters = textViewLength.text.toString().toIntOrNull()
+        }
+        return listToReturn
+    }
+
+    /**
+     * Function to get the current values of the holes's attributes from the UI.
+     */
+    private fun getHoles(holes: List<Hole>): List<Hole> {
+        var listToReturn: MutableList<Hole> = mutableListOf<Hole>()
+        //holes.forEach{listToReturn.add(it.clone())}
+        for (index: Int in 0..recyclerView.childCount-1)
+        {
+            listToReturn.add(holes[index].clone())
+            val viewHolder: RecyclerView.ViewHolder = recyclerView.findViewHolderForAdapterPosition(index)!!
+            val view: View = viewHolder.itemView
+            val textViewPar = view.findViewById<View>(R.id.parCount) as TextView
+            val textViewLength = view.findViewById<View>(R.id.edit_length) as TextView
+            listToReturn[index].par = textViewPar.text.toString().toInt()
+            listToReturn[index].lengthMeters = textViewLength.text.toString().toIntOrNull()
         }
         return listToReturn
     }
@@ -217,7 +286,7 @@ class FragmentNewCourse : DialogFragment() {
         when(category)
         {
             NewCourseAction.ADD -> listener.onCourseAdded(courseData, result)
-            NewCourseAction.EDIT -> listener.onCourseEdited(courseData, result)
+            NewCourseAction.EDIT -> listener.onCourseEdited(oldCourseData, result)
         }
         dismiss()
     }

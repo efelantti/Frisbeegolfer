@@ -99,11 +99,13 @@
              android:importantForAutofill="no"
              android:fontFamily="sans-serif-light"
              android:hint="@string/hint_word_number_of_holes"
+             android:text="@integer/default_amount_of_holes"
              android:inputType="number"
              android:minHeight="@dimen/min_height"
              android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
         <Button
+            android:id="@+id/apply_holes"
             android:layout_weight="2"
             android:text="@string/create_holes"
             android:layout_marginStart="8dp"
