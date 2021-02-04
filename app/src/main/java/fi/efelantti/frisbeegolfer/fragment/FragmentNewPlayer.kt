@@ -15,7 +15,6 @@ import fi.efelantti.frisbeegolfer.NewPlayerAction
 import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.R
 
-// TODO - Replace hard coded strings with resource strings
 class FragmentNewPlayer : DialogFragment() {
 
     private lateinit var firstNameView: EditText

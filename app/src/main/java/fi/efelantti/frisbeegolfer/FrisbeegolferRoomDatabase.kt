@@ -13,12 +13,10 @@ import fi.efelantti.frisbeegolfer.model.Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-//TODO - Add to entities rest of entities when they are done
 //TODO - Consider export schema
 @Database(entities = arrayOf(Player::class, Course::class, Hole::class), version = 7, exportSchema = false)
 public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
 
-    //TODO - Add rest of DAO's when they are done
     abstract fun playerDao(): PlayerDao
     abstract fun courseDao(): CourseDao
 
@@ -63,7 +61,7 @@ public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
 
         suspend fun populateDatabase(playerDao: PlayerDao) {
 
-            // TODO - Remove the examples.
+            // Examples in case needed to add.
             //var player = Player(firstName = "Esa", lastName = "Esimerkki", email = "esa@esimerkki.com", nickName = "")
             //playerDao.insert(player)
             //player = Player(firstName = "Maisa", lastName = "Mallikappale", email = "maisa@mallikappale.com", nickName = "")

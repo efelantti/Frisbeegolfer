@@ -1,51 +1,124 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!--TODO - Add context information to each -->
+
+    <!-- Name of the application. Used in the manifest file. -->
     <string name="app_name">Frisbeegolfer</string>
+
+    <!-- Name of the button in the start screen that allows the user to start a new round. -->
     <string name="button_newRound_text">New Round</string>
+
+    <!-- Name of the button in the start screen that allows the user to list, add and edit courses. -->
     <string name="button_courses_text">Courses</string>
+
+    <!-- Name of the button in the start screen that allows the user to list, add and edit players. -->
     <string name="button_players_text">Players</string>
+
+    <!-- Name of the button in the start screen that navigates to the statistics screen. -->
     <string name="button_statistics_text">Statistics</string>
+
+    <!-- Name of the button in the start screen that takes the user to the settings menu. -->
     <string name="button_settings_text">Settings</string>
+
+    <!-- Name of the button in the players screen that allows the user to add a new player. -->
     <string name="add_player">Add player</string>
-    <string name="hint_word">First name</string>
+
+    <!-- Text for save button. -->
     <string name="button_save">Save</string>
-    <string name="empty_not_saved">Empty not saved.</string>
-    <string name="text_playerlistheader_firstname">First name</string>
-    <string name="text_playerlistheader_nickname">Nick name</string>
-    <string name="text_playerlistheader_lastname">Last name</string>
-    <string name="text_playerlistheader_email">Email</string>
+
+    <!-- String formatting for full name when nickname is available. Used in when listing players. -->
     <string name="fullname_with_nickname"><xliff:g id="first name" example="John">%1$s</xliff:g> \"<xliff:g id="nick name" example="Johnny">%2$s</xliff:g>\" <xliff:g id="last name" example="Smith">%3$s</xliff:g></string>
+
+    <!-- String formatting for full name when nickname is not available. Used in when listing players. -->
     <string name="fullname_without_nickname"><xliff:g id="first name" example="John">%s</xliff:g> <xliff:g id="last name" example="Smith">%s</xliff:g></string>
+
+    <!-- Formatting for how email is displayed. Includes the label. -->
     <string name="email_descriptor">Email: <xliff:g id="email" example="example@example.com">%s</xliff:g></string>
+
+    <!-- Label for first name field. -->
     <string name="hint_word_first_name">First name</string>
+
+    <!-- Label for nickname field. -->
     <string name="hint_word_nickname">Nickname</string>
+
+    <!-- Label for email field. -->
     <string name="hint_word_email">Email</string>
+
+    <!-- Label for last name field. -->
     <string name="hint_word_lastname">Last name</string>
+
+    <!-- Error message when a field is not filled correctly. Separated in the message and name of the field which is invalid. -->
     <string name="invalid_field">Please enter a valid <xliff:g id="Field name" example="First name">%1$s</xliff:g></string>
+
+    <!-- Title for the screen that allows to add a new player. -->
     <string name="text_activity_new_player_title_add">Add player</string>
+
+    <!-- Title for the screen that allows to edit a player. -->
     <string name="text_activity_new_player_title_edit">Edit player</string>
+
+    <!-- Label for cancel button. -->
     <string name="button_cancel">Cancel</string>
+
+    <!-- Label for a positive confirmation button. -->
     <string name="button_yes">Yes</string>
+
+    <!-- Label for a negative confirmation button. -->
     <string name="button_no">No</string>
+
+    <!-- Label for edit button in the action bar. -->
     <string name="action_edit">Edit</string>
+
+    <!-- Title for the players screen. -->
     <string name="players_activity_title">Players</string>
+
+    <!-- Error message that is displayed when one or more fields are invalid. -->
     <string name="error_message_requiredFields">Please verify validity of fields.</string>
+
+    <!-- Message that is shown instead of a player list, when the database contains no players. -->
     <string name="no_players_available">There are no players added yet.</string>
+
+    <!-- Error message that displayed when user tries to create a new player with information that already exists in database. -->
     <string name="error_duplicate_player">A player with same details already exists!</string>
+
+    <!-- Message that is displayed when user tries to save, but no data is modified. -->
     <string name="player_data_not_edited">No value was changed</string>
+
+    <!-- Message that is displayed on the appbar when a player is selected from the player listing. -->
     <string name="player_selected">Player selected</string>
+
+    <!-- Name of the close action in the appbar. -->
     <string name="action_close">Close</string>
-    <string name="action_accept">Accept</string>
+
+    <!-- Name of the save action in the appbar. -->
     <string name="action_save">Save</string>
+
+    <!-- Message that is shown instead of a course list, when the database contains no courses. -->
     <string name="no_courses_available">There are no courses added yet.</string>
+
+    <!-- Name of the FAB button for adding a course. -->
     <string name="add_course">Add a course</string>
+
+    <!-- Title for the courses screen. -->
     <string name="courses_activity_title">Courses</string>
+
+    <!-- Error message that displayed when user tries to create a new course with information that already exists in database. -->
     <string name="error_duplicate_course">A course with same details already exists!</string>
+
+    <!-- Message that is displayed when a course is selected. -->
     <string name="course_selected">Course selected</string>
+
+    <!-- String for course name (label + name). -->
     <string name="courseName"><xliff:g id="courseName" example="Laajavuori Frisbeegolf park">%s</xliff:g></string>
+
+    <!-- String for city name (label + city). -->
     <string name="city"><xliff:g id="city" example="Jyväskylä">%s</xliff:g></string>
+
+    <!-- String for number of holes (label + amount). -->
     <string name="numberOfHoles">Holes: <xliff:g id="numberOfHoles" example="21">%d</xliff:g></string>
+
+    <!-- Title for screen that allows to add a new course. -->
     <string name="text_activity_new_course_title_add">New course</string>
+
+    <!-- Title for screen that allows to add a new course. -->
     <string name="text_activity_new_course_title_edit">Edit course</string>
     <string name="hint_word_course_name">Course name</string>
     <string name="hint_word_city">City</string>
