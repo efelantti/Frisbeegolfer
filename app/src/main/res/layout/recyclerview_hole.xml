@@ -79,7 +79,7 @@
             card_view:layout_constraintStart_toEndOf="@id/decrement_par"
             card_view:layout_constraintTop_toBottomOf="@id/par_count_header"
             android:gravity="center_horizontal"
-            android:text="@string/default_par"
+            android:text="@integer/default_par"
             android:textSize="20sp"
             android:textStyle="bold" />
 

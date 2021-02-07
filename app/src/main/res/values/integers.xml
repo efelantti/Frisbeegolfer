@@ -2,4 +2,5 @@
 <resources>
     <integer name="default_amount_of_holes">18</integer>
     <integer name="max_amount_of_holes">99</integer>
+    <integer name="default_par">3</integer>
 </resources>

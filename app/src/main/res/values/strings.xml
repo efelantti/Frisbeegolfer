@@ -1,6 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!--TODO - Add context information to each -->
-
+    
     <!-- Name of the application. Used in the manifest file. -->
     <string name="app_name">Frisbeegolfer</string>
 
@@ -118,24 +117,57 @@
     <!-- Title for screen that allows to add a new course. -->
     <string name="text_activity_new_course_title_add">New course</string>
 
-    <!-- Title for screen that allows to add a new course. -->
+    <!-- Title for screen that allows to edit a course. -->
     <string name="text_activity_new_course_title_edit">Edit course</string>
+
+    <!-- Label for field "Course name". -->
     <string name="hint_word_course_name">Course name</string>
+
+    <!-- Label for field "City". -->
     <string name="hint_word_city">City</string>
+
+    <!-- Title for dialog that asks user confirmation to overwrite data. -->
     <string name="dialog_title_overwrite">Overwrite</string>
+
+    <!-- The message that is displayed to the user before overwriting data. -->
     <string name="dialog_message_confirm_overwrite">Are you sure you want to overwrite existing data? Please note that previous data can not be recovered.</string>
+
+    <!-- Title for dialog that asks user confirmation before canceling. -->
     <string name="dialog_title_cancel">Cancel</string>
+
+    <!-- The message that is displayed to the user before canceling from the current screen. -->
     <string name="dialog_message_cancel">Are you sure you want to cancel? Any unsaved data will be lost.</string>
+
+    <!-- Subtitle for course data section in the course screen. -->
     <string name="new_course_fragment_header_course_data">Course</string>
+
+    <!-- Subtitle for holes data section in the course screen. -->
     <string name="new_course_fragment_header_holes_data">Holes</string>
+
+    <!-- Label for "Number of holes" field, which the user can use to change amount of holes. -->
     <string name="hint_word_number_of_holes">Number of holes</string>
+
+    <!-- Name of button that allows the user to change the number of holes (after specifying amount in the proper field). -->
     <string name="create_holes">Apply</string>
+
+    <!-- Label for field "Length (meters)" ie., the length of the hole. -->
     <string name="hint_word_length">Length (meters)</string>
+
+    <!-- Label for field "Par". -->
     <string name="hint_word_par">Par</string>
-    <string name="default_par">3</string>
+
+    <!-- Header for field "Hole number". -->
     <string name="hole_number_header">#</string>
+
+    <!-- Header for field "Par". -->
     <string name="par_count_header">Par</string>
+
+    <!-- Error message that is displayed when user tries to set invalid amount of holes. -->
     <string name="invalid_number_of_holes" formatted="true">Only values in the range 1-<xliff:g id="maximumNumberOfHoles" example="99">%d</xliff:g> are valid.</string>
+
+    <!-- Title for dialog that is displayed to the user before removing holes. -->
     <string name="remove_holes">Remove holes?</string>
+
+    <!-- Message that is displayed to the user when asking confirmation about removing holes (when setting a smaller amount of holes that currently shown). -->
     <string name="dialog_message_confirm_remove_holes">Proceeding will delete holes from the end of the list. Are you want to continue?</string>
 </resources>
