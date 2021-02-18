@@ -4,21 +4,26 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import fi.efelantti.frisbeegolfer.dao.CourseDao
 import fi.efelantti.frisbeegolfer.dao.PlayerDao
-import fi.efelantti.frisbeegolfer.model.Course
-import fi.efelantti.frisbeegolfer.model.Hole
-import fi.efelantti.frisbeegolfer.model.Player
+import fi.efelantti.frisbeegolfer.dao.RoundDao
+import fi.efelantti.frisbeegolfer.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.time.temporal.TemporalAccessor
 
 //TODO - Consider export schema
-@Database(entities = arrayOf(Player::class, Course::class, Hole::class), version = 7, exportSchema = false)
+@Database(entities = arrayOf(Player::class, Course::class, Hole::class, Round::class, Score::class), version = 9, exportSchema = false)
+@TypeConverters(Converters::class)
 public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
 
     abstract fun playerDao(): PlayerDao
     abstract fun courseDao(): CourseDao
+    abstract fun roundDao(): RoundDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the
@@ -39,7 +44,7 @@ public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     FrisbeegolferRoomDatabase::class.java,
                     "frisbeegolfer_database"
-                ).addCallback(FrisbeegolferDatabaseCallback(scope)).fallbackToDestructiveMigrationFrom(6).build()
+                ).addCallback(FrisbeegolferDatabaseCallback(scope)).fallbackToDestructiveMigrationFrom(8).build()
                 INSTANCE = instance
                 return instance
             }
@@ -54,13 +59,21 @@ public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
             super.onOpen(db)
             INSTANCE?.let { database ->
                 scope.launch {
-                    populateDatabase(database.playerDao())
+                    populateDatabase(database.roundDao())
                 }
             }
         }
 
-        suspend fun populateDatabase(playerDao: PlayerDao) {
+        suspend fun populateDatabase(roundDao: RoundDao) {
 
+            /*var round = Round()
+            roundDao.insert(round)
+
+            round = Round(dateStarted = OffsetDateTime.now())
+            roundDao.insert(round)
+
+            round = Round(dateStarted = OffsetDateTime.of(2020, 6, 1, 13, 37, 0, 0, ZoneOffset.of("+02:00")))
+            roundDao.insert(round)*/
             // Examples in case needed to add.
             //var player = Player(firstName = "Esa", lastName = "Esimerkki", email = "esa@esimerkki.com", nickName = "")
             //playerDao.insert(player)

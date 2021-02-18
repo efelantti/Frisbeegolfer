@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    
+
     <!-- Name of the application. Used in the manifest file. -->
     <string name="app_name">Frisbeegolfer</string>
 

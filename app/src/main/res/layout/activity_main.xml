@@ -14,6 +14,7 @@
         android:layout_marginStart="@dimen/button_margin_horizontal"
         android:layout_marginTop="@dimen/button_margin_between"
         android:layout_marginEnd="@dimen/button_margin_horizontal"
+        android:onClick="startNewRound"
         android:text="@string/button_newRound_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
