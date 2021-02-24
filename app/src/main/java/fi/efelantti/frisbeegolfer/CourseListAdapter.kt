@@ -22,7 +22,7 @@ class CourseListAdapter internal constructor(
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val res: Resources = context.resources
-    private var courses = emptyList<CourseWithHoles>() // Cached copy of words
+    private var courses = emptyList<CourseWithHoles>()
     private val context = context
     private var selected_position = -1
     private var actionMode: ActionMode? = null

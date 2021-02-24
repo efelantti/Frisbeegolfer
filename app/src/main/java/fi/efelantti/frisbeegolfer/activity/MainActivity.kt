@@ -23,11 +23,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startNewRound(view: View) {
-        var round = Round()
-        var scores = emptyList<ScoreWithPlayerAndHole>()
-        round.dateStarted = now()
-        var roundWithScores: RoundWithScores = RoundWithScores(round, scores)
-        roundViewModel.insert(roundWithScores)
+        val intent = Intent(this, ActivityRound::class.java)
+        startActivity(intent)
     }
 
     fun navigateToPlayers(view: View) {

@@ -93,6 +93,9 @@
     <!-- Message that is shown instead of a course list, when the database contains no courses. -->
     <string name="no_courses_available">There are no courses added yet.</string>
 
+    <!-- Message that is shown instead of a course list, when the database contains no courses, and user is trying to start a new round. -->
+    <string name="no_courses_available_when_choosing">No courses found. Please create at least one course.</string>
+
     <!-- Name of the FAB button for adding a course. -->
     <string name="add_course">Add a course</string>
 
@@ -170,4 +173,8 @@
 
     <!-- Message that is displayed to the user when asking confirmation about removing holes (when setting a smaller amount of holes that currently shown). -->
     <string name="dialog_message_confirm_remove_holes">Proceeding will delete holes from the end of the list. Are you want to continue?</string>
+
+    <!-- Content description for FAB that allows user to select a course for a round. -->
+    <string name="select_course">Select course</string>
+
 </resources>
