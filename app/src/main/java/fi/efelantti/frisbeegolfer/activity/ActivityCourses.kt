@@ -3,6 +3,10 @@ package fi.efelantti.frisbeegolfer.activity
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -12,27 +16,92 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import fi.efelantti.frisbeegolfer.*
+import fi.efelantti.frisbeegolfer.CourseListAdapter
+import fi.efelantti.frisbeegolfer.EmptyRecyclerView
+import fi.efelantti.frisbeegolfer.NewCourseAction
+import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.fragment.FragmentNewCourse
 import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
-import fi.efelantti.frisbeegolfer.model.Hole
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 
-class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourseListener {
+
+class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourseListener, CourseListAdapter.ListItemClickListener {
 
     private val TAG = "ActivityCourses"
     private val frisbeegolferViewModel: CourseViewModel by viewModels()
 
     private lateinit var recyclerView: EmptyRecyclerView
+    private lateinit var adapter: CourseListAdapter
     private lateinit var emptyView: TextView
+    private var actionMode: ActionMode? = null
+
+    private val actionModeCallback = object : ActionMode.Callback {
+        // Called when the action mode is created; startActionMode() was called
+        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+            // Inflate a menu resource providing context menu items
+            val inflater: MenuInflater = mode.menuInflater
+            inflater.inflate(R.menu.appbar_actions, menu)
+            mode.title = getString(R.string.course_selected)
+            return true
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+            return false // Return false if nothing is done
+        }
+
+        // Called when the user selects a contextual menu item
+        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.action_edit -> {
+                    editSelectedCourse()
+                    mode.finish() // Action picked, so close the CAB
+                    true
+                }
+                else -> false
+            }
+        }
+
+        private fun editSelectedCourse() {
+            val course = adapter.getSelectedCourse()
+            if(course == null) throw java.lang.IllegalArgumentException("No course was selected.")
+            val fm: FragmentManager = supportFragmentManager
+            val dialog: FragmentNewCourse = FragmentNewCourse.newInstance(NewCourseAction.EDIT.toString(), course)
+            dialog.show(fm, "fragment_newPlayer")
+        }
+
+        // Called when the user exits the action mode
+        override fun onDestroyActionMode(mode: ActionMode) {
+            actionMode = null
+            adapter.notifyDataSetChanged()
+            adapter.resetSelectedPosition()
+        }
+    }
+
+    override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
+        Toast.makeText(this, "Clicked on " + position, Toast.LENGTH_SHORT).show()
+        if (!shouldStartActionMode) {
+            actionMode?.finish()
+        } else {
+            when (actionMode) {
+                null -> {
+                    // Start the CAB using the ActionMode.Callback defined above
+                    actionMode = startActionMode(actionModeCallback)
+                    true
+                }
+                else -> false
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_courses)
         supportActionBar?.title = getString(R.string.courses_activity_title)
 
-        var adapter = CourseListAdapter(this)
+        adapter = CourseListAdapter(this, this)
         recyclerView = findViewById<EmptyRecyclerView>(
             R.id.recyclerview_courses
         )

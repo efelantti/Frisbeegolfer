@@ -23,7 +23,7 @@ import fi.efelantti.frisbeegolfer.model.Hole
 import fi.efelantti.frisbeegolfer.model.clone
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 
-class FragmentChooseCourse : Fragment() {
+class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener {
 
     private val courseViewModel: CourseViewModel by viewModels()
 
@@ -57,7 +57,7 @@ class FragmentChooseCourse : Fragment() {
         toolbar.inflateMenu(R.menu.appbar_dialog)
          */
 
-        var adapter = CourseListAdapter(activity as Context)
+        var adapter = CourseListAdapter(activity as Context, this)
         recyclerView = view.findViewById<EmptyRecyclerView>(
             R.id.recyclerview_choose_a_course
         )
@@ -75,5 +75,9 @@ class FragmentChooseCourse : Fragment() {
         // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
         val listener: FragmentChooseCourseListener = activity as FragmentChooseCourseListener
         listener.onCourseSelected(chosenCourseId, result)
+    }
+
+    override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
+        TODO("Not yet implemented")
     }
 }

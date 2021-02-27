@@ -1,82 +1,58 @@
 package fi.efelantti.frisbeegolfer
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
-import android.content.res.TypedArray
 import android.graphics.Color
-import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import fi.efelantti.frisbeegolfer.fragment.FragmentNewCourse
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 
 
 class CourseListAdapter internal constructor(
-    context: Context
+    context: Context,
+    onClickListener: ListItemClickListener
 ) : RecyclerView.Adapter<CourseListAdapter.CourseViewHolder>() {
+
+    interface ListItemClickListener {
+        fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
+    }
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val res: Resources = context.resources
     private var courses = emptyList<CourseWithHoles>()
-    private val context = context
-    private var selected_position = -1
-    private var actionMode: ActionMode? = null
+    private var defaultSelectedPosition = -1
+    var selectedPosition = defaultSelectedPosition
+    private val mOnClickListener: ListItemClickListener = onClickListener
 
-    private val actionModeCallback = object : ActionMode.Callback {
-        // Called when the action mode is created; startActionMode() was called
-        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-            // Inflate a menu resource providing context menu items
-            val inflater: MenuInflater = mode.menuInflater
-            inflater.inflate(R.menu.appbar_actions, menu)
-            mode.title = context.getString(R.string.course_selected)
-            return true
-        }
-
-        // Called each time the action mode is shown. Always called after onCreateActionMode, but
-        // may be called multiple times if the mode is invalidated.
-        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-            return false // Return false if nothing is done
-        }
-
-        // Called when the user selects a contextual menu item
-        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            return when (item.itemId) {
-                R.id.action_edit -> {
-                    editSelectedCourse()
-                    mode.finish() // Action picked, so close the CAB
-                    true
-                }
-                else -> false
-            }
-        }
-
-        // Called when the user exits the action mode
-        override fun onDestroyActionMode(mode: ActionMode) {
-            actionMode = null
-            notifyDataSetChanged()
-            selected_position = -1
-        }
-    }
-
-    private fun editSelectedCourse() {
-        val course = courses[selected_position]
-        val fm: FragmentManager = (context as FragmentActivity).supportFragmentManager
-        val dialog: FragmentNewCourse = FragmentNewCourse.newInstance(NewCourseAction.EDIT.toString(), course)
-        dialog.show(fm, "fragment_newPlayer")
-    }
-
-
-    inner class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val courseCard: CardView = itemView.findViewById(R.id.courseCard)
         val originalBackgroundColor: Int = courseCard.cardBackgroundColor.defaultColor
         val courseItemViewCourseName: TextView = itemView.findViewById(R.id.txtCourseName)
         val courseItemViewCity: TextView = itemView.findViewById(R.id.txtCity)
         val courseItemViewNumberOfHoles: TextView = itemView.findViewById(R.id.txtNumberOfHoles)
+
+        init{
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            val position: Int = getAdapterPosition()
+            var shouldStartActionMode: Boolean
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                notifyDataSetChanged()
+                shouldStartActionMode = false
+            } else {
+                selectedPosition = position
+                notifyDataSetChanged()
+                shouldStartActionMode = true
+            }
+            mOnClickListener.onListItemClick(position, shouldStartActionMode)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
@@ -86,32 +62,12 @@ class CourseListAdapter internal constructor(
 
     // TODO - Change setBackgroundColor to Select?
     override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
-        if (selected_position == position) {
+        if (selectedPosition == position) {
             holder.courseCard.setBackgroundColor(Color.YELLOW)
 
         } else {
             holder.courseCard.setBackgroundColor(holder.originalBackgroundColor)
         }
-
-         holder.courseCard.setOnClickListener(View.OnClickListener {
-            if (selected_position === position) {
-                selected_position = -1
-                notifyDataSetChanged()
-                actionMode?.finish()
-                return@OnClickListener
-            }
-            selected_position = position
-            notifyDataSetChanged()
-
-            when (actionMode) {
-                null -> {
-                    // Start the CAB using the ActionMode.Callback defined above
-                    actionMode = (context as Activity).startActionMode(actionModeCallback)
-                    true
-                }
-                else -> false
-            }
-        })
 
         val current = courses[position]
         holder.courseItemViewCourseName.text = res.getString(R.string.courseName, current.course.name)
@@ -124,14 +80,25 @@ class CourseListAdapter internal constructor(
         notifyDataSetChanged()
     }
 
-    private fun fetchColorOnBackground(): Int {
+    internal fun getSelectedCourse(): CourseWithHoles? {
+        if (selectedPosition == defaultSelectedPosition) return null
+        else return courses[selectedPosition]
+
+    }
+
+    internal fun resetSelectedPosition()
+    {
+        selectedPosition = defaultSelectedPosition
+    }
+
+    /*private fun fetchColorOnBackground(): Int {
         val typedValue = TypedValue()
         val a: TypedArray =
             context.obtainStyledAttributes(typedValue.data, intArrayOf(R.attr.colorPrimary))
         val color = a.getColor(0, 0)
         a.recycle()
         return color
-    }
+    }*/
 
     override fun getItemCount() = courses.size
 }
