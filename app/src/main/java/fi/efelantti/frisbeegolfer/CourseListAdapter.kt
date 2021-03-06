@@ -83,7 +83,6 @@ class CourseListAdapter internal constructor(
     internal fun getSelectedCourse(): CourseWithHoles? {
         if (selectedPosition == defaultSelectedPosition) return null
         else return courses[selectedPosition]
-
     }
 
     internal fun resetSelectedPosition()

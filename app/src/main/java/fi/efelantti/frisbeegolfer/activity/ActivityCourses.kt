@@ -81,7 +81,6 @@ class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourse
     }
 
     override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
-        Toast.makeText(this, "Clicked on " + position, Toast.LENGTH_SHORT).show()
         if (!shouldStartActionMode) {
             actionMode?.finish()
         } else {
