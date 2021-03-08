@@ -64,7 +64,6 @@ class ActivityPlayers : AppCompatActivity(),
         // Called when the user exits the action mode
         override fun onDestroyActionMode(mode: ActionMode) {
             actionMode = null
-            adapter.notifyDataSetChanged()
             adapter.resetSelectedPosition()
         }
     }

@@ -42,13 +42,14 @@ class CourseListAdapter internal constructor(
         override fun onClick(v: View?) {
             val position: Int = getAdapterPosition()
             var shouldStartActionMode: Boolean
+            val previousSelectedPosition = selectedPosition
             if (selectedPosition == position) {
                 resetSelectedPosition()
-                notifyDataSetChanged()
                 shouldStartActionMode = false
             } else {
                 selectedPosition = position
-                notifyDataSetChanged()
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
                 shouldStartActionMode = true
             }
             mOnClickListener.onListItemClick(position, shouldStartActionMode)
@@ -87,7 +88,10 @@ class CourseListAdapter internal constructor(
 
     internal fun resetSelectedPosition()
     {
+        val previousSelectedPosition = selectedPosition
         selectedPosition = defaultSelectedPosition
+        notifyItemChanged(previousSelectedPosition)
+        notifyItemChanged(selectedPosition)
     }
 
     /*private fun fetchColorOnBackground(): Int {

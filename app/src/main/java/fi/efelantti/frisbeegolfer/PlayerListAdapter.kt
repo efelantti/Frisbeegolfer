@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import fi.efelantti.frisbeegolfer.fragment.FragmentNewPlayer
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Player
+import kotlinx.coroutines.selects.select
 
 
 class PlayerListAdapter internal constructor(
@@ -45,14 +46,15 @@ class PlayerListAdapter internal constructor(
 
         override fun onClick(v: View?) {
             val position: Int = getAdapterPosition()
+            var previousSelectedPosition = selectedPosition
             var shouldStartActionMode: Boolean
             if (selectedPosition == position) {
                 resetSelectedPosition()
-                notifyDataSetChanged()
                 shouldStartActionMode = false
             } else {
                 selectedPosition = position
-                notifyDataSetChanged()
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
                 shouldStartActionMode = true
             }
             mOnClickListener.onListItemClick(position, shouldStartActionMode)
@@ -95,7 +97,10 @@ class PlayerListAdapter internal constructor(
 
     internal fun resetSelectedPosition()
     {
+        var previousSelectedPosition = selectedPosition
         selectedPosition = defaultSelectedPosition
+        notifyItemChanged(previousSelectedPosition)
+        notifyItemChanged(selectedPosition)
     }
 
     /*
