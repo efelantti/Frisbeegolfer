@@ -63,4 +63,9 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
         }
         courseDao.insertAll(course.holes)
     }
+
+    suspend fun getCourseWithHolesById(id: Long): CourseWithHoles
+    {
+        return courseDao.getCourseWithHolesWithId(id)
+    }
 }

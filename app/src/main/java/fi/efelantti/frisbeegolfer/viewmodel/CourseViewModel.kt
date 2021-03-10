@@ -3,6 +3,7 @@ package fi.efelantti.frisbeegolfer.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import fi.efelantti.frisbeegolfer.FrisbeegolferRoomDatabase
 import fi.efelantti.frisbeegolfer.Repository
@@ -33,7 +34,15 @@ class CourseViewModel(application: Application) : AndroidViewModel(application){
         repository.delete(hole)
     }
 
-
+    fun getCourseWithHolesById(id: Long): LiveData<CourseWithHoles>
+    {
+        val result = MutableLiveData<CourseWithHoles>()
+        viewModelScope.launch(Dispatchers.IO) {
+            val courseWithHoles = repository.getCourseWithHolesById(id)
+            result.postValue(courseWithHoles)
+        }
+        return result
+    }
 
     /**
      * Launching a new coroutine to insert the data in a non-blocking way

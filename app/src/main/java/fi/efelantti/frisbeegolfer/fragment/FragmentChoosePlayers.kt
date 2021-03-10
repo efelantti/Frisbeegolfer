@@ -13,28 +13,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import fi.efelantti.frisbeegolfer.CourseListAdapter
-import fi.efelantti.frisbeegolfer.EmptyRecyclerView
-import fi.efelantti.frisbeegolfer.NewCourseAction
-import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.model.Course
-import fi.efelantti.frisbeegolfer.model.CourseWithHoles
-import fi.efelantti.frisbeegolfer.model.Hole
+import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.model.clone
-import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
 
-class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener {
+class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemClickListener {
 
-    private val courseViewModel: CourseViewModel by viewModels()
+    private val courseViewModel: PlayerViewModel by viewModels()
 
-    interface FragmentChooseCourseListener {
+    interface FragmentChoosePlayersListener {
 
-        fun onCourseSelected(
-            chosenCourseId: Long
+        fun onPlayersSelected(
+            chosenPlayerIds: List<Long>
         )
     }
 
-    private lateinit var adapter: CourseListAdapter
+    private lateinit var adapter: PlayerListAdapterMultiSelect
     private var actionMode: ActionMode? = null
     private lateinit var recyclerView: EmptyRecyclerView
 
@@ -44,7 +38,7 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
             // Inflate a menu resource providing context menu items
             val inflater: MenuInflater = mode.menuInflater
             inflater.inflate(R.menu.appbar_actions, menu)
-            mode.title = getString(R.string.course_selected)
+            mode.title = getString(R.string.player_selected)
             return true
         }
 
@@ -58,7 +52,7 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             return when (item.itemId) {
                 R.id.action_edit -> {
-                    chooseSelectedCourse()
+                    chooseSelectedPlayers()
                     mode.finish() // Action picked, so close the CAB
                     true
                 }
@@ -66,16 +60,16 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
             }
         }
 
-        private fun chooseSelectedCourse() {
-            val course = adapter.getSelectedCourse()
-            if(course == null) throw java.lang.IllegalArgumentException("No course was selected.")
-            sendBackResult(course.course.courseId)
+        private fun chooseSelectedPlayers() {
+            val players = adapter.getSelectedPlayers()
+            if(players == null) throw java.lang.IllegalArgumentException("No players were selected.")
+            sendBackResult(players.map{it.id})
         }
 
         // Called when the user exits the action mode
         override fun onDestroyActionMode(mode: ActionMode) {
             actionMode = null
-            adapter.resetSelectedPosition()
+            adapter.resetSelectedPlayers()
         }
     }
 
@@ -84,7 +78,7 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_choose_a_course, container, false)
+        return inflater.inflate(R.layout.fragment_choose_players, container, false)
     }
 
     override fun onViewCreated(
@@ -99,24 +93,24 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         toolbar.inflateMenu(R.menu.appbar_dialog)
          */
 
-        adapter = CourseListAdapter(activity as Context, this)
+        adapter = PlayerListAdapterMultiSelect(activity as Context, this)
         recyclerView = view.findViewById<EmptyRecyclerView>(
-            R.id.recyclerview_choose_a_course
+            R.id.recyclerview_choose_players
         )
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        courseViewModel.allCourses.observe(viewLifecycleOwner, Observer { courses ->
-            courses?.let { adapter.setCourses(it) }
+        courseViewModel.allPlayers.observe(viewLifecycleOwner, Observer { courses ->
+            courses?.let { adapter.setPlayers(it) }
         })
    }
 
     // Call this method to send the data back to the parent activity
-    fun sendBackResult(chosenCourseId: Long) {
+    fun sendBackResult(chosenPlayersIds: List<Long>) {
         // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
-        val listener: FragmentChooseCourseListener = activity as FragmentChooseCourseListener
-        listener.onCourseSelected(chosenCourseId)
+        val listener: FragmentChoosePlayersListener = activity as FragmentChoosePlayersListener
+        listener.onPlayersSelected(chosenPlayersIds)
     }
 
     override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {

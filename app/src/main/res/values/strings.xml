@@ -75,6 +75,9 @@
     <!-- Message that is shown instead of a player list, when the database contains no players. -->
     <string name="no_players_available">There are no players added yet.</string>
 
+    <!-- Message that is shown instead of a player list, when the database contains no players. -->
+    <string name="no_players_available_when_choosing">No players found. Please add at least one player first.</string>
+
     <!-- Error message that displayed when user tries to create a new player with information that already exists in database. -->
     <string name="error_duplicate_player">A player with same details already exists!</string>
 
@@ -176,5 +179,8 @@
 
     <!-- Content description for FAB that allows user to select a course for a round. -->
     <string name="select_course">Select course</string>
+
+    <!-- Content description for FAB that allows user to select the players for a round. -->
+    <string name="select_players">Select players</string>
 
 </resources>
