@@ -22,8 +22,8 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
         playerDao.insert(player)
     }
 
-    suspend fun insert(round: RoundWithScores) {
-        roundDao.insert(round.round)
+    suspend fun insert(round: Round): Long {
+        return roundDao.insert(round)
     }
 
     suspend fun insert(score: Score) {

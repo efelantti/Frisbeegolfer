@@ -6,14 +6,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.fragment.FragmentChooseCourse
 import fi.efelantti.frisbeegolfer.fragment.FragmentChoosePlayers
-import fi.efelantti.frisbeegolfer.model.Round
-import fi.efelantti.frisbeegolfer.model.RoundWithScores
-import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
+import fi.efelantti.frisbeegolfer.model.*
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
+import kotlinx.coroutines.launch
 import java.time.OffsetDateTime.now
 import kotlin.properties.Delegates
 
@@ -40,6 +41,7 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
 
     private fun displayChooseCourseFragment()
     {
+        supportActionBar?.title = getString(R.string.choose_a_course_title)
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace(R.id.round_fragment_container_view, FragmentChooseCourse(), chooseCourseTag)
@@ -47,6 +49,7 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
     }
 
     private fun displayChoosePlayersFragment() {
+        supportActionBar?.title = getString(R.string.choose_players_title)
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace(R.id.round_fragment_container_view, FragmentChoosePlayers(), choosePlayersTag)
@@ -69,13 +72,24 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
      */
     private fun addRoundToDatabase(selectedCourseId: Long, selectedPlayerIds: List<Long>)
     {
-        // TODO - Finish adding to database.
-        var course = courseViewModel.getCourseWithHolesById(selectedCourseId).value
-        if(course == null) throw IllegalArgumentException("No course found with id ${selectedCourseId}.")
-        var round = Round()
-        var scores= emptyList<ScoreWithPlayerAndHole>()
-        round.dateStarted = now()
-        var roundWithScores: RoundWithScores = RoundWithScores(round, scores)
-        roundViewModel.insert(roundWithScores)
+        //var course = courseViewModel.getCourseWithHolesById(selectedCourseId)
+        courseViewModel.getCourseWithHolesById(selectedCourseId).observe(this, Observer {
+            var course = it
+            if(course == null) throw IllegalArgumentException("No course found with id ${selectedCourseId}.")
+            var round = Round()
+            round.dateStarted = now()
+            lifecycleScope.launch {
+                val id = roundViewModel.insert(round)
+                round.roundId = id
+                for(hole in course.holes)
+                {
+                    for(playerId in selectedPlayerIds)
+                    {
+                        var score = Score(parentRoundId = round.roundId, holeId = hole.holeId, playerId = playerId, result = 0)
+                        roundViewModel.insert(score)
+                    }
+                }
+            }
+        })
     }
 }

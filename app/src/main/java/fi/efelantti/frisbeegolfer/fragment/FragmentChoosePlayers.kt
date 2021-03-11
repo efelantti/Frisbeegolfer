@@ -1,21 +1,18 @@
 package fi.efelantti.frisbeegolfer.fragment
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.*
-import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import fi.efelantti.frisbeegolfer.*
-import fi.efelantti.frisbeegolfer.model.clone
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import fi.efelantti.frisbeegolfer.EmptyRecyclerView
+import fi.efelantti.frisbeegolfer.PlayerListAdapterMultiSelect
+import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
+
 
 class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemClickListener {
 
@@ -31,13 +28,14 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
     private lateinit var adapter: PlayerListAdapterMultiSelect
     private var actionMode: ActionMode? = null
     private lateinit var recyclerView: EmptyRecyclerView
+    private lateinit var fab: FloatingActionButton
 
     private val actionModeCallback = object : ActionMode.Callback {
         // Called when the action mode is created; startActionMode() was called
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
             // Inflate a menu resource providing context menu items
             val inflater: MenuInflater = mode.menuInflater
-            inflater.inflate(R.menu.appbar_actions, menu)
+            inflater.inflate(R.menu.appbar_choose_course_or_players, menu)
             mode.title = getString(R.string.player_selected)
             return true
         }
@@ -50,27 +48,21 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
 
         // Called when the user selects a contextual menu item
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            return when (item.itemId) {
-                R.id.action_edit -> {
-                    chooseSelectedPlayers()
-                    mode.finish() // Action picked, so close the CAB
-                    true
-                }
-                else -> false
+            return false
             }
-        }
-
-        private fun chooseSelectedPlayers() {
-            val players = adapter.getSelectedPlayers()
-            if(players == null) throw java.lang.IllegalArgumentException("No players were selected.")
-            sendBackResult(players.map{it.id})
-        }
 
         // Called when the user exits the action mode
         override fun onDestroyActionMode(mode: ActionMode) {
             actionMode = null
+            fab.isEnabled = false
             adapter.resetSelectedPlayers()
         }
+    }
+
+    private fun chooseSelectedPlayers() {
+        val players = adapter.getSelectedPlayers()
+        if(players == null) throw java.lang.IllegalArgumentException("No players were selected.")
+        sendBackResult(players.map{it.id})
     }
 
     override fun onCreateView(
@@ -104,6 +96,11 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         courseViewModel.allPlayers.observe(viewLifecycleOwner, Observer { courses ->
             courses?.let { adapter.setPlayers(it) }
         })
+
+        fab = view.findViewById<FloatingActionButton>(R.id.fab_choose_players)
+        fab.setOnClickListener {
+            chooseSelectedPlayers()
+        }
    }
 
     // Call this method to send the data back to the parent activity
@@ -116,7 +113,9 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
     override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
         if (!shouldStartActionMode) {
             actionMode?.finish()
+            fab.isEnabled = false
         } else {
+            fab.isEnabled = true
             when (actionMode) {
                 null -> {
                     // Start the CAB using the ActionMode.Callback defined above
@@ -125,6 +124,9 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
                 }
                 else -> false
             }
+            val selectedPlayersCount = adapter.selectedIndeces.count()
+            val title = resources.getQuantityString(R.plurals.numberPlayersSelected, selectedPlayersCount, selectedPlayersCount)
+            actionMode?.setTitle(title)
         }
     }
 }

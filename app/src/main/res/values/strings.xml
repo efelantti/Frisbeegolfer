@@ -183,4 +183,15 @@
     <!-- Content description for FAB that allows user to select the players for a round. -->
     <string name="select_players">Select players</string>
 
+    <!-- Title for fragment that allows the player to choose a course for a round. -->
+    <string name="choose_a_course_title">Choose a course</string>
+
+    <!-- Title for fragment that allows the player to choose players for a round. -->
+    <string name="choose_players_title">Choose players</string>
+
+    <!-- String that is displayed on the app bar when user has selecte at least one player for a round. -->
+    <plurals name="numberPlayersSelected">
+        <item quantity="one">%d player selected</item>
+        <item quantity="other">%d players selected</item>
+    </plurals>
 </resources>
