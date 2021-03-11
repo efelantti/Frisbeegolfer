@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 class RoundWithScores(
     @Embedded val round: Round,
     @Relation(
-        parentColumn = "roundId",
+        parentColumn = "dateStarted",
         entityColumn = "parentRoundId",
         entity = Score::class
     )

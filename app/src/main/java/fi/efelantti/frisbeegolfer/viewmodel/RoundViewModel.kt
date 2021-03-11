@@ -37,7 +37,9 @@ class RoundViewModel(application: Application) : AndroidViewModel(application){
      * Launching a new coroutine to insert the data in a non-blocking way
      * Round should be inserted without the scores.
      */
-    suspend fun insert(round: Round) =  repository.insert(round)
+    fun insert(round: Round) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insert(round)
+    }
 
     /**
      * Launching a new coroutine to insert the data in a non-blocking way

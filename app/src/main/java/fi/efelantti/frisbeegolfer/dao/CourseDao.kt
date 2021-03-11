@@ -31,6 +31,7 @@ interface CourseDao {
     @Query("SELECT * FROM Course")
     fun getCoursesWithHoles(): LiveData<List<CourseWithHoles>>
 
+    @Transaction
     @Query("SELECT * FROM Course WHERE courseId =:id")
     fun getCourseWithHolesWithId(id: Long): CourseWithHoles
 

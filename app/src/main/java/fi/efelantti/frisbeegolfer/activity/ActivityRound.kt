@@ -8,13 +8,17 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import fi.efelantti.frisbeegolfer.NewCourseAction
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.fragment.FragmentChooseCourse
 import fi.efelantti.frisbeegolfer.fragment.FragmentChoosePlayers
+import fi.efelantti.frisbeegolfer.fragment.FragmentNewCourse
+import fi.efelantti.frisbeegolfer.fragment.FragmentScore
 import fi.efelantti.frisbeegolfer.model.*
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
 import java.time.OffsetDateTime.now
 import kotlin.properties.Delegates
 
@@ -24,6 +28,7 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
     private val TAG = "ActivityRound"
     private val chooseCourseTag = "FragmentChooseCourse"
     private val choosePlayersTag = "FragmentChoosePlayers"
+    private val scoreTag = "FragmentScore"
     private var selectedCourseId by Delegates.notNull<Long>()
     private lateinit var selectedPlayerIds: List<Long>
     private val roundViewModel: RoundViewModel by viewModels()
@@ -36,7 +41,6 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
         if (savedInstanceState == null) {
             displayChooseCourseFragment()
         }
-        // TODO - Score the holes by a new fragment.
     }
 
     private fun displayChooseCourseFragment()
@@ -63,33 +67,42 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
 
     override fun onPlayersSelected(chosenPlayerIds: List<Long>) {
         selectedPlayerIds = chosenPlayerIds
-        addRoundToDatabase(selectedCourseId, selectedPlayerIds)
+        var roundId = addRoundToDatabase(selectedCourseId, selectedPlayerIds)
+        displayScoreFragment(roundId)
+    }
+
+    private fun displayScoreFragment(roundId: OffsetDateTime)
+    {
+        supportActionBar?.title = "Score"
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            val fragmentScore: FragmentScore =
+                FragmentScore.newInstance(roundId)
+            replace(R.id.round_fragment_container_view, fragmentScore, scoreTag)
+        }
     }
 
     /**
      * Adds an entry to the database for the round. Creates all the necessary scores, that are
      * then later to be edited when playing the round.
      */
-    private fun addRoundToDatabase(selectedCourseId: Long, selectedPlayerIds: List<Long>)
+    private fun addRoundToDatabase(selectedCourseId: Long, selectedPlayerIds: List<Long>): OffsetDateTime
     {
-        //var course = courseViewModel.getCourseWithHolesById(selectedCourseId)
+        var roundId = now()
         courseViewModel.getCourseWithHolesById(selectedCourseId).observe(this, Observer {
             var course = it
             if(course == null) throw IllegalArgumentException("No course found with id ${selectedCourseId}.")
-            var round = Round()
-            round.dateStarted = now()
-            lifecycleScope.launch {
-                val id = roundViewModel.insert(round)
-                round.roundId = id
-                for(hole in course.holes)
+            var round = Round(roundId)
+            roundViewModel.insert(round)
+            for(hole in course.holes)
+            {
+                for(playerId in selectedPlayerIds)
                 {
-                    for(playerId in selectedPlayerIds)
-                    {
-                        var score = Score(parentRoundId = round.roundId, holeId = hole.holeId, playerId = playerId, result = 0)
-                        roundViewModel.insert(score)
-                    }
+                    var score = Score(parentRoundId = roundId, holeId = hole.holeId, playerId = playerId, result = 0)
+                    roundViewModel.insert(score)
                 }
             }
-        })
+            })
+        return roundId
     }
 }

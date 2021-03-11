@@ -11,9 +11,8 @@ import java.time.OffsetDateTime
 @Entity
 @Parcelize
 class Round(
-    @PrimaryKey(autoGenerate = true)
-    var roundId: Long = 0,
-    var dateStarted: OffsetDateTime? = null
+    @PrimaryKey
+    var dateStarted: OffsetDateTime
 ) : Parcelable {
     companion object {
         fun equals(round1: Round, round2: Round): Boolean {

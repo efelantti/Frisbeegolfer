@@ -61,6 +61,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
 
     private fun chooseSelectedPlayers() {
         val players = adapter.getSelectedPlayers()
+        actionMode?.finish()
         if(players == null) throw java.lang.IllegalArgumentException("No players were selected.")
         sendBackResult(players.map{it.id})
     }
@@ -78,12 +79,6 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-
-        /* TODO - Toolbar
-        val toolbar: Toolbar = view.findViewById(R.id.dialog_toolbar_new_course)
-        toolbar.setNavigationIcon(R.drawable.ic_close)
-        toolbar.inflateMenu(R.menu.appbar_dialog)
-         */
 
         adapter = PlayerListAdapterMultiSelect(activity as Context, this)
         recyclerView = view.findViewById<EmptyRecyclerView>(

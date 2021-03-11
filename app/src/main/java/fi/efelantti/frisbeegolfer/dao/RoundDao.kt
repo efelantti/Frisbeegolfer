@@ -11,7 +11,7 @@ import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 interface RoundDao {
 
     @Insert
-    suspend fun insert(round: Round): Long
+    suspend fun insert(round: Round)
 
     @Insert
     suspend fun insert(score: Score): Long
