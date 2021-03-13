@@ -11,6 +11,7 @@ class Hole(
     @PrimaryKey(autoGenerate = true)
     var holeId: Long = 0,
     var parentCourseId: Long = 0,
+    var holeNumber: Int = 0,
     var par: Int = 3,
     var lengthMeters: Int? = 0
 ): Parcelable
@@ -31,7 +32,7 @@ class Hole(
 
         fun equals(hole1: Hole, hole2: Hole): Boolean
         {
-            return hole1.lengthMeters == hole2.lengthMeters && hole1.par == hole2.par
+            return hole1.lengthMeters == hole2.lengthMeters && hole1.par == hole2.par && hole1.holeNumber == hole2.holeNumber
         }
 }
 }
@@ -40,6 +41,7 @@ fun Hole.clone(): Hole {
     val hole = Hole()
     hole.holeId = holeId
     hole.parentCourseId = parentCourseId
+    hole.holeNumber = holeNumber
     hole.par = par
     hole.lengthMeters = lengthMeters
     return hole

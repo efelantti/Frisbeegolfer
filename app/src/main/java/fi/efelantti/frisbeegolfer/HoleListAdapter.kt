@@ -61,7 +61,7 @@ class HoleListAdapter internal constructor(
 
     override fun onBindViewHolder(holder: HoleViewHolder, position: Int) {
         var hole: Hole = holes[position]
-        holder.holeIndexTextView.text = (position+1).toString() //res.getString(R.string.courseName, current.course.name)
+        holder.holeIndexTextView.text = if (hole.holeNumber == 0) (position+1).toString() else hole.holeNumber.toString()
         holder.parCountView.text = hole.par.toString()
         holder.par = holder.parCountView.text.toString().toInt()
         holder.holeLengthView.text = hole.lengthMeters?.toString()
@@ -82,7 +82,7 @@ class HoleListAdapter internal constructor(
     }
 
     internal fun setHoles(holes: List<Hole>) {
-        this.holes = holes
+        this.holes = holes.sortedBy{it.holeNumber}
         notifyDataSetChanged()
     }
 

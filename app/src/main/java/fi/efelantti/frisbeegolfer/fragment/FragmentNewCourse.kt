@@ -5,9 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.text.InputType
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +48,7 @@ class FragmentNewCourse : DialogFragment() {
             val args = Bundle()
             args.putParcelable("courseData", course)
             args.putString("action", action)
-            frag.setArguments(args)
+            frag.arguments = args
             return frag
         }
     }
@@ -77,16 +75,16 @@ class FragmentNewCourse : DialogFragment() {
         toolbar.setNavigationIcon(R.drawable.ic_close)
         toolbar.inflateMenu(R.menu.appbar_dialog)
 
-        val actionCategory = arguments!!.getString("action")?.let { NewCourseAction.valueOf(it) }
+        val actionCategory = requireArguments().getString("action")?.let { NewCourseAction.valueOf(it) }
 
         courseNameView = view.findViewById(R.id.edit_course_name)
         cityView = view.findViewById(R.id.edit_city)
 
-        oldCourseData = arguments!!.getParcelable<CourseWithHoles>("courseData")!!
-        val oldHolePars = oldCourseData?.holes?.map{it.par}
-        val oldHoleLengthMeter = oldCourseData?.holes?.map{it.lengthMeters}
+        oldCourseData = requireArguments().getParcelable<CourseWithHoles>("courseData")!!
+        val oldHolePars = oldCourseData.holes.map{it.par}
+        val oldHoleLengthMeter = oldCourseData.holes.map{it.lengthMeters}
 
-        var adapter = HoleListAdapter(activity as Context)
+        val adapter = HoleListAdapter(activity as Context)
         recyclerView = view.findViewById<EmptyRecyclerView>(
             R.id.recyclerview_holes
         )
@@ -96,16 +94,16 @@ class FragmentNewCourse : DialogFragment() {
 
         if (actionCategory == NewCourseAction.ADD)
         {
-            toolbar.setTitle(getString(R.string.text_activity_new_course_title_add))
+            toolbar.title = getString(R.string.text_activity_new_course_title_add)
             newHoles = emptyList<Hole>()
             adapter.setHoles(newHoles)
         }
         else if (actionCategory == NewCourseAction.EDIT)
         {
             toolbar.setTitle(getString(R.string.text_activity_new_course_title_edit))
-            courseNameView.setText(oldCourseData?.course?.name)
-            cityView.setText(oldCourseData?.course?.city)
-            oldCourseData?.holes?.let { adapter.setHoles(it) }
+            courseNameView.setText(oldCourseData.course.name)
+            cityView.setText(oldCourseData.course.city)
+            oldCourseData.holes.let { adapter.setHoles(it) }
         }
 
         val applyHolesButton: Button = view.findViewById(R.id.apply_holes)
@@ -118,8 +116,8 @@ class FragmentNewCourse : DialogFragment() {
         }
 
         applyHolesButton.setOnClickListener{
-            var numberOfHolesToSet: Int? = numberOfHolesView.text.toString().toIntOrNull()
-            var maximumNumberOfHoles: Int = getResources().getInteger(R.integer.max_amount_of_holes)
+            val numberOfHolesToSet: Int? = numberOfHolesView.text.toString().toIntOrNull()
+            val maximumNumberOfHoles: Int = getResources().getInteger(R.integer.max_amount_of_holes)
             if(numberOfHolesToSet == null || numberOfHolesToSet <= 0 || numberOfHolesToSet > maximumNumberOfHoles)
             {
                 numberOfHolesView.setError(getString(R.string.invalid_number_of_holes, maximumNumberOfHoles))
@@ -134,13 +132,13 @@ class FragmentNewCourse : DialogFragment() {
                 else if(numberOfHolesToSet > holesBefore)
                 {
                     // Take existing holes and add new ones after them.
-                    var holesToSet: List<Hole> = getHoles(List(holesBefore){Hole()}) + List(numberOfHolesToSet-holesBefore){Hole()}
+                    val holesToSet: List<Hole> = getHoles(List(holesBefore){Hole()}) + List(numberOfHolesToSet-holesBefore){Hole()}
                     adapter.setHoles(holesToSet)
                 }
                 else if (numberOfHolesToSet < holesBefore)
                 {
                     // Take existing holes and remove items from the end of the list.
-                    var holesToSet: List<Hole> = getHoles(List(holesBefore){Hole()}).subList(0, numberOfHolesToSet)
+                    val holesToSet: List<Hole> = getHoles(List(holesBefore){Hole()}).subList(0, numberOfHolesToSet)
                     // Require confirmation from user to remove holes
                     AlertDialog.Builder(context)
                         .setTitle(getString(R.string.remove_holes))
@@ -179,14 +177,13 @@ class FragmentNewCourse : DialogFragment() {
 
 
                         if (actionCategory == NewCourseAction.EDIT) {
-                            if(oldCourseData == null) throw IllegalArgumentException("Cannot edit course data - it was null.")
-                            else courseData.course.courseId = oldCourseData.course.courseId // Take id from old course in order to update it to database.
+                            courseData.course.courseId = oldCourseData.course.courseId // Take id from old course in order to update it to database.
                             if(CourseWithHoles.equals(
                                     courseData,
                                     oldCourseData
                                 ) && courseData.holes.count() == oldHolePars.count()
-                                && courseData.holes.withIndex().all{it -> it.value.par == oldHolePars?.get(it.index) ?: null }
-                                && courseData.holes.withIndex().all{it -> it.value.lengthMeters == oldHoleLengthMeter?.get(it.index) ?: null }
+                                && courseData.holes.withIndex().all{it -> it.value.par == oldHolePars.get(it.index) ?: null }
+                                && courseData.holes.withIndex().all{it -> it.value.lengthMeters == oldHoleLengthMeter.get(it.index) }
                             ){
                                 Toast.makeText(context, getString(R.string.player_data_not_edited), Toast.LENGTH_LONG).show()
                             }
@@ -246,14 +243,16 @@ class FragmentNewCourse : DialogFragment() {
      */
     private fun getHoleInformation(): List<Hole>
     {
-        var listToReturn: MutableList<Hole> = mutableListOf<Hole>()
+        val listToReturn: MutableList<Hole> = mutableListOf<Hole>()
         for (index: Int in 0..recyclerView.childCount-1)
         {
             listToReturn.add(Hole())
             val viewHolder: RecyclerView.ViewHolder = recyclerView.findViewHolderForAdapterPosition(index)!!
             val view: View = viewHolder.itemView
+            val textViewHoleNumber = view.findViewById<View>(R.id.recyclerView_hole_item_hole_index) as TextView
             val textViewPar = view.findViewById<View>(R.id.parCount) as TextView
             val textViewLength = view.findViewById<View>(R.id.edit_length) as TextView
+            listToReturn[index].holeNumber = textViewHoleNumber.text.toString().toInt()
             listToReturn[index].par = textViewPar.text.toString().toInt()
             listToReturn[index].lengthMeters = textViewLength.text.toString().toIntOrNull()
         }
@@ -264,15 +263,17 @@ class FragmentNewCourse : DialogFragment() {
      * Function to get the current values of the holes's attributes from the UI.
      */
     private fun getHoles(holes: List<Hole>): List<Hole> {
-        var listToReturn: MutableList<Hole> = mutableListOf<Hole>()
+        val listToReturn: MutableList<Hole> = mutableListOf<Hole>()
         //holes.forEach{listToReturn.add(it.clone())}
         for (index: Int in 0..recyclerView.childCount-1)
         {
             listToReturn.add(holes[index].clone())
             val viewHolder: RecyclerView.ViewHolder = recyclerView.findViewHolderForAdapterPosition(index)!!
             val view: View = viewHolder.itemView
+            val textViewHoleNumber = view.findViewById<View>(R.id.recyclerView_hole_item_hole_index) as TextView
             val textViewPar = view.findViewById<View>(R.id.parCount) as TextView
             val textViewLength = view.findViewById<View>(R.id.edit_length) as TextView
+            listToReturn[index].holeNumber = textViewHoleNumber.text.toString().toInt()
             listToReturn[index].par = textViewPar.text.toString().toInt()
             listToReturn[index].lengthMeters = textViewLength.text.toString().toIntOrNull()
         }
@@ -280,7 +281,7 @@ class FragmentNewCourse : DialogFragment() {
     }
 
     // Call this method to send the data back to the parent fragment
-    fun sendBackResult(result: Int, category: NewCourseAction?) {
+    private fun sendBackResult(result: Int, category: NewCourseAction?) {
         // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
         val listener: FragmentNewCourseListener = activity as FragmentNewCourseListener
         when(category)
@@ -298,7 +299,7 @@ class FragmentNewCourse : DialogFragment() {
         {
             if(TextUtils.isEmpty(field.text.trim()))
             {
-                field.setError(getString(R.string.invalid_field,field.hint))
+                field.error = getString(R.string.invalid_field,field.hint)
                 allFieldsValid = false
             }
         }
