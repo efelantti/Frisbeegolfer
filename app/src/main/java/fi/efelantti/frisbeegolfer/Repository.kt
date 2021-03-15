@@ -3,6 +3,7 @@ package fi.efelantti.frisbeegolfer
 import android.util.Log
 import androidx.lifecycle.LiveData
 import fi.efelantti.frisbeegolfer.model.*
+import java.time.OffsetDateTime
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
@@ -16,7 +17,6 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
     val allPlayers: LiveData<List<Player>> = playerDao.getPlayers()
     val allCourses: LiveData<List<CourseWithHoles>> = courseDao.getCoursesWithHoles()
     val allRounds : LiveData<List<RoundWithScores>> = roundDao.getRounds()
-
 
     suspend fun insert(player: Player) {
         playerDao.insert(player)
@@ -67,5 +67,10 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
     suspend fun getCourseWithHolesById(id: Long): CourseWithHoles
     {
         return courseDao.getCourseWithHolesWithId(id)
+    }
+
+    fun getRoundWithRoundId(roundId: OffsetDateTime): LiveData<RoundWithScores>
+    {
+        return roundDao.getRoundWithId(roundId)
     }
 }

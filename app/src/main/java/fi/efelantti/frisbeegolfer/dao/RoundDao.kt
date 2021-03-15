@@ -6,6 +6,7 @@ import fi.efelantti.frisbeegolfer.model.Round
 import fi.efelantti.frisbeegolfer.model.RoundWithScores
 import fi.efelantti.frisbeegolfer.model.Score
 import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
+import java.time.OffsetDateTime
 
 @Dao
 interface RoundDao {
@@ -29,4 +30,7 @@ interface RoundDao {
     @Query("SELECT * FROM Round")
     fun getRounds(): LiveData<List<RoundWithScores>>
 
+    @Transaction
+    @Query("SELECT * FROM Round WHERE dateStarted =:roundId")
+    fun getRoundWithId(roundId: OffsetDateTime): LiveData<RoundWithScores>
 }
