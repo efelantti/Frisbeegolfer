@@ -3,6 +3,7 @@ package fi.efelantti.frisbeegolfer.fragment
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -11,6 +12,7 @@ import androidx.room.TypeConverter
 import fi.efelantti.frisbeegolfer.Converters
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
+import fi.efelantti.frisbeegolfer.model.RoundWithScores
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
@@ -54,12 +56,12 @@ class FragmentScore : Fragment() {
 
         testView = view.findViewById(R.id.fragment_score_test_textview)
 
-        scoreViewModel.currentRound.observe(viewLifecycleOwner, Observer {
-            if(it != null)
-            {
-                testView.text = it.round.dateStarted.toString()
+        scoreViewModel.currentRound.observe(viewLifecycleOwner, Observer<RoundWithScores> {
+            it?.let { currentRound ->
+                testView.text = currentRound.round.dateStarted.toString()
+                val currentScore = scoreViewModel.getCurrentScore(currentRound)
+                Toast.makeText(activity, "Player: ${currentScore.player.firstName} - Hole: ${currentScore.hole.holeNumber} - Par: ${currentScore.hole.par}", Toast.LENGTH_SHORT ).show()
             }
         })
-
         }
    }
