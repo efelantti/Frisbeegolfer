@@ -13,6 +13,7 @@ import fi.efelantti.frisbeegolfer.Converters
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.RoundWithScores
+import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
@@ -34,6 +35,9 @@ class FragmentScore : Fragment() {
     private lateinit var scoreViewModel: ScoreViewModel
     private val converters = Converters()
     private lateinit var testView: TextView
+    private lateinit var playerNameView: TextView
+    private lateinit var holeNumberView: TextView
+    private lateinit var holeParView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,13 +59,27 @@ class FragmentScore : Fragment() {
         scoreViewModel = ViewModelProvider(this, ScoreViewModelFactory(this.requireActivity().application, roundId)).get(ScoreViewModel::class.java)
 
         testView = view.findViewById(R.id.fragment_score_test_textview)
+        playerNameView = view.findViewById(R.id.fragment_score_test_currentPlayer)
+        holeNumberView = view.findViewById(R.id.fragment_score_test_currentHole)
+        holeParView = view.findViewById(R.id.fragment_score_test_currentHolePar)
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner, Observer<RoundWithScores> {
             it?.let { currentRound ->
                 testView.text = currentRound.round.dateStarted.toString()
-                val currentScore = scoreViewModel.getCurrentScore(currentRound)
-                Toast.makeText(activity, "Player: ${currentScore.player.firstName} - Hole: ${currentScore.hole.holeNumber} - Par: ${currentScore.hole.par}", Toast.LENGTH_SHORT ).show()
             }
         })
+
+        scoreViewModel.sortedScores.observe(viewLifecycleOwner, Observer<List<ScoreWithPlayerAndHole>> {
+            it?.let { scores ->
+                scoreViewModel.initCurrentScoreIndex(scores)
+                val score = scoreViewModel.getCurrentScore()
+                score?.let{
+                    playerNameView.text = score.player.firstName
+                    holeNumberView.text = score.hole.holeNumber.toString()
+                    holeParView.text = score.hole.par.toString()
+                }
+            }
+        })
+
         }
    }

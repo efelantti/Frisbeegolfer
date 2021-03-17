@@ -15,6 +15,8 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
 
     private val repository: Repository
     val currentRound: LiveData<RoundWithScores>
+    val sortedScores: LiveData<List<ScoreWithPlayerAndHole>>
+    private var currentScoreIndex: Int = -1
 
             init {
                 val database = FrisbeegolferRoomDatabase.getDatabase(
@@ -23,18 +25,31 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
                 )
                 repository = Repository(database)
                 currentRound = repository.getRoundWithRoundId(roundId)
+                sortedScores = sortCurrentRound()
             }
 
             fun update(score: Score) = viewModelScope.launch(Dispatchers.IO) {
                 repository.update(score)
             }
 
-            // TODO - Create with Transformations.map
-            fun getCurrentScore(currentRound: RoundWithScores): ScoreWithPlayerAndHole
+            fun sortCurrentRound(): LiveData<List<ScoreWithPlayerAndHole>>
             {
-                val sortedList = currentRound.scores.sortedWith(compareBy({ it.hole.holeNumber }, {it.player.id}))
-                val firstNotScoredHole= sortedList.filter {it.score.result == 0}.firstOrNull()
-                if (firstNotScoredHole == null) return sortedList.first()
-                else return firstNotScoredHole
+                return Transformations.map(currentRound) {
+                    it?.let{
+                        it.scores.sortedWith(compareBy({ it.hole.holeNumber }, {it.player.id}))
+                    }
+                }
+            }
+
+            fun getCurrentScore(): ScoreWithPlayerAndHole?
+            {
+                return sortedScores.value?.get(currentScoreIndex)
+            }
+
+            fun initCurrentScoreIndex(scores: List<ScoreWithPlayerAndHole>)
+            {
+                val firstNotScoredHole= scores.filter {it.score.result == 0}.firstOrNull()
+                if (firstNotScoredHole == null) currentScoreIndex = scores.count()-1
+                else currentScoreIndex = scores.indexOf(firstNotScoredHole)
             }
         }
