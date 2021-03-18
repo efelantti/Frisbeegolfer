@@ -2,6 +2,7 @@ package fi.efelantti.frisbeegolfer.fragment
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -38,6 +39,8 @@ class FragmentScore : Fragment() {
     private lateinit var playerNameView: TextView
     private lateinit var holeNumberView: TextView
     private lateinit var holeParView: TextView
+    private lateinit var nextPlayerButton: Button
+    private lateinit var nextHoleButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,24 +65,30 @@ class FragmentScore : Fragment() {
         playerNameView = view.findViewById(R.id.fragment_score_test_currentPlayer)
         holeNumberView = view.findViewById(R.id.fragment_score_test_currentHole)
         holeParView = view.findViewById(R.id.fragment_score_test_currentHolePar)
+        nextPlayerButton = view.findViewById(R.id.fragment_score_test_button_next_player)
+        nextHoleButton = view.findViewById(R.id.fragment_score_test_button_next_hole)
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner, Observer<RoundWithScores> {
             it?.let { currentRound ->
                 testView.text = currentRound.round.dateStarted.toString()
-            }
-        })
+                // TODO - Move this as the observed data to VM.
+                val sortedScores = scoreViewModel.sortRound(currentRound.scores)
+                scoreViewModel.initCurrentScoreIndex(sortedScores)
 
-        scoreViewModel.sortedScores.observe(viewLifecycleOwner, Observer<List<ScoreWithPlayerAndHole>> {
-            it?.let { scores ->
-                scoreViewModel.initCurrentScoreIndex(scores)
-                val score = scoreViewModel.getCurrentScore()
-                score?.let{
+                nextPlayerButton.isEnabled = true
+                nextHoleButton.isEnabled = true
+
+                val score = sortedScores[scoreViewModel.currentScoreIndex]
                     playerNameView.text = score.player.firstName
                     holeNumberView.text = score.hole.holeNumber.toString()
                     holeParView.text = score.hole.par.toString()
-                }
             }
         })
 
+        nextHoleButton.setOnClickListener {
+            scoreViewModel.currentScoreIndex = scoreViewModel.currentScoreIndex + 1
+            scoreViewModel.refresh()
         }
+
+    }
    }

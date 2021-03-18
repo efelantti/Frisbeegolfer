@@ -1,39 +1,83 @@
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    android:layout_height="wrap_content"
+    tools:context=".activity.MainActivity"
+    android:orientation="vertical">
 
+     <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal">
+          <TextView
+              android:text="RoundID: "
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              />
      <TextView
         android:id="@+id/fragment_score_test_textview"
          android:text="Test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        />
+</LinearLayout>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+     android:orientation="horizontal">
+     <TextView
+         android:text="Player: "
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"/>
      <TextView
          android:id="@+id/fragment_score_test_currentPlayer"
          android:text="Player"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         app:layout_constraintTop_toBottomOf="@id/fragment_score_test_textview" />
-
+         />
+</LinearLayout>
+     <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+               android:text="Hole number: "/>
      <TextView
          android:id="@+id/fragment_score_test_currentHole"
          android:text="Hole #"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         app:layout_constraintTop_toBottomOf="@id/fragment_score_test_currentPlayer" />
-
+         />
+     </LinearLayout>
+     <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content">
+          <TextView
+              android:text="Par: "
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
      <TextView
          android:id="@+id/fragment_score_test_currentHolePar"
          android:text="Par"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         app:layout_constraintTop_toBottomOf="@id/fragment_score_test_currentHole" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+         />
+     </LinearLayout>
+<Button
+    android:id="@+id/fragment_score_test_button_next_player"
+    android:enabled="false"
+    android:text="Next player"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content">
+</Button>
+     <Button
+         android:id="@+id/fragment_score_test_button_next_hole"
+         android:enabled="false"
+         android:text="Next hole"
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content">
+     </Button>
+</LinearLayout>
