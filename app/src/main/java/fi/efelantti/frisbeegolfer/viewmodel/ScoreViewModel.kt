@@ -24,7 +24,8 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
     val currentRound: RefreshableLiveData<RoundWithScores>
     private val sortedScores: LiveData<List<ScoreWithPlayerAndHole>>
     val currentScore: LiveData<ScoreWithPlayerAndHole>
-
+    private var numberOfPlayers = -1
+    private var numberOfHoles = -1
 
     init {
         val database = FrisbeegolferRoomDatabase.getDatabase(
@@ -36,19 +37,24 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
             repository.getRoundWithRoundId(roundId)
         }
         currentRound = mCurrentRound
-        sortedScores = Transformations.map(mCurrentRound,
-            {
+        sortedScores = Transformations.map(mCurrentRound) {
+            it?.let {
                 sortRound(it.scores)
-            })
-        currentScore = Transformations.map(sortedScores, {
-            it.get(currentScoreIndex)
-        })
+            }
+        }
+        currentScore = Transformations.map(sortedScores) {
+            it?.let {
+                initCurrentScoreIndex(it)
+                initHelperValues(it)
+                it[currentScoreIndex]
+            }
+        }
     }
 
     /*
     Used to force refresh the observers of the LiveData object.
      */
-    fun refresh() {
+    private fun refresh() {
         currentRound.refresh()
     }
 
@@ -62,19 +68,47 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
      */
     private fun sortRound(scores: List<ScoreWithPlayerAndHole>): List<ScoreWithPlayerAndHole> {
         return scores.sortedWith(compareBy({ it.hole.holeNumber }, { it.player.id }))
-        }
+    }
 
     /*
     Used to initialize current score, if it's not already initialized.
     Sets the index to either the index of the first hole that's not yet scored OR to the index of the last hole, if all are already scored.
      */
-    fun initCurrentScoreIndex() {
-        if(currentScoreIndex == -1) {
-            val scores = sortedScores.value
-            if (scores == null) throw IllegalArgumentException("Cannot init current score index - sorted scores was null.")
-            val firstNotScoredHole = scores.filter { it.score.result == 0 }.firstOrNull()
-            if (firstNotScoredHole == null) currentScoreIndex = scores.count() - 1
-            else currentScoreIndex = scores.indexOf(firstNotScoredHole)
+    private fun initCurrentScoreIndex(sortedScores: List<ScoreWithPlayerAndHole>) {
+        if (currentScoreIndex == -1) {
+            val firstNotScoredHole = sortedScores.firstOrNull { it.score.result == 0 }
+            currentScoreIndex = if (firstNotScoredHole == null) sortedScores.count() - 1
+            else sortedScores.indexOf(firstNotScoredHole)
         }
+    }
+
+    /*
+    Used to initialize number of players & holes, which are needed for incrementing & decrementing the score index.
+     */
+    private fun initHelperValues(scores: List<ScoreWithPlayerAndHole>) {
+        if(numberOfHoles == -1) numberOfHoles = scores.distinctBy { it.hole.holeId }.count()
+        if (numberOfPlayers == -1) numberOfPlayers = scores.distinctBy { it.player.id }.count()
+    }
+
+    /*
+    Adds one to the current score index. To be used after scoring a hole.
+     */
+    fun incrementIndex() {
+        currentScoreIndex = (currentScoreIndex + 1).rem(numberOfHoles*numberOfPlayers)
+        refresh()
+    }
+
+    /*
+    Next player BUT current hole / is this needed?
+     */
+    fun nextPlayer() {
+        refresh()
+    }
+
+    /*
+    Set index to next hole BUT current player / is this needed?
+     */
+    fun nextHole() {
+        refresh()
     }
 }

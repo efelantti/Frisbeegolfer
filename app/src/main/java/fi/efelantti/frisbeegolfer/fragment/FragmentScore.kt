@@ -41,6 +41,7 @@ class FragmentScore : Fragment() {
     private lateinit var holeParView: TextView
     private lateinit var nextPlayerButton: Button
     private lateinit var nextHoleButton: Button
+    private lateinit var incrementIndexButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,27 +68,32 @@ class FragmentScore : Fragment() {
         holeParView = view.findViewById(R.id.fragment_score_test_currentHolePar)
         nextPlayerButton = view.findViewById(R.id.fragment_score_test_button_next_player)
         nextHoleButton = view.findViewById(R.id.fragment_score_test_button_next_hole)
+        incrementIndexButton = view.findViewById(R.id.fragment_score_test_button_increment_index)
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner, Observer<RoundWithScores> {
             it?.let { currentRound ->
                 testView.text = currentRound.round.dateStarted.toString()
-                // TODO - Move this as the observed data to VM.
-                val sortedScores = scoreViewModel.sortRound(currentRound.scores)
-                scoreViewModel.initCurrentScoreIndex(sortedScores)
-
                 nextPlayerButton.isEnabled = true
                 nextHoleButton.isEnabled = true
-
-                val score = sortedScores[scoreViewModel.currentScoreIndex]
-                    playerNameView.text = score.player.firstName
-                    holeNumberView.text = score.hole.holeNumber.toString()
-                    holeParView.text = score.hole.par.toString()
+                incrementIndexButton.isEnabled = true
             }
         })
 
+        scoreViewModel.currentScore.observe(viewLifecycleOwner, Observer<ScoreWithPlayerAndHole> {
+            it?.let { currentScore ->
+                playerNameView.text = currentScore.player.firstName
+                holeNumberView.text = currentScore.hole.holeNumber.toString()
+                holeParView.text = currentScore.hole.par.toString()
+            }
+        }
+        )
+
+        incrementIndexButton.setOnClickListener {
+            scoreViewModel.incrementIndex()
+        }
+
         nextHoleButton.setOnClickListener {
-            scoreViewModel.currentScoreIndex = scoreViewModel.currentScoreIndex + 1
-            scoreViewModel.refresh()
+            scoreViewModel.nextHole()
         }
 
     }

@@ -80,4 +80,11 @@
          android:layout_height="wrap_content"
          android:layout_width="wrap_content">
      </Button>
+     <Button
+         android:id="@+id/fragment_score_test_button_increment_index"
+         android:enabled="false"
+         android:text="Next"
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content">
+     </Button>
 </LinearLayout>
