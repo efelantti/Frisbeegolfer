@@ -1,90 +1,123 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".activity.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".activity.MainActivity">
 
-     <LinearLayout
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:orientation="horizontal">
-          <TextView
-              android:text="RoundID: "
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              />
-     <TextView
-        android:id="@+id/fragment_score_test_textview"
-         android:text="Test"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
-</LinearLayout>
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-     android:orientation="horizontal">
-     <TextView
-         android:text="Player: "
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"/>
-     <TextView
-         android:id="@+id/fragment_score_test_currentPlayer"
-         android:text="Player"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         />
-</LinearLayout>
-     <LinearLayout
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content">
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-               android:text="Hole number: "/>
-     <TextView
-         android:id="@+id/fragment_score_test_currentHole"
-         android:text="Hole #"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         />
-     </LinearLayout>
-     <LinearLayout
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content">
-          <TextView
-              android:text="Par: "
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"/>
-     <TextView
-         android:id="@+id/fragment_score_test_currentHolePar"
-         android:text="Par"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         />
-     </LinearLayout>
-<Button
-    android:id="@+id/fragment_score_test_button_next_player"
-    android:enabled="false"
-    android:text="Next player"
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content">
-</Button>
-     <Button
-         android:id="@+id/fragment_score_test_button_next_hole"
-         android:enabled="false"
-         android:text="Next hole"
-         android:layout_height="wrap_content"
-         android:layout_width="wrap_content">
-     </Button>
-     <Button
-         android:id="@+id/fragment_score_test_button_increment_index"
-         android:enabled="false"
-         android:text="Next"
-         android:layout_height="wrap_content"
-         android:layout_width="wrap_content">
-     </Button>
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="RoundID: " />
+
+        <TextView
+            android:id="@+id/fragment_score_test_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Test" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Player: " />
+
+        <TextView
+            android:id="@+id/fragment_score_test_currentPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hole number: " />
+
+        <TextView
+            android:id="@+id/fragment_score_test_currentHole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hole #" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Par: " />
+
+        <TextView
+            android:id="@+id/fragment_score_test_currentHolePar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Par" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/fragment_score_test_button_next_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="Next player" />
+
+    <Button
+        android:id="@+id/fragment_score_test_button_next_hole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="Next hole" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/fragment_score_test_button_increment_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Next" />
+
+        <Button
+            android:id="@+id/fragment_score_test_button_decrement_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Previous" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/fragment_score_test_set_score_edittext"
+        android:inputType="number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/fragment_score_test_set_score_button"
+            android:enabled="false"
+            android:text="Set score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </Button>
+    </LinearLayout>
 </LinearLayout>

@@ -3,6 +3,7 @@ package fi.efelantti.frisbeegolfer.fragment
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
+import kotlinx.android.synthetic.main.fragment_score.*
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
@@ -42,6 +44,9 @@ class FragmentScore : Fragment() {
     private lateinit var nextPlayerButton: Button
     private lateinit var nextHoleButton: Button
     private lateinit var incrementIndexButton: Button
+    private lateinit var decrementIndexButton: Button
+    private lateinit var setScoreEditText: EditText
+    private lateinit var setScoreButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,8 +61,8 @@ class FragmentScore : Fragment() {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-        var roundIdString = requireArguments().getString("roundId")
-        var roundId = converters.toOffsetDateTime(roundIdString)
+        val roundIdString = requireArguments().getString("roundId")
+        val roundId = converters.toOffsetDateTime(roundIdString)
         if(roundId == null) throw IllegalArgumentException("Round id was null.")
 
         scoreViewModel = ViewModelProvider(this, ScoreViewModelFactory(this.requireActivity().application, roundId)).get(ScoreViewModel::class.java)
@@ -69,6 +74,9 @@ class FragmentScore : Fragment() {
         nextPlayerButton = view.findViewById(R.id.fragment_score_test_button_next_player)
         nextHoleButton = view.findViewById(R.id.fragment_score_test_button_next_hole)
         incrementIndexButton = view.findViewById(R.id.fragment_score_test_button_increment_index)
+        decrementIndexButton = view.findViewById(R.id.fragment_score_test_button_decrement_index)
+        setScoreEditText = view.findViewById(R.id.fragment_score_test_set_score_edittext)
+        setScoreButton = view.findViewById(R.id.fragment_score_test_set_score_button)
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner, Observer<RoundWithScores> {
             it?.let { currentRound ->
@@ -76,6 +84,8 @@ class FragmentScore : Fragment() {
                 nextPlayerButton.isEnabled = true
                 nextHoleButton.isEnabled = true
                 incrementIndexButton.isEnabled = true
+                decrementIndexButton.isEnabled = true
+                setScoreButton.isEnabled = true
             }
         })
 
@@ -84,6 +94,7 @@ class FragmentScore : Fragment() {
                 playerNameView.text = currentScore.player.firstName
                 holeNumberView.text = currentScore.hole.holeNumber.toString()
                 holeParView.text = currentScore.hole.par.toString()
+                setScoreEditText.setText(currentScore.score.result.toString())
             }
         }
         )
@@ -92,8 +103,18 @@ class FragmentScore : Fragment() {
             scoreViewModel.incrementIndex()
         }
 
+        decrementIndexButton.setOnClickListener {
+            scoreViewModel.decrementIndex()
+        }
+
         nextHoleButton.setOnClickListener {
             scoreViewModel.nextHole()
+        }
+
+        setScoreButton.setOnClickListener {
+            val scoreToSet = setScoreEditText.text.toString().toInt()
+            scoreViewModel.setResult(scoreToSet)
+            scoreViewModel.incrementIndex()
         }
 
     }

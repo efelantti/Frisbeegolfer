@@ -94,7 +94,20 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
     Adds one to the current score index. To be used after scoring a hole.
      */
     fun incrementIndex() {
-        currentScoreIndex = (currentScoreIndex + 1).rem(numberOfHoles*numberOfPlayers)
+        addToIndex(1)
+    }
+
+    fun decrementIndex() {
+        addToIndex(-1)
+    }
+
+    /*
+    Helper function used for adding a value to the [currentScoreIndex].
+     */
+    private fun addToIndex(valueToAdd: Int) {
+        currentScoreIndex = Math.floorMod(currentScoreIndex + valueToAdd, numberOfHoles*numberOfPlayers)
+        // Other option, but this does not allow to use "Previous" on zero index.
+        // currentScoreIndex = (currentScoreIndex + valueToAdd).rem(numberOfHoles*numberOfPlayers)
         refresh()
     }
 
@@ -110,5 +123,12 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
      */
     fun nextHole() {
         refresh()
+    }
+
+    fun setResult(scoreToSet: Int) {
+        var currentScore = this.currentScore.value
+        if (currentScore == null) throw IllegalArgumentException("Cannot set score - current score was null.")
+        currentScore.score.result = scoreToSet
+        update(currentScore.score)
     }
 }
