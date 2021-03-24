@@ -189,6 +189,21 @@
     <!-- Title for fragment that allows the player to choose players for a round. -->
     <string name="choose_players_title">Choose players</string>
 
+    <!-- Text for button in main menu that allows user to continue a previous round. -->
+    <string name="button_continue_round_text">Continue round</string>
+
+    <!-- Text for continue round activity, when there are no rounds available in the database. -->
+    <string name="no_rounds_available">No rounds have yet been played.</string>
+
+    <!-- Text that is displayed on the appbar when a round is selected. -->
+    <string name="round_selected">Round selected</string>
+
+    <!-- String for number of players (label + amount). -->
+    <string name="numberOfPlayers">Players: <xliff:g id="numberOfPlayers" example="3">%d</xliff:g></string>
+
+    <!-- Title for activity Continue round. -->
+    <string name="continue_round_activity_title">Select a round to continue</string>
+
     <!-- String that is displayed on the app bar when user has selecte at least one player for a round. -->
     <plurals name="numberPlayersSelected">
         <item quantity="one">%d player selected</item>

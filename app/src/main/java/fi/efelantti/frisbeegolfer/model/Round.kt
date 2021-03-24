@@ -12,7 +12,8 @@ import java.time.OffsetDateTime
 @Parcelize
 class Round(
     @PrimaryKey
-    var dateStarted: OffsetDateTime
+    var dateStarted: OffsetDateTime,
+    var courseId: Long
 ) : Parcelable {
     companion object {
         fun equals(round1: Round, round2: Round): Boolean {

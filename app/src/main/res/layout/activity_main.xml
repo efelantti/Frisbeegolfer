@@ -21,6 +21,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/button_continue_round"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginStart="@dimen/button_margin_horizontal"
+        android:layout_marginTop="@dimen/button_margin_between"
+        android:layout_marginEnd="@dimen/button_margin_horizontal"
+        android:onClick="navigateToContinueRound"
+        android:text="@string/button_continue_round_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_newRound" />
+
+    <Button
         android:id="@+id/button_courses"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
@@ -32,7 +46,7 @@
         android:text="@string/button_courses_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_newRound" />
+        app:layout_constraintTop_toBottomOf="@+id/button_continue_round" />
 
     <Button
         android:id="@+id/button_players"

@@ -21,6 +21,8 @@
             android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.ActivityRound"
             android:parentActivityName=".activity.MainActivity" />
+        <activity android:name=".activity.ActivityContinueRound"
+            android:parentActivityName=".activity.MainActivity" />
     </application>
 
 </manifest>

@@ -6,13 +6,18 @@ import androidx.room.Relation
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class RoundWithScores(
+class RoundWithCourseAndScores(
     @Embedded val round: Round,
     @Relation(
         parentColumn = "dateStarted",
         entityColumn = "parentRoundId",
         entity = Score::class
     )
-    var scores: List<ScoreWithPlayerAndHole>
+    var scores: List<ScoreWithPlayerAndHole>,
+    @Relation(
+        parentColumn = "courseId",
+        entityColumn = "courseId"
+    )
+    var course: Course
 ) : Parcelable
 

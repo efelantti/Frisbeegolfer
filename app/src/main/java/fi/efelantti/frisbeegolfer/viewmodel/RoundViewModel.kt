@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import fi.efelantti.frisbeegolfer.FrisbeegolferRoomDatabase
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.model.Round
-import fi.efelantti.frisbeegolfer.model.RoundWithScores
+import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.model.Score
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +18,7 @@ class RoundViewModel(application: Application) : AndroidViewModel(application){
     // - We can put an observer on the data (instead of polling for changes) and only update the
     //   the UI when the data actually changes.
     // - Repository is completely separated from the UI through the ViewModel.
-    val allRounds: LiveData<List<RoundWithScores>>
+    val allRounds: LiveData<List<RoundWithCourseAndScores>>
 
     init {
         val database = FrisbeegolferRoomDatabase.getDatabase(
@@ -29,7 +29,7 @@ class RoundViewModel(application: Application) : AndroidViewModel(application){
         allRounds = repository.allRounds
     }
 
-    fun delete(round: RoundWithScores) = viewModelScope.launch(Dispatchers.IO) {
+    fun delete(round: RoundWithCourseAndScores) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(round)
     }
 

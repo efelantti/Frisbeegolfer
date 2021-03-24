@@ -3,9 +3,8 @@ package fi.efelantti.frisbeegolfer.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import fi.efelantti.frisbeegolfer.model.Round
-import fi.efelantti.frisbeegolfer.model.RoundWithScores
+import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.model.Score
-import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 import java.time.OffsetDateTime
 
 @Dao
@@ -28,9 +27,9 @@ interface RoundDao {
 
     @Transaction
     @Query("SELECT * FROM Round")
-    fun getRounds(): LiveData<List<RoundWithScores>>
+    fun getRounds(): LiveData<List<RoundWithCourseAndScores>>
 
     @Transaction
     @Query("SELECT * FROM Round WHERE dateStarted =:roundId")
-    fun getRoundWithId(roundId: OffsetDateTime): LiveData<RoundWithScores>
+    fun getRoundWithId(roundId: OffsetDateTime): LiveData<RoundWithCourseAndScores>
 }

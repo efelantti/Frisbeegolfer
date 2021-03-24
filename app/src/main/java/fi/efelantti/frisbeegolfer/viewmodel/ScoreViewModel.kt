@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import fi.efelantti.frisbeegolfer.FrisbeegolferRoomDatabase
 import fi.efelantti.frisbeegolfer.RefreshableLiveData
 import fi.efelantti.frisbeegolfer.Repository
-import fi.efelantti.frisbeegolfer.model.RoundWithScores
+import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.model.Score
 import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 import kotlinx.coroutines.Dispatchers
@@ -19,9 +19,9 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
     AndroidViewModel(application) {
 
     private val repository: Repository
-    private val mCurrentRound: LiveData<RoundWithScores>
+    private val mCurrentRound: LiveData<RoundWithCourseAndScores>
     private var currentScoreIndex: Int = -1
-    val currentRound: RefreshableLiveData<RoundWithScores>
+    val currentRound: RefreshableLiveData<RoundWithCourseAndScores>
     private val sortedScores: LiveData<List<ScoreWithPlayerAndHole>>
     val currentScore: LiveData<ScoreWithPlayerAndHole>
     private var numberOfPlayers = -1

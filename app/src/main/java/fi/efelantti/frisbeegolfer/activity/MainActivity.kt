@@ -6,12 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.model.Round
-import fi.efelantti.frisbeegolfer.model.RoundWithScores
-import fi.efelantti.frisbeegolfer.model.Score
-import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
-import java.time.OffsetDateTime.now
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,6 +29,11 @@ class MainActivity : AppCompatActivity() {
 
     fun navigateToCourses(view: View) {
         val intent = Intent(this, ActivityCourses::class.java)
+        startActivity(intent)
+    }
+
+    fun navigateToContinueRound(view: View) {
+        val intent = Intent(this, ActivityContinueRound::class.java)
         startActivity(intent)
     }
 

@@ -1,6 +1,5 @@
 package fi.efelantti.frisbeegolfer
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import fi.efelantti.frisbeegolfer.model.*
 import java.time.OffsetDateTime
@@ -16,7 +15,7 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
     private val roundDao = database.roundDao()
     val allPlayers: LiveData<List<Player>> = playerDao.getPlayers()
     val allCourses: LiveData<List<CourseWithHoles>> = courseDao.getCoursesWithHoles()
-    val allRounds : LiveData<List<RoundWithScores>> = roundDao.getRounds()
+    val allRounds : LiveData<List<RoundWithCourseAndScores>> = roundDao.getRounds()
 
     suspend fun insert(player: Player) {
         playerDao.insert(player)
@@ -42,7 +41,7 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
         courseDao.delete(hole)
     }
 
-    suspend fun delete(round: RoundWithScores) {
+    suspend fun delete(round: RoundWithCourseAndScores) {
         for(score: ScoreWithPlayerAndHole in round.scores)
         {
             roundDao.delete(score.score)
@@ -69,7 +68,7 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
         return courseDao.getCourseWithHolesWithId(id)
     }
 
-    fun getRoundWithRoundId(roundId: OffsetDateTime): LiveData<RoundWithScores>
+    fun getRoundWithRoundId(roundId: OffsetDateTime): LiveData<RoundWithCourseAndScores>
     {
         return roundDao.getRoundWithId(roundId)
     }

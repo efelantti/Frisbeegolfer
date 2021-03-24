@@ -5,23 +5,16 @@ import android.view.*
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.TypeConverter
 import fi.efelantti.frisbeegolfer.Converters
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.model.CourseWithHoles
-import fi.efelantti.frisbeegolfer.model.RoundWithScores
+import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
-import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
-import kotlinx.android.synthetic.main.fragment_score.*
 import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 
 class FragmentScore : Fragment() {
 
@@ -78,7 +71,7 @@ class FragmentScore : Fragment() {
         setScoreEditText = view.findViewById(R.id.fragment_score_test_set_score_edittext)
         setScoreButton = view.findViewById(R.id.fragment_score_test_set_score_button)
 
-        scoreViewModel.currentRound.observe(viewLifecycleOwner, Observer<RoundWithScores> {
+        scoreViewModel.currentRound.observe(viewLifecycleOwner, Observer<RoundWithCourseAndScores> {
             it?.let { currentRound ->
                 testView.text = currentRound.round.dateStarted.toString()
                 nextPlayerButton.isEnabled = true

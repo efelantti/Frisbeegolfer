@@ -92,7 +92,7 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
         courseViewModel.getCourseWithHolesById(selectedCourseId).observe(this, Observer {
             var course = it
             if(course == null) throw IllegalArgumentException("No course found with id ${selectedCourseId}.")
-            var round = Round(roundId)
+            var round = Round(dateStarted=roundId, courseId=selectedCourseId)
             roundViewModel.insert(round)
             for(hole in course.holes)
             {
