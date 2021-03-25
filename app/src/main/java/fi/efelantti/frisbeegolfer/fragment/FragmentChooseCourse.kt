@@ -39,6 +39,7 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
     private lateinit var adapter: CourseListAdapter
     private var actionMode: ActionMode? = null
     private lateinit var recyclerView: EmptyRecyclerView
+    private lateinit var emptyView: TextView
     private lateinit var fab: FloatingActionButton
 
     private val actionModeCallback = object : ActionMode.Callback {
@@ -88,6 +89,8 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         recyclerView = view.findViewById<EmptyRecyclerView>(
             R.id.recyclerview_choose_a_course
         )
+        emptyView = view.findViewById<TextView>(R.id.empty_view_choose_a_course)
+        recyclerView.setEmptyView(emptyView)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)

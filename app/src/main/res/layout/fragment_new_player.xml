@@ -9,7 +9,6 @@
         android:id="@+id/dialog_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -20,7 +19,7 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_first_name"
+            android:id="@+id/edit_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/button_margin_horizontal"
@@ -28,45 +27,7 @@
             android:layout_marginEnd="@dimen/button_margin_horizontal"
             android:autofillHints="AUTOFILL_HINT_NAME"
             android:fontFamily="sans-serif-light"
-            android:hint="@string/hint_word_first_name"
-            android:inputType="textPersonName"
-            android:minHeight="@dimen/min_height"
-            android:textSize="18sp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_nickname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/button_margin_horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="@dimen/button_margin_horizontal"
-            android:autofillHints="AUTOFILL_HINT_NAME"
-            android:fontFamily="sans-serif-light"
-            android:hint="@string/hint_word_nickname"
-            android:inputType="textPersonName"
-            android:minHeight="@dimen/min_height"
-            android:textSize="18sp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_last_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/button_margin_horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="@dimen/button_margin_horizontal"
-            android:autofillHints="AUTOFILL_HINT_NAME"
-            android:fontFamily="sans-serif-light"
-            android:hint="@string/hint_word_lastname"
+            android:hint="@string/hint_word_name"
             android:inputType="textPersonName"
             android:minHeight="@dimen/min_height"
             android:textSize="18sp" />

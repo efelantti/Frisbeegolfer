@@ -14,20 +14,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.RoundListAdapter
+import fi.efelantti.frisbeegolfer.fragment.FragmentChoosePlayers
+import fi.efelantti.frisbeegolfer.fragment.FragmentChooseRound
 import fi.efelantti.frisbeegolfer.fragment.FragmentScore
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import java.time.OffsetDateTime
 
 
-class ActivityContinueRound : AppCompatActivity(), RoundListAdapter.ListItemClickListener {
+class ActivityContinueRound : AppCompatActivity(), FragmentChooseRound.FragmentChooseRoundListener {
 
     private val TAG = "ActivityContinueRound"
     private val scoreTag = "FragmentScore"
+    private val roundTag = "FragmentChooseRound"
     private val roundViewModel: RoundViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_choose_round)
+        setContentView(R.layout.activity_continue_round)
 
         displayChooseRoundFragment()
     }
@@ -35,6 +38,10 @@ class ActivityContinueRound : AppCompatActivity(), RoundListAdapter.ListItemClic
     private fun displayChooseRoundFragment()
     {
         supportActionBar?.title = getString(R.string.continue_round_activity_title)
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace(R.id.continue_round_fragment_container_view, FragmentChooseRound(), roundTag)
+        }
     }
 
     private fun displayScoreFragment(roundId: OffsetDateTime) {
@@ -43,7 +50,11 @@ class ActivityContinueRound : AppCompatActivity(), RoundListAdapter.ListItemClic
             setReorderingAllowed(true)
             val fragmentScore: FragmentScore =
                 FragmentScore.newInstance(roundId)
-            replace(R.id.round_fragment_container_view, fragmentScore, scoreTag)
+            replace(R.id.continue_round_fragment_container_view, fragmentScore, scoreTag)
         }
+    }
+
+    override fun onRoundSelected(chosenRoundId: OffsetDateTime) {
+        displayScoreFragment(chosenRoundId)
     }
 }

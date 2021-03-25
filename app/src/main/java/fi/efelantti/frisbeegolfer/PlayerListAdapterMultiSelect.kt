@@ -1,21 +1,13 @@
 package fi.efelantti.frisbeegolfer
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
-import android.content.res.TypedArray
 import android.graphics.Color
-import android.util.TypedValue
 import android.view.*
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import fi.efelantti.frisbeegolfer.fragment.FragmentNewPlayer
-import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Player
-import kotlinx.coroutines.selects.select
 
 
 class PlayerListAdapterMultiSelect internal constructor(
@@ -36,7 +28,7 @@ class PlayerListAdapterMultiSelect internal constructor(
     inner class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val playerCard: CardView = itemView.findViewById(R.id.playerCard)
         val originalBackgroundColor: Int = playerCard.cardBackgroundColor.defaultColor
-        val playerItemViewFullName: TextView = itemView.findViewById(R.id.txtFullName)
+        val playerItemViewName: TextView = itemView.findViewById(R.id.txtFullName)
         val playerItemViewEmail: TextView = itemView.findViewById(R.id.txtEmail)
 
         init{
@@ -75,11 +67,7 @@ class PlayerListAdapterMultiSelect internal constructor(
         } else {
             holder.playerCard.setBackgroundColor(holder.originalBackgroundColor)
         }
-
-        if(selectedPlayer.nickName.isNullOrBlank()) {
-            holder.playerItemViewFullName.text = res.getString(R.string.fullname_without_nickname, selectedPlayer.firstName, selectedPlayer.lastName)
-        } else
-            holder.playerItemViewFullName.text = res.getString(R.string.fullname_with_nickname, selectedPlayer.firstName, selectedPlayer.nickName, selectedPlayer.lastName)
+        holder.playerItemViewName.text = selectedPlayer.name
         var email = selectedPlayer.email?.trim()
         if(email.isNullOrBlank()) email = "-"
         holder.playerItemViewEmail.text = res.getString(R.string.email_descriptor, email)

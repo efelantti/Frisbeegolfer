@@ -79,7 +79,7 @@ class RoundListAdapter internal constructor(
         holder.roundItemViewCourseName.text = res.getString(R.string.city, current.course.name)
         holder.roundItemViewCity.text = res.getString(R.string.city, current.course.city)
         holder.roundItemViewNumberOfPlayers.text =
-            res.getString(R.string.numberOfPlayers, current.scores.distinctBy { it.player }.count())
+            res.getString(R.string.players, current.scores.distinctBy { it.player.name }.map{it.player.name}.joinToString())
     }
 
     internal fun setRounds(rounds: List<RoundWithCourseAndScores>) {

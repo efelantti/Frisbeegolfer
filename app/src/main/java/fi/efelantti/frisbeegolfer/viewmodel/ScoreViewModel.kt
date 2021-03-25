@@ -67,7 +67,7 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
     (Refer to https://stackoverflow.com/questions/48315261/using-rooms-relation-with-order-by/64321494)
      */
     private fun sortRound(scores: List<ScoreWithPlayerAndHole>): List<ScoreWithPlayerAndHole> {
-        return scores.sortedWith(compareBy({ it.hole.holeNumber }, { it.player.id }))
+        return scores.sortedWith(compareBy({ it.hole.holeNumber }, { it.player.name }))
     }
 
     /*

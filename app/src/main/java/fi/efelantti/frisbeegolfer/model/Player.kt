@@ -10,16 +10,14 @@ import kotlinx.android.parcel.Parcelize
 class Player(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
-    var firstName: String? = "",
-    val nickName: String? = "",
-    val lastName: String? = "",
+    var name: String? = "",
     val email: String? = ""
 ) : Parcelable
 {
     companion object {
         fun equals(player1: Player, player2: Player): Boolean
         {
-            return player1.firstName == player2.firstName && player1.nickName == player2.nickName && player1.lastName == player2.lastName && player1.email == player2.email
+            return player1.name == player2.name && player1.email == player2.email
         }
     }
 }

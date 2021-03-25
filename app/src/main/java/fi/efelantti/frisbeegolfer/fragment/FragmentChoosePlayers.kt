@@ -3,6 +3,7 @@ package fi.efelantti.frisbeegolfer.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -28,6 +29,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
     private lateinit var adapter: PlayerListAdapterMultiSelect
     private var actionMode: ActionMode? = null
     private lateinit var recyclerView: EmptyRecyclerView
+    private lateinit var emptyView: TextView
     private lateinit var fab: FloatingActionButton
 
     private val actionModeCallback = object : ActionMode.Callback {
@@ -84,6 +86,8 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         recyclerView = view.findViewById<EmptyRecyclerView>(
             R.id.recyclerview_choose_players
         )
+        emptyView = view.findViewById<TextView>(R.id.empty_view_choose_players)
+        recyclerView.setEmptyView(emptyView)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -99,7 +103,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
    }
 
     // Call this method to send the data back to the parent activity
-    fun sendBackResult(chosenPlayersIds: List<Long>) {
+    private fun sendBackResult(chosenPlayersIds: List<Long>) {
         // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
         val listener: FragmentChoosePlayersListener = activity as FragmentChoosePlayersListener
         listener.onPlayersSelected(chosenPlayersIds)

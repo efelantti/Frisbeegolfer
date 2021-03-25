@@ -17,9 +17,7 @@ import fi.efelantti.frisbeegolfer.R
 
 class FragmentNewPlayer : DialogFragment() {
 
-    private lateinit var firstNameView: EditText
-    private lateinit var nickNameView: EditText
-    private lateinit var lastNameView: EditText
+    private lateinit var nameView: EditText
     private lateinit var emailView: EditText
     private lateinit var playerData: Player
 
@@ -67,14 +65,12 @@ class FragmentNewPlayer : DialogFragment() {
         toolbar.setNavigationIcon(R.drawable.ic_close)
         toolbar.inflateMenu(R.menu.appbar_dialog)
 
-        val actionCategory = arguments!!.getString("action")?.let { NewPlayerAction.valueOf(it) }
+        val actionCategory = requireArguments().getString("action")?.let { NewPlayerAction.valueOf(it) }
 
-        firstNameView = view.findViewById(R.id.edit_first_name)
-        nickNameView = view.findViewById(R.id.edit_nickname)
-        lastNameView = view.findViewById(R.id.edit_last_name)
+        nameView = view.findViewById(R.id.edit_name)
         emailView = view.findViewById(R.id.edit_email)
 
-        val oldPlayerData = arguments!!.getParcelable<Player>("playerData")
+        val oldPlayerData = requireArguments().getParcelable<Player>("playerData")
 
         if (actionCategory == NewPlayerAction.ADD)
         {
@@ -83,27 +79,21 @@ class FragmentNewPlayer : DialogFragment() {
         else if (actionCategory == NewPlayerAction.EDIT)
         {
             toolbar.setTitle(getString(R.string.text_activity_new_player_title_edit))
-            firstNameView.setText(oldPlayerData?.firstName)
-            nickNameView.setText(oldPlayerData?.nickName)
-            lastNameView.setText(oldPlayerData?.lastName)
+            nameView.setText(oldPlayerData?.name)
             emailView.setText(oldPlayerData?.email)
         }
 
         toolbar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_save -> {
-                    val requiredFields: List<EditText> = listOf(firstNameView, lastNameView)
+                    val requiredFields: List<EditText> = listOf(nameView)
                     if (areValidFields(requiredFields) and isValidEmail(emailView)) {
 
-                        val firstName = firstNameView.text.toString().trim()
-                        val nickName = nickNameView.text.toString().trim()
-                        val lastName = lastNameView.text.toString().trim()
+                        val name = nameView.text.toString().trim()
                         val email = emailView.text.toString().trim()
 
                         playerData = Player(
-                            firstName = firstName,
-                            nickName = nickName,
-                            lastName = lastName,
+                            name = name,
                             email = email
                         )
 
@@ -174,7 +164,7 @@ class FragmentNewPlayer : DialogFragment() {
         dismiss()
     }
 
-    fun isValidEmail(target: EditText): Boolean
+    private fun isValidEmail(target: EditText): Boolean
     {
         var isValid = false
         if (target.text.isNullOrEmpty() || Patterns.EMAIL_ADDRESS.matcher(target.text).matches()) isValid = true

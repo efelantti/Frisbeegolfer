@@ -84,7 +84,7 @@ class FragmentScore : Fragment() {
 
         scoreViewModel.currentScore.observe(viewLifecycleOwner, Observer<ScoreWithPlayerAndHole> {
             it?.let { currentScore ->
-                playerNameView.text = currentScore.player.firstName
+                playerNameView.text = currentScore.player.name
                 holeNumberView.text = currentScore.hole.holeNumber.toString()
                 holeParView.text = currentScore.hole.par.toString()
                 setScoreEditText.setText(currentScore.score.result.toString())

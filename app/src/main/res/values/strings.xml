@@ -24,26 +24,14 @@
     <!-- Text for save button. -->
     <string name="button_save">Save</string>
 
-    <!-- String formatting for full name when nickname is available. Used in when listing players. -->
-    <string name="fullname_with_nickname"><xliff:g id="first name" example="John">%1$s</xliff:g> \"<xliff:g id="nick name" example="Johnny">%2$s</xliff:g>\" <xliff:g id="last name" example="Smith">%3$s</xliff:g></string>
-
-    <!-- String formatting for full name when nickname is not available. Used in when listing players. -->
-    <string name="fullname_without_nickname"><xliff:g id="first name" example="John">%s</xliff:g> <xliff:g id="last name" example="Smith">%s</xliff:g></string>
-
     <!-- Formatting for how email is displayed. Includes the label. -->
     <string name="email_descriptor">Email: <xliff:g id="email" example="example@example.com">%s</xliff:g></string>
 
-    <!-- Label for first name field. -->
-    <string name="hint_word_first_name">First name</string>
-
-    <!-- Label for nickname field. -->
-    <string name="hint_word_nickname">Nickname</string>
+    <!-- Label for name field. -->
+    <string name="hint_word_name">Name</string>
 
     <!-- Label for email field. -->
     <string name="hint_word_email">Email</string>
-
-    <!-- Label for last name field. -->
-    <string name="hint_word_lastname">Last name</string>
 
     <!-- Error message when a field is not filled correctly. Separated in the message and name of the field which is invalid. -->
     <string name="invalid_field">Please enter a valid <xliff:g id="Field name" example="First name">%1$s</xliff:g></string>
@@ -199,7 +187,7 @@
     <string name="round_selected">Round selected</string>
 
     <!-- String for number of players (label + amount). -->
-    <string name="numberOfPlayers">Players: <xliff:g id="numberOfPlayers" example="3">%d</xliff:g></string>
+    <string name="players">Players: <xliff:g id="listOfPlayers" example="Andy, Bert, Clint">%s</xliff:g></string>
 
     <!-- Title for activity Continue round. -->
     <string name="continue_round_activity_title">Select a round to continue</string>

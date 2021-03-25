@@ -17,7 +17,7 @@ import java.time.ZoneOffset
 import java.time.temporal.TemporalAccessor
 
 //TODO - Consider export schema
-@Database(entities = arrayOf(Player::class, Course::class, Hole::class, Round::class, Score::class), version = 12, exportSchema = false)
+@Database(entities = arrayOf(Player::class, Course::class, Hole::class, Round::class, Score::class), version = 13, exportSchema = false)
 @TypeConverters(Converters::class)
 public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
 
@@ -44,7 +44,7 @@ public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     FrisbeegolferRoomDatabase::class.java,
                     "frisbeegolfer_database"
-                ).addCallback(FrisbeegolferDatabaseCallback(scope)).fallbackToDestructiveMigrationFrom(11).build()
+                ).addCallback(FrisbeegolferDatabaseCallback(scope)).fallbackToDestructiveMigrationFrom(12).build()
                 INSTANCE = instance
                 return instance
             }

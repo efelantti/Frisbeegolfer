@@ -26,7 +26,7 @@ interface RoundDao {
     fun update(score: Score)
 
     @Transaction
-    @Query("SELECT * FROM Round")
+    @Query("SELECT * FROM Round ORDER BY datetime(dateStarted) DESC")
     fun getRounds(): LiveData<List<RoundWithCourseAndScores>>
 
     @Transaction

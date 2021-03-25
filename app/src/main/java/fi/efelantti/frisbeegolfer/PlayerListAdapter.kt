@@ -1,21 +1,15 @@
 package fi.efelantti.frisbeegolfer
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
-import android.content.res.TypedArray
 import android.graphics.Color
-import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import fi.efelantti.frisbeegolfer.fragment.FragmentNewPlayer
-import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Player
-import kotlinx.coroutines.selects.select
 
 
 class PlayerListAdapter internal constructor(
@@ -34,13 +28,14 @@ class PlayerListAdapter internal constructor(
     var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: PlayerListAdapter.ListItemClickListener = onClickListener
 
-    inner class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
         val playerCard: CardView = itemView.findViewById(R.id.playerCard)
         val originalBackgroundColor: Int = playerCard.cardBackgroundColor.defaultColor
-        val playerItemViewFullName: TextView = itemView.findViewById(R.id.txtFullName)
+        val playerItemViewName: TextView = itemView.findViewById(R.id.txtFullName)
         val playerItemViewEmail: TextView = itemView.findViewById(R.id.txtEmail)
 
-        init{
+        init {
             itemView.setOnClickListener(this)
         }
 
@@ -76,12 +71,9 @@ class PlayerListAdapter internal constructor(
         }
 
         val current = players[position]
-        if(current.nickName.isNullOrBlank()) {
-            holder.playerItemViewFullName.text = res.getString(R.string.fullname_without_nickname, current.firstName, current.lastName)
-        } else
-            holder.playerItemViewFullName.text = res.getString(R.string.fullname_with_nickname, current.firstName, current.nickName, current.lastName)
+        holder.playerItemViewName.text = current.name
         var email = current.email?.trim()
-        if(email.isNullOrBlank()) email = "-"
+        if (email.isNullOrBlank()) email = "-"
         holder.playerItemViewEmail.text = res.getString(R.string.email_descriptor, email)
     }
 
@@ -95,8 +87,7 @@ class PlayerListAdapter internal constructor(
         notifyDataSetChanged()
     }
 
-    internal fun resetSelectedPosition()
-    {
+    internal fun resetSelectedPosition() {
         var previousSelectedPosition = selectedPosition
         selectedPosition = defaultSelectedPosition
         notifyItemChanged(previousSelectedPosition)
