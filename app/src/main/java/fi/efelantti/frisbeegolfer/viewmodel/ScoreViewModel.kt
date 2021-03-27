@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import fi.efelantti.frisbeegolfer.FrisbeegolferRoomDatabase
 import fi.efelantti.frisbeegolfer.RefreshableLiveData
 import fi.efelantti.frisbeegolfer.Repository
+import fi.efelantti.frisbeegolfer.model.HoleStatistics
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.model.Score
 import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
@@ -24,6 +25,8 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
     val currentRound: RefreshableLiveData<RoundWithCourseAndScores>
     private val sortedScores: LiveData<List<ScoreWithPlayerAndHole>>
     val currentScore: LiveData<ScoreWithPlayerAndHole>
+    val holeStatistics: LiveData<HoleStatistics>
+
     private var numberOfPlayers = -1
     private var numberOfHoles = -1
 
@@ -47,6 +50,11 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
                 initCurrentScoreIndex(it)
                 initHelperValues(it)
                 it[currentScoreIndex]
+            }
+        }
+        holeStatistics = Transformations.switchMap(currentScore) {
+            it?.let {
+                repository.getHoleStatistics(it.player.id, it.hole.holeId)
             }
         }
     }

@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.Converters
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.model.HoleStatistics
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
@@ -34,6 +35,9 @@ class FragmentScore : Fragment() {
     private lateinit var playerNameView: TextView
     private lateinit var holeNumberView: TextView
     private lateinit var holeParView: TextView
+    private lateinit var holeBestView: TextView
+    private lateinit var holeAverageView: TextView
+    private lateinit var holeLatestView: TextView
     private lateinit var nextPlayerButton: Button
     private lateinit var nextHoleButton: Button
     private lateinit var incrementIndexButton: Button
@@ -64,6 +68,9 @@ class FragmentScore : Fragment() {
         playerNameView = view.findViewById(R.id.fragment_score_test_currentPlayer)
         holeNumberView = view.findViewById(R.id.fragment_score_test_currentHole)
         holeParView = view.findViewById(R.id.fragment_score_test_currentHolePar)
+        holeBestView = view.findViewById(R.id.fragment_score_test_currentHoleBest)
+        holeAverageView = view.findViewById(R.id.fragment_score_test_currentHoleAverage)
+        holeLatestView = view.findViewById(R.id.fragment_score_test_currentHoleLatest)
         nextPlayerButton = view.findViewById(R.id.fragment_score_test_button_next_player)
         nextHoleButton = view.findViewById(R.id.fragment_score_test_button_next_hole)
         incrementIndexButton = view.findViewById(R.id.fragment_score_test_button_increment_index)
@@ -88,6 +95,15 @@ class FragmentScore : Fragment() {
                 holeNumberView.text = currentScore.hole.holeNumber.toString()
                 holeParView.text = currentScore.hole.par.toString()
                 setScoreEditText.setText(currentScore.score.result.toString())
+            }
+        }
+        )
+
+        scoreViewModel.holeStatistics.observe(viewLifecycleOwner, Observer<HoleStatistics> {
+            it?.let { holeStatistics ->
+                holeBestView.text = holeStatistics.bestResult.toString()
+                holeAverageView.text = holeStatistics.avgResult.toString()
+                holeLatestView.text = holeStatistics.latestResult.toString()
             }
         }
         )

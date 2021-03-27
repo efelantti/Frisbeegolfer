@@ -6,7 +6,7 @@ import java.time.OffsetDateTime
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
-class Repository(private val database: FrisbeegolferRoomDatabase) {
+class Repository(database: FrisbeegolferRoomDatabase) {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
@@ -29,11 +29,11 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
         roundDao.insert(score)
     }
 
-    suspend fun update(player: Player) {
+    fun update(player: Player) {
         playerDao.update(player)
     }
 
-    suspend fun update(score: Score) {
+    fun update(score: Score) {
         roundDao.update(score)
     }
 
@@ -56,14 +56,14 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
     }
 
     suspend fun insertCourseWithHoles(course: CourseWithHoles) {
-        var courseId = courseDao.insert(course.course)
+        val courseId = courseDao.insert(course.course)
         for (hole in course.holes) {
             hole.parentCourseId = courseId
         }
         courseDao.insertAll(course.holes)
     }
 
-    suspend fun getCourseWithHolesById(id: Long): CourseWithHoles
+    fun getCourseWithHolesById(id: Long): CourseWithHoles
     {
         return courseDao.getCourseWithHolesWithId(id)
     }
@@ -71,5 +71,10 @@ class Repository(private val database: FrisbeegolferRoomDatabase) {
     fun getRoundWithRoundId(roundId: OffsetDateTime): LiveData<RoundWithCourseAndScores>
     {
         return roundDao.getRoundWithId(roundId)
+    }
+
+    fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics>
+    {
+        return roundDao.getHoleStatistics(playerId, holeId)
     }
 }

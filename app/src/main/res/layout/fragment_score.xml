@@ -71,6 +71,54 @@
             android:text="Par" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Best: " />
+
+        <TextView
+            android:id="@+id/fragment_score_test_currentHoleBest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Best" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Average: " />
+
+        <TextView
+            android:id="@+id/fragment_score_test_currentHoleAverage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Average" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Latest: " />
+
+        <TextView
+            android:id="@+id/fragment_score_test_currentHoleLatest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Latest" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/fragment_score_test_button_next_player"
         android:layout_width="wrap_content"
@@ -86,9 +134,9 @@
         android:text="Next hole" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/fragment_score_test_button_increment_index"
@@ -104,20 +152,22 @@
             android:enabled="false"
             android:text="Previous" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <EditText
-        android:id="@+id/fragment_score_test_set_score_edittext"
-        android:inputType="number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/fragment_score_test_set_score_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+
         <Button
             android:id="@+id/fragment_score_test_set_score_button"
-            android:enabled="false"
-            android:text="Set score"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </Button>
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Set score"></Button>
     </LinearLayout>
 </LinearLayout>

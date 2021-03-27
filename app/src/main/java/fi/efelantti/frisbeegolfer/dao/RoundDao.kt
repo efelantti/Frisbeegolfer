@@ -35,9 +35,13 @@ interface RoundDao {
     fun getRoundWithId(roundId: OffsetDateTime): LiveData<RoundWithCourseAndScores>
 
     /*
-    Gets the best (minimum) result, average, standard deviation and latest result from the score table.
+    Gets the best (minimum) result, average and latest result from the score table.
+    Latest result is determined by ordering scoreId's and then choosing the result from the score with the highest scoreId.
      */
     @Transaction
-    @Query("SELECT MIN(result) AS bestResult, AVG(result) AS avgResult, STDEVP(result) AS sdResult FROM Score WHERE playerId=:playerId AND holeId=:holeId UNION SELECT result AS latestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId ORDER BY id desc")
+    @Query("SELECT" +
+            "(SELECT MIN(result) AS bestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS bestResult," +
+            "(SELECT AVG(result) AS avgResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS avgResult," +
+            "(SELECT result AS latestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId ORDER BY id desc LIMIT 1) AS latestResult")
     fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics>
 }
