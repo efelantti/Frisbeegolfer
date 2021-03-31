@@ -42,6 +42,6 @@ interface RoundDao {
     @Query("SELECT" +
             "(SELECT MIN(result) AS bestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS bestResult," +
             "(SELECT AVG(result) AS avgResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS avgResult," +
-            "(SELECT result AS latestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId ORDER BY id desc LIMIT 1) AS latestResult")
+            "(SELECT result AS latestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId ORDER BY datetime(parentRoundId) desc LIMIT 1) AS latestResult")
     fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics>
 }

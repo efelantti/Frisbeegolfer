@@ -12,6 +12,9 @@ interface CourseDao {
     @Insert
     suspend fun insertAll(holes: List<Hole>)
 
+    @Insert
+    suspend fun insertAllAndGetIds(holes: List<Hole>): List<Long>
+
     @Update
     suspend fun updateAll(holes: List<Hole>)
 
