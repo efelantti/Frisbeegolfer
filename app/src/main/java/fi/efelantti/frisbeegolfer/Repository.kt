@@ -1,18 +1,21 @@
 package fi.efelantti.frisbeegolfer
 
 import androidx.lifecycle.LiveData
+import fi.efelantti.frisbeegolfer.dao.CourseDao
+import fi.efelantti.frisbeegolfer.dao.PlayerDao
+import fi.efelantti.frisbeegolfer.dao.RoundDao
 import fi.efelantti.frisbeegolfer.model.*
 import java.time.OffsetDateTime
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
-class Repository(database: FrisbeegolferRoomDatabase) {
+class Repository(playerDao: PlayerDao, courseDao: CourseDao, roundDao: RoundDao) {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    private val playerDao = database.playerDao()
-    private val courseDao = database.courseDao()
-    private val roundDao = database.roundDao()
+    private val playerDao = playerDao
+    private val courseDao = courseDao
+    private val roundDao = roundDao
     val allPlayers: LiveData<List<Player>> = playerDao.getPlayers()
     val allCourses: LiveData<List<CourseWithHoles>> = courseDao.getCoursesWithHoles()
     val allRounds : LiveData<List<RoundWithCourseAndScores>> = roundDao.getRounds()

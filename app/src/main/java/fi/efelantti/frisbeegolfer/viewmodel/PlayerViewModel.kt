@@ -23,7 +23,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application){
             application,
             viewModelScope
         )
-        repository = Repository(database)
+        repository = Repository(database.playerDao(), database.courseDao(), database.roundDao())
         allPlayers = repository.allPlayers
     }
 

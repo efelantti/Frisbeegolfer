@@ -21,7 +21,7 @@ class RoundViewModel(application: Application) : AndroidViewModel(application){
             application,
             viewModelScope
         )
-        repository = Repository(database)
+        repository = Repository(database.playerDao(),database.courseDao(), database.roundDao())
         allRounds = repository.allRounds
     }
 

@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import fi.efelantti.frisbeegolfer.FrisbeegolferRoomDatabase
 import fi.efelantti.frisbeegolfer.Repository
-import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Hole
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +25,7 @@ class CourseViewModel(application: Application) : AndroidViewModel(application){
             application,
             viewModelScope
         )
-        repository = Repository(database)
+        repository = Repository(database.playerDao(), database.courseDao(), database.roundDao())
         allCourses = repository.allCourses
     }
 

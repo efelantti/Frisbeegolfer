@@ -12,9 +12,6 @@ import fi.efelantti.frisbeegolfer.dao.RoundDao
 import fi.efelantti.frisbeegolfer.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.time.temporal.TemporalAccessor
 
 //TODO - Consider export schema
 @Database(entities = arrayOf(Player::class, Course::class, Hole::class, Round::class, Score::class), version = 13, exportSchema = false)
@@ -49,6 +46,11 @@ public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                 return instance
             }
         }
+    }
+
+    override fun close() {
+        super.close()
+        INSTANCE = null
     }
 
     private class FrisbeegolferDatabaseCallback(

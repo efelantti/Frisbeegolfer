@@ -35,7 +35,7 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
             application,
             viewModelScope
         )
-        repository = Repository(database)
+        repository = Repository(database.playerDao(),database.courseDao(), database.roundDao())
         mCurrentRound = RefreshableLiveData {
             repository.getRoundWithRoundId(roundId)
         }
