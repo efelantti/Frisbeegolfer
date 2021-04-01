@@ -1,6 +1,7 @@
 package fi.efelantti.frisbeegolfer
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import fi.efelantti.frisbeegolfer.dao.RoundDao
 import fi.efelantti.frisbeegolfer.model.HoleStatistics
 import fi.efelantti.frisbeegolfer.model.Round
@@ -9,6 +10,9 @@ import fi.efelantti.frisbeegolfer.model.Score
 import java.time.OffsetDateTime
 
 class FakeRoundDao: RoundDao {
+
+    private val rounds: MutableLiveData<List<RoundWithCourseAndScores>> = MutableLiveData()
+
     override suspend fun insert(round: Round) {
         TODO("Not yet implemented")
     }
@@ -30,7 +34,7 @@ class FakeRoundDao: RoundDao {
     }
 
     override fun getRounds(): LiveData<List<RoundWithCourseAndScores>> {
-        TODO("Not yet implemented")
+        return rounds
     }
 
     override fun getRoundWithId(roundId: OffsetDateTime): LiveData<RoundWithCourseAndScores> {

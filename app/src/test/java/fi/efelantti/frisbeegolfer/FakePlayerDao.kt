@@ -1,12 +1,16 @@
 package fi.efelantti.frisbeegolfer
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import fi.efelantti.frisbeegolfer.dao.PlayerDao
 import fi.efelantti.frisbeegolfer.model.Player
 
 class FakePlayerDao: PlayerDao {
+
+    private val players: MutableLiveData<List<Player>> = MutableLiveData<List<Player>>(emptyList())
+
     override fun getPlayers(): LiveData<List<Player>> {
-        TODO("Not yet implemented")
+        return players
     }
 
     override suspend fun insert(player: Player) {

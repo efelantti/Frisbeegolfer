@@ -1,12 +1,16 @@
 package fi.efelantti.frisbeegolfer
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import fi.efelantti.frisbeegolfer.dao.CourseDao
 import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Hole
 
 class FakeCourseDao: CourseDao {
+
+    private var courses: MutableLiveData<List<CourseWithHoles>> = MutableLiveData<List<CourseWithHoles>>()
+
     override suspend fun insertAll(holes: List<Hole>) {
         TODO("Not yet implemented")
     }
@@ -36,7 +40,7 @@ class FakeCourseDao: CourseDao {
     }
 
     override fun getCoursesWithHoles(): LiveData<List<CourseWithHoles>> {
-        TODO("Not yet implemented")
+        return courses
     }
 
     override fun getCourseWithHolesWithId(id: Long): CourseWithHoles {
