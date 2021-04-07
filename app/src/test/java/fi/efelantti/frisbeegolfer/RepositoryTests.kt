@@ -6,6 +6,8 @@ import fi.efelantti.frisbeegolfer.dao.CourseDao
 import fi.efelantti.frisbeegolfer.dao.PlayerDao
 import fi.efelantti.frisbeegolfer.dao.RoundDao
 import fi.efelantti.frisbeegolfer.model.*
+import io.mockk.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -22,6 +24,10 @@ import java.time.ZoneOffset
 
 
 @RunWith(MockitoJUnitRunner::class)
+/*
+Using Mockito and MockK for mocking purposes. Couldn't get Mockito to work properly with suspend functions, so MockK is used in those tests instead. Every test
+could be refactored to use MockK for contistency.
+ */
 class RepositoryTests {
 
     @get:Rule
@@ -163,40 +169,90 @@ class RepositoryTests {
         verify(fakeCourseDao).delete(hole)
     }
 
-    /* TODO - This does not work for some reason
     @Test
     fun deleteRoundWithScores() = runBlockingTest {
         val roundId = OffsetDateTime.of(2020,1,1,12,0,0,0, ZoneOffset.UTC)
         val round = Round(roundId , courseId = 0)
         val roundWithCourseAndScores = RoundWithCourseAndScores(round, listOf(ScoreWithPlayerAndHole(hole=Hole(), player=Player(), score=Score(parentRoundId = roundId))), Course())
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
-        repository.delete(roundWithCourseAndScores)
+
+        val alternativeMock = mockk<RoundDao>()
+        every { alternativeMock.getRounds() } returns MutableLiveData<List<RoundWithCourseAndScores>>(emptyList())
+        coEvery { alternativeMock.delete(roundWithCourseAndScores.round) } returns Unit
         for (score in roundWithCourseAndScores.scores)
         {
-            verify(fakeRoundDao).delete(score.score)
+            coEvery { alternativeMock.delete(score.score) } returns Unit
         }
-        verify(fakeRoundDao).delete(roundWithCourseAndScores.round)
-    }*/
+
+        repository = Repository(fakePlayerDao, fakeCourseDao, alternativeMock)
+        repository.delete(roundWithCourseAndScores)
+
+        coVerify(exactly = 1) { alternativeMock.delete(roundWithCourseAndScores.round) }
+        for (score in roundWithCourseAndScores.scores)
+        {
+            coVerify(exactly = 1) { alternativeMock.delete(score.score)}
+        }
+    }
 
     @Test
     fun updateCourseWithHoles() = runBlockingTest {
         val courseWithHoles = CourseWithHoles(Course(), listOf(Hole()))
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        val alternativeMock = mockk<CourseDao>()
+        every { alternativeMock.getCoursesWithHoles() } returns MutableLiveData<List<CourseWithHoles>>(emptyList())
+        coEvery { alternativeMock.update(courseWithHoles.course) } returns Unit
+        coEvery { alternativeMock.updateAll(courseWithHoles.holes) } returns Unit
+
+        repository = Repository(fakePlayerDao, alternativeMock, fakeRoundDao)
         repository.update(courseWithHoles)
-        verify(fakeCourseDao).update(courseWithHoles.course)
-        // TODO - This does not work.
-        //verify(fakeCourseDao).updateAll(courseWithHoles.holes)
+        coVerify(exactly = 1) { alternativeMock.update(courseWithHoles.course)}
+        coVerify(exactly = 1) { alternativeMock.updateAll(courseWithHoles.holes)}
     }
 
     @Test
     fun insertCourseWithHoles() = runBlockingTest {
         val courseWithHoles = CourseWithHoles(Course(), listOf(Hole()))
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        val alternativeMock = mockk<CourseDao>()
+        every { alternativeMock.getCoursesWithHoles() } returns MutableLiveData<List<CourseWithHoles>>(emptyList())
+        coEvery { alternativeMock.insert(courseWithHoles.course)} returns 0
+        coEvery { alternativeMock.insertAll(courseWithHoles.holes)} returns Unit
+        repository = Repository(fakePlayerDao, alternativeMock, fakeRoundDao)
         repository.insertCourseWithHoles(courseWithHoles)
 
-        //verify(fakeCourseDao).insert(courseWithHoles.course)
-        // TODO - This does not work.
-        //verify(fakeCourseDao).insertAll(courseWithHoles.holes
+        coVerify(exactly = 1) { alternativeMock.insert(courseWithHoles.course) }
+        coVerify(exactly = 1) { alternativeMock.insertAll(courseWithHoles.holes) }
+    }
 
+    @Test
+    fun getCourseWithHolesById() = runBlockingTest {
+        val courseWithHoles = CourseWithHoles(Course(), listOf(Hole()))
+
+        val alternativeMock = mockk<CourseDao>()
+        every { alternativeMock.getCoursesWithHoles() } returns MutableLiveData<List<CourseWithHoles>>(emptyList())
+        every { alternativeMock.getCourseWithHolesWithId(0)} returns courseWithHoles
+        repository = Repository(fakePlayerDao, alternativeMock, fakeRoundDao)
+
+        repository.getCourseWithHolesById(0)
+
+        verify ( exactly = 1 ) { alternativeMock.getCourseWithHolesWithId(0)}
+    }
+
+    @Test
+    fun getRoundWithRoundId() = runBlockingTest {
+        val roundId = OffsetDateTime.of(2020,1,1,12,0,0,0, ZoneOffset.UTC)
+        val round = Round(roundId , courseId = 0)
+        val roundWithCourseAndScores = RoundWithCourseAndScores(round, listOf(ScoreWithPlayerAndHole(hole=Hole(), player=Player(), score=Score(parentRoundId = roundId))), Course())
+
+        val alternativeMock = mockk<RoundDao>()
+        every { alternativeMock.getRounds() } returns MutableLiveData<List<RoundWithCourseAndScores>>(emptyList())
+        every { alternativeMock.getRoundWithId(roundId)} returns MutableLiveData(roundWithCourseAndScores)
+
+        repository = Repository(fakePlayerDao, fakeCourseDao, alternativeMock)
+        repository.getRoundWithRoundId(roundId)
+
+        verify ( exactly = 1 ) { alternativeMock.getRoundWithId(roundId)}
+    }
+
+    @Test
+    fun getHoleStatistics() = runBlocking {
+        TODO()
     }
 }
