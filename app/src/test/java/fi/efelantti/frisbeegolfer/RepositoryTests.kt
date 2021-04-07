@@ -53,6 +53,9 @@ class RepositoryTests {
         val allPlayers = repository.allPlayers
         val result = allPlayers.getValueBlocking() ?: throw InvalidObjectException("null returned as players")
         assertThat(result.count(), equalTo(3))
+        assertThat(result[0].name, equalTo("Tester1"))
+        assertThat(result[1].name, equalTo("Tester2"))
+        assertThat(result[2].name, equalTo("Tester3"))
     }
 
     @Test
@@ -76,6 +79,10 @@ class RepositoryTests {
         val allCourses = repository.allCourses
         val result = allCourses.getValueBlocking() ?: throw InvalidObjectException("null returned as players")
         assertThat(result.count(), equalTo(2))
+        assertThat(result[0].course.name, equalTo("Course1"))
+        assertThat(result[0].course.city, equalTo("City1"))
+        assertThat(result[1].course.name, equalTo("Course2"))
+        assertThat(result[1].course.city, equalTo("City2"))
     }
 
     @Test
@@ -102,6 +109,10 @@ class RepositoryTests {
         val allRounds = repository.allRounds
         val result = allRounds.getValueBlocking() ?: throw InvalidObjectException("null returned as players")
         assertThat(result.count(), equalTo(2))
+        assertThat(result[0].round.dateStarted, equalTo(roundId))
+        assertThat(result[0].round.courseId, equalTo(0L))
+        assertThat(result[1].round.dateStarted, equalTo(roundId2))
+        assertThat(result[1].round.courseId, equalTo(1L))
     }
 
     @Test
@@ -123,9 +134,69 @@ class RepositoryTests {
     @Test
     fun insertScore() = runBlockingTest {
         val score = Score(parentRoundId = OffsetDateTime.now())
-
         repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
         repository.insert(score)
         verify(fakeRoundDao).insert(score)
+    }
+
+    @Test
+    fun updatePlayer() = runBlockingTest {
+        val player = Player(name="Tester")
+        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository.update(player)
+        verify(fakePlayerDao).update(player)
+    }
+
+    @Test
+    fun updateScore() = runBlockingTest {
+        val score = Score(parentRoundId = OffsetDateTime.now())
+        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository.update(score)
+        verify(fakeRoundDao).update(score)
+    }
+
+    @Test
+    fun deleteHole() = runBlockingTest {
+        val hole = Hole()
+        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository.delete(hole)
+        verify(fakeCourseDao).delete(hole)
+    }
+
+    /* TODO - This does not work for some reason
+    @Test
+    fun deleteRoundWithScores() = runBlockingTest {
+        val roundId = OffsetDateTime.of(2020,1,1,12,0,0,0, ZoneOffset.UTC)
+        val round = Round(roundId , courseId = 0)
+        val roundWithCourseAndScores = RoundWithCourseAndScores(round, listOf(ScoreWithPlayerAndHole(hole=Hole(), player=Player(), score=Score(parentRoundId = roundId))), Course())
+        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository.delete(roundWithCourseAndScores)
+        for (score in roundWithCourseAndScores.scores)
+        {
+            verify(fakeRoundDao).delete(score.score)
+        }
+        verify(fakeRoundDao).delete(roundWithCourseAndScores.round)
+    }*/
+
+    @Test
+    fun updateCourseWithHoles() = runBlockingTest {
+        val courseWithHoles = CourseWithHoles(Course(), listOf(Hole()))
+        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository.update(courseWithHoles)
+        verify(fakeCourseDao).update(courseWithHoles.course)
+        // TODO - This does not work.
+        //verify(fakeCourseDao).updateAll(courseWithHoles.holes)
+    }
+
+    @Test
+    fun insertCourseWithHoles() = runBlockingTest {
+        val courseWithHoles = CourseWithHoles(Course(), listOf(Hole()))
+        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository.insertCourseWithHoles(courseWithHoles)
+
+        //verify(fakeCourseDao).insert(courseWithHoles.course)
+        // TODO - This does not work.
+        //verify(fakeCourseDao).insertAll(courseWithHoles.holes
+
     }
 }
