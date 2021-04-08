@@ -10,16 +10,19 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
+import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.PlayerListAdapterMultiSelect
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
 
 class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemClickListener {
 
-    private val courseViewModel: PlayerViewModel by viewModels()
-
-    interface FragmentChoosePlayersListener {
+    private val playerViewModel by viewModels<PlayerViewModel> {
+        PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
+    }
+        interface FragmentChoosePlayersListener {
 
         fun onPlayersSelected(
             chosenPlayerIds: List<Long>
@@ -92,7 +95,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        courseViewModel.allPlayers.observe(viewLifecycleOwner, Observer { courses ->
+        playerViewModel.allPlayers.observe(viewLifecycleOwner, Observer { courses ->
             courses?.let { adapter.setPlayers(it) }
         })
 

@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,13 +20,16 @@ import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.fragment.FragmentNewPlayer
 import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
 
 class ActivityPlayers : AppCompatActivity(),
     FragmentNewPlayer.FragmentNewPlayerListener, PlayerListAdapter.ListItemClickListener {
 
     private val TAG = "ActivityPlayers"
-    private val frisbeegolferViewModel: PlayerViewModel by viewModels()
+    private val playerViewModel by viewModels<PlayerViewModel> {
+        PlayerViewModelFactory((applicationContext as FrisbeegolferApplication).repository)
+    }
     private lateinit var recyclerView: EmptyRecyclerView
     private lateinit var emptyView: TextView
     private var actionMode: ActionMode? = null
@@ -106,7 +108,7 @@ class ActivityPlayers : AppCompatActivity(),
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        frisbeegolferViewModel.allPlayers.observe(this, Observer { players ->
+        playerViewModel.allPlayers.observe(this, Observer { players ->
             // Update the cached copy of the words in the adapter.
             players?.let { adapter.setPlayers(it) }
         })
@@ -154,11 +156,11 @@ class ActivityPlayers : AppCompatActivity(),
             if(player == null) throw IllegalArgumentException("Player data was null.")
             else
             {
-                val players = frisbeegolferViewModel.allPlayers.value
+                val players = playerViewModel.allPlayers.value
                 var duplicateFound = checkIfPlayerAlreadyExists(player, players)
                 if(!duplicateFound)
                 {
-                    frisbeegolferViewModel.insert(player)
+                    playerViewModel.insert(player)
                 }
             }
         }
@@ -175,11 +177,11 @@ class ActivityPlayers : AppCompatActivity(),
             if(player == null) throw IllegalArgumentException("Player data was null.")
             else
             {
-                val players = frisbeegolferViewModel.allPlayers.value
+                val players = playerViewModel.allPlayers.value
                 var duplicateFound = checkIfPlayerAlreadyExists(player, players)
                 if(!duplicateFound)
                 {
-                    frisbeegolferViewModel.update(player)
+                    playerViewModel.update(player)
                 }
             }
         }

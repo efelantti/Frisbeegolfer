@@ -253,6 +253,15 @@ class RepositoryTests {
 
     @Test
     fun getHoleStatistics() = runBlocking {
-        TODO()
+        val alternativeMock = mockk<RoundDao>()
+        val holeId = 0L
+        val playerId = 0L
+        every { alternativeMock.getRounds() } returns MutableLiveData<List<RoundWithCourseAndScores>>(emptyList())
+        every { alternativeMock.getHoleStatistics(playerId, holeId)} returns MutableLiveData<HoleStatistics>(HoleStatistics(bestResult=1, avgResult=1.5f, latestResult=2))
+
+        repository = Repository(fakePlayerDao, fakeCourseDao, alternativeMock)
+        repository.getHoleStatistics(playerId, holeId)
+
+        verify(exactly = 1) { alternativeMock.getHoleStatistics(playerId, holeId)}
     }
 }
