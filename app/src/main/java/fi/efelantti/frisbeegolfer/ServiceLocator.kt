@@ -7,6 +7,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 object ServiceLocator {
 
     private var database: FrisbeegolferRoomDatabase? = null
+
     @Volatile
     var repository: Repository? = null
 
@@ -21,7 +22,8 @@ object ServiceLocator {
             context,
             CoroutineScope(EmptyCoroutineContext)
         )
-        val newRepo = Repository(database!!.playerDao(), database!!.courseDao(), database!!.roundDao())
+        val newRepo =
+            Repository(database!!.playerDao(), database!!.courseDao(), database!!.roundDao())
         repository = newRepo
         return newRepo
     }

@@ -72,9 +72,10 @@ class ActivityPlayers : AppCompatActivity(),
 
     private fun editSelectedPlayer() {
         val player = adapter.getSelectedPlayer()
-        if(player == null) throw java.lang.IllegalArgumentException("No player was selected.")
+        if (player == null) throw java.lang.IllegalArgumentException("No player was selected.")
         val fm: FragmentManager = supportFragmentManager
-        val dialog: FragmentNewPlayer = FragmentNewPlayer.newInstance(NewPlayerAction.EDIT.toString(), player)
+        val dialog: FragmentNewPlayer =
+            FragmentNewPlayer.newInstance(NewPlayerAction.EDIT.toString(), player)
         dialog.show(fm, "fragment_newPlayer")
     }
 
@@ -117,7 +118,7 @@ class ActivityPlayers : AppCompatActivity(),
         fab.setOnClickListener {
             showNewPlayerDialog()
         }
-        }
+    }
 
     private fun showNewPlayerDialog() {
         val fm: FragmentManager = supportFragmentManager
@@ -131,16 +132,20 @@ class ActivityPlayers : AppCompatActivity(),
 
     private fun checkIfPlayerAlreadyExists(player: Player, players: List<Player>?): Boolean {
         if (players == null) return false
-        for(existingPlayer: Player in players) {
-            if(Player.equals(
+        for (existingPlayer: Player in players) {
+            if (Player.equals(
                     player,
                     existingPlayer
                 )
-            ){
+            ) {
                 Log.e(TAG, "Could not add player data to database - duplicate.")
-                val toast = Toast.makeText(this, HtmlCompat.fromHtml("<font color='" + getColor(R.color.colorErrorMessage) +"' ><b>" + getString(
-                    R.string.error_duplicate_player
-                ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
+                val toast = Toast.makeText(
+                    this, HtmlCompat.fromHtml(
+                        "<font color='" + getColor(R.color.colorErrorMessage) + "' ><b>" + getString(
+                            R.string.error_duplicate_player
+                        ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY
+                    ), Toast.LENGTH_LONG
+                )
                 val indexOfPlayer = players.indexOf(existingPlayer)
                 recyclerView.scrollToPosition(indexOfPlayer)
                 toast.show()
@@ -151,44 +156,32 @@ class ActivityPlayers : AppCompatActivity(),
     }
 
     override fun onPlayerAdded(player: Player, result: Int) {
-        if (result == Activity.RESULT_OK)
-        {
-            if(player == null) throw IllegalArgumentException("Player data was null.")
-            else
-            {
+        if (result == Activity.RESULT_OK) {
+            if (player == null) throw IllegalArgumentException("Player data was null.")
+            else {
                 val players = playerViewModel.allPlayers.value
                 var duplicateFound = checkIfPlayerAlreadyExists(player, players)
-                if(!duplicateFound)
-                {
+                if (!duplicateFound) {
                     playerViewModel.insert(player)
                 }
             }
-        }
-        else if(result == Activity.RESULT_CANCELED)
-        {
+        } else if (result == Activity.RESULT_CANCELED) {
             // Do nothing when canceled
-        }
-        else throw(IllegalArgumentException("Player data not returned from activity as expected."))
+        } else throw(IllegalArgumentException("Player data not returned from activity as expected."))
     }
 
     override fun onPlayerEdited(player: Player, result: Int) {
-        if (result == Activity.RESULT_OK)
-        {
-            if(player == null) throw IllegalArgumentException("Player data was null.")
-            else
-            {
+        if (result == Activity.RESULT_OK) {
+            if (player == null) throw IllegalArgumentException("Player data was null.")
+            else {
                 val players = playerViewModel.allPlayers.value
                 var duplicateFound = checkIfPlayerAlreadyExists(player, players)
-                if(!duplicateFound)
-                {
+                if (!duplicateFound) {
                     playerViewModel.update(player)
                 }
             }
-        }
-        else if(result == Activity.RESULT_CANCELED)
-        {
+        } else if (result == Activity.RESULT_CANCELED) {
             // Do nothing when canceled
-        }
-        else throw(IllegalArgumentException("Player data not returned from activity as expected."))
+        } else throw(IllegalArgumentException("Player data not returned from activity as expected."))
     }
 }

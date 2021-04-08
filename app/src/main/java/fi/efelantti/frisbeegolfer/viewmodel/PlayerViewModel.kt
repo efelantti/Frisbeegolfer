@@ -29,7 +29,7 @@ class PlayerViewModel(private val repository: Repository) : ViewModel() {
 }
 
 @Suppress("UNCHECKED_CAST")
-class PlayerViewModelFactory (
+class PlayerViewModelFactory(
     private val repository: Repository
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>) =
