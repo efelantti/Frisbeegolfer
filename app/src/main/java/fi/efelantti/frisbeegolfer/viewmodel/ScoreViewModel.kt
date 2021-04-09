@@ -1,11 +1,6 @@
 package fi.efelantti.frisbeegolfer.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
-import fi.efelantti.frisbeegolfer.FrisbeegolferRoomDatabase
+import androidx.lifecycle.*
 import fi.efelantti.frisbeegolfer.RefreshableLiveData
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.model.HoleStatistics
@@ -16,10 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 
-class ScoreViewModel(application: Application, private val roundId: OffsetDateTime) :
-    AndroidViewModel(application) {
+class ScoreViewModel(private val repository: Repository, private val roundId: OffsetDateTime) :
+    ViewModel() {
 
-    private val repository: Repository
     private val mCurrentRound: LiveData<RoundWithCourseAndScores>
     private var currentScoreIndex: Int = -1
     val currentRound: RefreshableLiveData<RoundWithCourseAndScores>
@@ -31,11 +25,6 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
     private var numberOfHoles = -1
 
     init {
-        val database = FrisbeegolferRoomDatabase.getDatabase(
-            application,
-            viewModelScope
-        )
-        repository = Repository(database.playerDao(),database.courseDao(), database.roundDao())
         mCurrentRound = RefreshableLiveData {
             repository.getRoundWithRoundId(roundId)
         }
@@ -94,7 +83,7 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
     Used to initialize number of players & holes, which are needed for incrementing & decrementing the score index.
      */
     private fun initHelperValues(scores: List<ScoreWithPlayerAndHole>) {
-        if(numberOfHoles == -1) numberOfHoles = scores.distinctBy { it.hole.holeId }.count()
+        if (numberOfHoles == -1) numberOfHoles = scores.distinctBy { it.hole.holeId }.count()
         if (numberOfPlayers == -1) numberOfPlayers = scores.distinctBy { it.player.id }.count()
     }
 
@@ -113,7 +102,8 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
     Helper function used for adding a value to the [currentScoreIndex].
      */
     private fun addToIndex(valueToAdd: Int) {
-        currentScoreIndex = Math.floorMod(currentScoreIndex + valueToAdd, numberOfHoles*numberOfPlayers)
+        currentScoreIndex =
+            Math.floorMod(currentScoreIndex + valueToAdd, numberOfHoles * numberOfPlayers)
         // Other option, but this does not allow to use "Previous" on zero index.
         // currentScoreIndex = (currentScoreIndex + valueToAdd).rem(numberOfHoles*numberOfPlayers)
         refresh()
@@ -134,9 +124,18 @@ class ScoreViewModel(application: Application, private val roundId: OffsetDateTi
     }
 
     fun setResult(scoreToSet: Int) {
-        var currentScore = this.currentScore.value
-        if (currentScore == null) throw IllegalArgumentException("Cannot set score - current score was null.")
+        val currentScore = this.currentScore.value
+            ?: throw IllegalArgumentException("Cannot set score - current score was null.")
         currentScore.score.result = scoreToSet
         update(currentScore.score)
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+class ScoreViewModelFactory(
+    private val repository: Repository,
+    private val roundId: OffsetDateTime
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        (ScoreViewModel(repository, roundId) as T)
 }

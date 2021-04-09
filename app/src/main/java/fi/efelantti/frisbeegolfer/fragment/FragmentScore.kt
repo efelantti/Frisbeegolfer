@@ -1,7 +1,9 @@
 package fi.efelantti.frisbeegolfer.fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.Converters
+import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.model.HoleStatistics
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
@@ -25,10 +28,11 @@ class FragmentScore : Fragment() {
             val frag = FragmentScore()
             val args = Bundle()
             args.putString("roundId", converters.fromOffsetDateTime(roundId))
-            frag.setArguments(args)
+            frag.arguments = args
             return frag
         }
     }
+
     private lateinit var scoreViewModel: ScoreViewModel
     private val converters = Converters()
     private lateinit var testView: TextView
@@ -60,9 +64,15 @@ class FragmentScore : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val roundIdString = requireArguments().getString("roundId")
         val roundId = converters.toOffsetDateTime(roundIdString)
-        if(roundId == null) throw IllegalArgumentException("Round id was null.")
+            ?: throw IllegalArgumentException("Round id was null.")
 
-        scoreViewModel = ViewModelProvider(this, ScoreViewModelFactory(this.requireActivity().application, roundId)).get(ScoreViewModel::class.java)
+        scoreViewModel = ViewModelProvider(
+            this,
+            ScoreViewModelFactory(
+                (requireActivity().applicationContext as FrisbeegolferApplication).repository,
+                roundId
+            )
+        ).get(ScoreViewModel::class.java)
 
         testView = view.findViewById(R.id.fragment_score_test_textview)
         playerNameView = view.findViewById(R.id.fragment_score_test_currentPlayer)
@@ -127,4 +137,4 @@ class FragmentScore : Fragment() {
         }
 
     }
-   }
+}

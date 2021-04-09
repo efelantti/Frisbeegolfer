@@ -1,29 +1,28 @@
 package fi.efelantti.frisbeegolfer.activity
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import fi.efelantti.frisbeegolfer.NewCourseAction
+import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.fragment.FragmentChooseCourse
 import fi.efelantti.frisbeegolfer.fragment.FragmentChoosePlayers
-import fi.efelantti.frisbeegolfer.fragment.FragmentNewCourse
 import fi.efelantti.frisbeegolfer.fragment.FragmentScore
-import fi.efelantti.frisbeegolfer.model.*
+import fi.efelantti.frisbeegolfer.model.Round
+import fi.efelantti.frisbeegolfer.model.Score
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
-import kotlinx.coroutines.launch
+import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.time.OffsetDateTime
 import java.time.OffsetDateTime.now
 import kotlin.properties.Delegates
 
 
-class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCourseListener, FragmentChoosePlayers.FragmentChoosePlayersListener {
+class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCourseListener,
+    FragmentChoosePlayers.FragmentChoosePlayersListener {
 
     private val TAG = "ActivityRound"
     private val chooseCourseTag = "FragmentChooseCourse"
@@ -31,8 +30,12 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
     private val scoreTag = "FragmentScore"
     private var selectedCourseId by Delegates.notNull<Long>()
     private lateinit var selectedPlayerIds: List<Long>
-    private val roundViewModel: RoundViewModel by viewModels()
-    private val courseViewModel: CourseViewModel by viewModels()
+    private val roundViewModel: RoundViewModel by viewModels {
+        RoundViewModelFactory((applicationContext as FrisbeegolferApplication).repository)
+    }
+    private val courseViewModel: CourseViewModel by viewModels {
+        CourseViewModelFactory((applicationContext as FrisbeegolferApplication).repository)
+    }
 
     // TODO - https://guides.codepath.com/android/creating-and-using-fragments
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,8 +46,7 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
         }
     }
 
-    private fun displayChooseCourseFragment()
-    {
+    private fun displayChooseCourseFragment() {
         supportActionBar?.title = getString(R.string.choose_a_course_title)
         supportFragmentManager.commit {
             setReorderingAllowed(true)
@@ -67,12 +69,11 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
 
     override fun onPlayersSelected(chosenPlayerIds: List<Long>) {
         selectedPlayerIds = chosenPlayerIds
-        var roundId = addRoundToDatabase(selectedCourseId, selectedPlayerIds)
+        val roundId = addRoundToDatabase(selectedCourseId, selectedPlayerIds)
         displayScoreFragment(roundId)
     }
 
-    private fun displayScoreFragment(roundId: OffsetDateTime)
-    {
+    private fun displayScoreFragment(roundId: OffsetDateTime) {
         supportActionBar?.title = "Score"
         supportFragmentManager.commit {
             setReorderingAllowed(true)
@@ -86,23 +87,28 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
      * Adds an entry to the database for the round. Creates all the necessary scores, that are
      * then later to be edited when playing the round.
      */
-    private fun addRoundToDatabase(selectedCourseId: Long, selectedPlayerIds: List<Long>): OffsetDateTime
-    {
-        var roundId = now()
+    private fun addRoundToDatabase(
+        selectedCourseId: Long,
+        selectedPlayerIds: List<Long>
+    ): OffsetDateTime {
+        val roundId = now()
         courseViewModel.getCourseWithHolesById(selectedCourseId).observe(this, Observer {
-            var course = it
-            if(course == null) throw IllegalArgumentException("No course found with id ${selectedCourseId}.")
-            var round = Round(dateStarted=roundId, courseId=selectedCourseId)
+            val course =
+                it ?: throw IllegalArgumentException("No course found with id ${selectedCourseId}.")
+            val round = Round(dateStarted = roundId, courseId = selectedCourseId)
             roundViewModel.insert(round)
-            for(hole in course.holes)
-            {
-                for(playerId in selectedPlayerIds)
-                {
-                    var score = Score(parentRoundId = roundId, holeId = hole.holeId, playerId = playerId, result = 0)
+            for (hole in course.holes) {
+                for (playerId in selectedPlayerIds) {
+                    val score = Score(
+                        parentRoundId = roundId,
+                        holeId = hole.holeId,
+                        playerId = playerId,
+                        result = 0
+                    )
                     roundViewModel.insert(score)
                 }
             }
-            })
+        })
         return roundId
     }
 }

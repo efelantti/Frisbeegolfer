@@ -37,6 +37,7 @@ interface RoundDao {
     /*
     Gets the best (minimum) result, average and latest result from the score table.
     Latest result is determined by ordering scoreId's and then choosing the result from the score with the highest scoreId.
+    TODO - Latest takes into account the 0, which is currently default value for score. Fix: set score default to null and have this query only take non-null result.
      */
     @Transaction
     @Query("SELECT" +

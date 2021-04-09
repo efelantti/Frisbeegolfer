@@ -16,20 +16,21 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import fi.efelantti.frisbeegolfer.CourseListAdapter
-import fi.efelantti.frisbeegolfer.EmptyRecyclerView
-import fi.efelantti.frisbeegolfer.NewCourseAction
-import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.fragment.FragmentNewCourse
 import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
 
-class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourseListener, CourseListAdapter.ListItemClickListener {
+class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourseListener,
+    CourseListAdapter.ListItemClickListener {
 
     private val TAG = "ActivityCourses"
-    private val frisbeegolferViewModel: CourseViewModel by viewModels()
+    private val courseViewModel: CourseViewModel by viewModels {
+        CourseViewModelFactory((applicationContext as FrisbeegolferApplication).repository)
+    }
 
     private lateinit var recyclerView: EmptyRecyclerView
     private lateinit var adapter: CourseListAdapter
@@ -66,9 +67,10 @@ class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourse
 
         private fun editSelectedCourse() {
             val course = adapter.getSelectedCourse()
-            if(course == null) throw java.lang.IllegalArgumentException("No course was selected.")
+            if (course == null) throw java.lang.IllegalArgumentException("No course was selected.")
             val fm: FragmentManager = supportFragmentManager
-            val dialog: FragmentNewCourse = FragmentNewCourse.newInstance(NewCourseAction.EDIT.toString(), course)
+            val dialog: FragmentNewCourse =
+                FragmentNewCourse.newInstance(NewCourseAction.EDIT.toString(), course)
             dialog.show(fm, "fragment_newPlayer")
         }
 
@@ -100,16 +102,16 @@ class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourse
         supportActionBar?.title = getString(R.string.courses_activity_title)
 
         adapter = CourseListAdapter(this, this)
-        recyclerView = findViewById<EmptyRecyclerView>(
+        recyclerView = findViewById(
             R.id.recyclerview_courses
         )
-        emptyView = findViewById<TextView>(R.id.empty_view_courses)
+        emptyView = findViewById(R.id.empty_view_courses)
 
         recyclerView.setEmptyView(emptyView)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        frisbeegolferViewModel.allCourses.observe(this, Observer { courses ->
+        courseViewModel.allCourses.observe(this, Observer { courses ->
             // Update the cached copy of the words in the adapter.
             courses?.let { adapter.setCourses(it) }
         })
@@ -118,7 +120,7 @@ class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourse
         fab.setOnClickListener {
             showNewCourseDialog()
         }
-        }
+    }
 
     private fun showNewCourseDialog() {
         val fm: FragmentManager = supportFragmentManager
@@ -130,23 +132,28 @@ class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourse
         dialog.show(fm, "fragment_newCourse")
     }
 
-    private fun checkIfCourseAlreadyExists(course: CourseWithHoles, courses: List<CourseWithHoles>?): Boolean {
+    private fun checkIfCourseAlreadyExists(
+        course: CourseWithHoles,
+        courses: List<CourseWithHoles>?
+    ): Boolean {
         if (courses == null) return false
         var isDuplicate = false
         var indexOfDuplicate = 0
-        for(existingCourse: CourseWithHoles in courses) {
-            if (Course.equals(course.course, existingCourse.course))
-            {
+        for (existingCourse: CourseWithHoles in courses) {
+            if (Course.equals(course.course, existingCourse.course)) {
                 isDuplicate = true
                 indexOfDuplicate = courses.indexOf(existingCourse)
             }
         }
-        if(isDuplicate)
-        {
+        if (isDuplicate) {
             Log.e(TAG, "Could not add course data to database - duplicate.")
-            val toast = Toast.makeText(this, HtmlCompat.fromHtml("<font color='" + getColor(R.color.colorErrorMessage) + "' ><b>" + getString(
-                    R.string.error_duplicate_course
-                ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
+            val toast = Toast.makeText(
+                this, HtmlCompat.fromHtml(
+                    "<font color='" + getColor(R.color.colorErrorMessage) + "' ><b>" + getString(
+                        R.string.error_duplicate_course
+                    ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY
+                ), Toast.LENGTH_LONG
+            )
             recyclerView.scrollToPosition(indexOfDuplicate)
             toast.show()
             return true
@@ -155,39 +162,26 @@ class ActivityCourses : AppCompatActivity(), FragmentNewCourse.FragmentNewCourse
     }
 
     override fun onCourseAdded(course: CourseWithHoles, result: Int) {
-        if (result == Activity.RESULT_OK)
-        {
-            if(course == null) throw IllegalArgumentException("Course data was null.")
-            else
-            {
-                val courses = frisbeegolferViewModel.allCourses.value
-                var duplicateFound = checkIfCourseAlreadyExists(course, courses)
-                if(!duplicateFound)
-                {
-                    frisbeegolferViewModel.insert(course)
-                }
+        if (result == Activity.RESULT_OK) {
+            val courses = courseViewModel.allCourses.value
+            val duplicateFound = checkIfCourseAlreadyExists(course, courses)
+            if (!duplicateFound) {
+                courseViewModel.insert(course)
             }
-        }
-        else if(result == Activity.RESULT_CANCELED)
-        {
+        } else if (result == Activity.RESULT_CANCELED) {
             this.recreate() // Recreate makes sure that the dialogfragment is recreated as well.
-        }
-        else throw(IllegalArgumentException("Course data not returned from activity as expected."))
+        } else throw(IllegalArgumentException("Course data not returned from activity as expected."))
     }
 
     override fun onCourseEdited(course: CourseWithHoles, result: Int) {
-        if (result == Activity.RESULT_OK)
-        {
-            if(course == null) throw IllegalArgumentException("Course data was null.")
-            else
-            {
-                frisbeegolferViewModel.update(course)
+        when (result) {
+            Activity.RESULT_OK -> {
+                courseViewModel.update(course)
             }
+            Activity.RESULT_CANCELED -> {
+                this.recreate()
+            }
+            else -> throw(IllegalArgumentException("Course data not returned from activity as expected."))
         }
-        else if(result == Activity.RESULT_CANCELED)
-        {
-            this.recreate()
-        }
-        else throw(IllegalArgumentException("Course data not returned from activity as expected."))
     }
 }

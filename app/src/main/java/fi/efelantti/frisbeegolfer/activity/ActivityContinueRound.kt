@@ -1,23 +1,11 @@
 package fi.efelantti.frisbeegolfer.activity
 
 import android.os.Bundle
-import android.view.ActionMode
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.RoundListAdapter
-import fi.efelantti.frisbeegolfer.fragment.FragmentChoosePlayers
 import fi.efelantti.frisbeegolfer.fragment.FragmentChooseRound
 import fi.efelantti.frisbeegolfer.fragment.FragmentScore
-import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import java.time.OffsetDateTime
 
 
@@ -26,7 +14,9 @@ class ActivityContinueRound : AppCompatActivity(), FragmentChooseRound.FragmentC
     private val TAG = "ActivityContinueRound"
     private val scoreTag = "FragmentScore"
     private val roundTag = "FragmentChooseRound"
-    private val roundViewModel: RoundViewModel by viewModels()
+    /*private val roundViewModel: RoundViewModel by viewModels{
+        RoundViewModelFactory((applicationContext as FrisbeegolferApplication).repository)
+    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

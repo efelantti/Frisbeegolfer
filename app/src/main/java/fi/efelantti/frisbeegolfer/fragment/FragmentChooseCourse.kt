@@ -1,33 +1,26 @@
 package fi.efelantti.frisbeegolfer.fragment
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.*
-import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.CourseListAdapter
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
-import fi.efelantti.frisbeegolfer.NewCourseAction
+import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.model.Course
-import fi.efelantti.frisbeegolfer.model.CourseWithHoles
-import fi.efelantti.frisbeegolfer.model.Hole
-import fi.efelantti.frisbeegolfer.model.clone
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
 class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener {
 
-    private val courseViewModel: CourseViewModel by viewModels()
+    private val courseViewModel: CourseViewModel by viewModels {
+        CourseViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
+    }
 
     interface FragmentChooseCourseListener {
 
@@ -61,7 +54,7 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         // Called when the user selects a contextual menu item
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             return false
-            }
+        }
 
         // Called when the user exits the action mode
         override fun onDestroyActionMode(mode: ActionMode) {
@@ -86,10 +79,10 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         super.onViewCreated(view, savedInstanceState)
 
         adapter = CourseListAdapter(activity as Context, this)
-        recyclerView = view.findViewById<EmptyRecyclerView>(
+        recyclerView = view.findViewById(
             R.id.recyclerview_choose_a_course
         )
-        emptyView = view.findViewById<TextView>(R.id.empty_view_choose_a_course)
+        emptyView = view.findViewById(R.id.empty_view_choose_a_course)
         recyclerView.setEmptyView(emptyView)
 
         recyclerView.adapter = adapter
@@ -99,16 +92,16 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
             courses?.let { adapter.setCourses(it) }
         })
 
-        fab = view.findViewById<FloatingActionButton>(R.id.fab_choose_course)
+        fab = view.findViewById(R.id.fab_choose_course)
         fab.setOnClickListener {
             chooseSelectedCourse()
         }
-   }
+    }
 
     private fun chooseSelectedCourse() {
         val course = adapter.getSelectedCourse()
         actionMode?.finish()
-        if(course == null) throw java.lang.IllegalArgumentException("No course was selected.")
+        if (course == null) throw java.lang.IllegalArgumentException("No course was selected.")
         sendBackResult(course.course.courseId)
     }
 

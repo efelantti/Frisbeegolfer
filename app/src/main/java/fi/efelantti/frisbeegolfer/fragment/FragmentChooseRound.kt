@@ -1,32 +1,26 @@
 package fi.efelantti.frisbeegolfer.fragment
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.*
-import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import fi.efelantti.frisbeegolfer.*
-import fi.efelantti.frisbeegolfer.model.Course
-import fi.efelantti.frisbeegolfer.model.CourseWithHoles
-import fi.efelantti.frisbeegolfer.model.Hole
-import fi.efelantti.frisbeegolfer.model.clone
-import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
+import fi.efelantti.frisbeegolfer.EmptyRecyclerView
+import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
+import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.RoundListAdapter
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.time.OffsetDateTime
 
 class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
 
-    private val roundViewModel: RoundViewModel by viewModels()
+    private val roundViewModel: RoundViewModel by viewModels {
+        RoundViewModelFactory((requireActivity().applicationContext as FrisbeegolferApplication).repository)
+    }
 
     interface FragmentChooseRoundListener {
 
@@ -90,10 +84,10 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = RoundListAdapter(activity as Context, this)
-        recyclerView = view.findViewById<EmptyRecyclerView>(
+        recyclerView = view.findViewById(
             R.id.recyclerview_continue_round
         )
-        emptyView = view.findViewById<TextView>(R.id.empty_view_rounds)
+        emptyView = view.findViewById(R.id.empty_view_rounds)
 
         recyclerView.setEmptyView(emptyView)
         recyclerView.adapter = adapter
@@ -103,12 +97,12 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
             // Update the cached copy of the words in the adapter.
             round?.let { adapter.setRounds(it) }
         })
-   }
+    }
 
     private fun chooseSelectedRound() {
         val round = adapter.getSelectedRound()
         actionMode?.finish()
-        if(round == null) throw java.lang.IllegalArgumentException("No round was selected.")
+        if (round == null) throw java.lang.IllegalArgumentException("No round was selected.")
         sendBackResult(round.round.dateStarted)
     }
 
