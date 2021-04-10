@@ -1,20 +1,29 @@
 package fi.efelantti.frisbeegolfer.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.RefreshableLiveData
 import fi.efelantti.frisbeegolfer.Repository
+import fi.efelantti.frisbeegolfer.getViewModelScope
 import fi.efelantti.frisbeegolfer.model.HoleStatistics
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.model.Score
 import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 
-class ScoreViewModel(private val repository: IRepository, private val roundId: OffsetDateTime) :
+class ScoreViewModel(
+    private val coroutineScopeProvider: CoroutineScope? = null,
+    private val repository: IRepository,
+    private val roundId: OffsetDateTime
+) :
     ViewModel() {
 
+    private val coroutineScope = getViewModelScope(coroutineScopeProvider)
     private val mCurrentRound: LiveData<RoundWithCourseAndScores>
     private var currentScoreIndex: Int = -1
     val currentRound: RefreshableLiveData<RoundWithCourseAndScores>
@@ -56,7 +65,7 @@ class ScoreViewModel(private val repository: IRepository, private val roundId: O
         currentRound.refresh()
     }
 
-    fun update(score: Score) = viewModelScope.launch(Dispatchers.IO) {
+    fun update(score: Score) = coroutineScope.launch {
         repository.update(score)
     }
 
@@ -138,5 +147,5 @@ class ScoreViewModelFactory(
     private val roundId: OffsetDateTime
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
-        (ScoreViewModel(repository, roundId) as T)
+        (ScoreViewModel(null, repository, roundId) as T)
 }

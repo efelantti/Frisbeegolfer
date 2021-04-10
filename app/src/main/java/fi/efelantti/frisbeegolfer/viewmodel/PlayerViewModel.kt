@@ -3,28 +3,33 @@ package fi.efelantti.frisbeegolfer.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.Repository
+import fi.efelantti.frisbeegolfer.getViewModelScope
 import fi.efelantti.frisbeegolfer.model.Player
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class PlayerViewModel(private val repository: IRepository) : ViewModel() {
+class PlayerViewModel(
+    private val coroutineScopeProvider: CoroutineScope? = null,
+    private val repository: IRepository
+) : ViewModel() {
+
+    private val coroutineScope = getViewModelScope(coroutineScopeProvider)
 
     val allPlayers: LiveData<List<Player>> = repository.allPlayers
 
     /**
      * Launching a new coroutine to insert the data in a non-blocking way
      */
-    fun insert(player: Player) = viewModelScope.launch(Dispatchers.IO) {
+    fun insert(player: Player) = coroutineScope.launch {
         repository.insert(player)
     }
 
     /**
      * Launching a new coroutine to update the data in a non-blocking way
      */
-    fun update(player: Player) = viewModelScope.launch(Dispatchers.IO) {
+    fun update(player: Player) = coroutineScope.launch {
         repository.update(player)
     }
 }
@@ -34,5 +39,5 @@ class PlayerViewModelFactory(
     private val repository: Repository
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>) =
-        (PlayerViewModel(repository) as T)
+        (PlayerViewModel(null, repository) as T)
 }

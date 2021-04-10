@@ -3,20 +3,24 @@ package fi.efelantti.frisbeegolfer.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.Repository
+import fi.efelantti.frisbeegolfer.getViewModelScope
 import fi.efelantti.frisbeegolfer.model.Round
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.model.Score
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class RoundViewModel(private val repository: IRepository) : ViewModel() {
+class RoundViewModel(
+    private val coroutineScopeProvider: CoroutineScope? = null,
+    private val repository: IRepository
+) : ViewModel() {
 
+    private val coroutineScope = getViewModelScope(coroutineScopeProvider)
     val allRounds: LiveData<List<RoundWithCourseAndScores>> = repository.allRounds
 
-    fun delete(round: RoundWithCourseAndScores) = viewModelScope.launch(Dispatchers.IO) {
+    fun delete(round: RoundWithCourseAndScores) = coroutineScope.launch {
         repository.delete(round)
     }
 
@@ -24,7 +28,7 @@ class RoundViewModel(private val repository: IRepository) : ViewModel() {
      * Launching a new coroutine to insert the data in a non-blocking way
      * Round should be inserted without the scores.
      */
-    fun insert(round: Round) = viewModelScope.launch(Dispatchers.IO) {
+    fun insert(round: Round) = coroutineScope.launch {
         repository.insert(round)
     }
 
@@ -32,11 +36,11 @@ class RoundViewModel(private val repository: IRepository) : ViewModel() {
      * Launching a new coroutine to insert the data in a non-blocking way
      * Round should be inserted without the scores.
      */
-    fun insert(score: Score) = viewModelScope.launch(Dispatchers.IO) {
+    fun insert(score: Score) = coroutineScope.launch {
         repository.insert(score)
     }
 
-    fun update(score: Score) = viewModelScope.launch(Dispatchers.IO) {
+    fun update(score: Score) = coroutineScope.launch {
         repository.update(score)
     }
 
@@ -47,5 +51,5 @@ class RoundViewModelFactory(
     private val repository: Repository
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>) =
-        (RoundViewModel(repository) as T)
+        (RoundViewModel(null, repository) as T)
 }
