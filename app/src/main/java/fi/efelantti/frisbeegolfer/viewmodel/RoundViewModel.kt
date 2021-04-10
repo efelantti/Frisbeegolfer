@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.model.Round
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
@@ -11,7 +12,7 @@ import fi.efelantti.frisbeegolfer.model.Score
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RoundViewModel(private val repository: Repository) : ViewModel() {
+class RoundViewModel(private val repository: IRepository) : ViewModel() {
 
     val allRounds: LiveData<List<RoundWithCourseAndScores>> = repository.allRounds
 

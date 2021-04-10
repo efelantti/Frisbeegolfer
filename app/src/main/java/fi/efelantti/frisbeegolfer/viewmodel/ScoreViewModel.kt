@@ -1,6 +1,7 @@
 package fi.efelantti.frisbeegolfer.viewmodel
 
 import androidx.lifecycle.*
+import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.RefreshableLiveData
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.model.HoleStatistics
@@ -11,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 
-class ScoreViewModel(private val repository: Repository, private val roundId: OffsetDateTime) :
+class ScoreViewModel(private val repository: IRepository, private val roundId: OffsetDateTime) :
     ViewModel() {
 
     private val mCurrentRound: LiveData<RoundWithCourseAndScores>

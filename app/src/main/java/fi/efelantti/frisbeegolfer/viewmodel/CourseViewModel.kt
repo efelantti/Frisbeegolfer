@@ -1,13 +1,14 @@
 package fi.efelantti.frisbeegolfer.viewmodel
 
 import androidx.lifecycle.*
+import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Hole
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class CourseViewModel(private val repository: Repository) : ViewModel() {
+class CourseViewModel(private val repository: IRepository) : ViewModel() {
 
     val allCourses: LiveData<List<CourseWithHoles>> = repository.allCourses
 

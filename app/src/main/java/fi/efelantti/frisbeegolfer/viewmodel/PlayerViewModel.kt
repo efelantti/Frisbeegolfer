@@ -4,12 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.model.Player
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class PlayerViewModel(private val repository: Repository) : ViewModel() {
+class PlayerViewModel(private val repository: IRepository) : ViewModel() {
 
     val allPlayers: LiveData<List<Player>> = repository.allPlayers
 
