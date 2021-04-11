@@ -12,11 +12,14 @@ class Player(
     var id: Long = 0,
     var name: String? = "",
     val email: String? = ""
-) : Parcelable
-{
+) : Parcelable {
+    override fun equals(other: Any?): Boolean = (other is Player)
+            && id == other.id
+            && name == other.name
+            && email == other.email
+
     companion object {
-        fun equals(player1: Player, player2: Player): Boolean
-        {
+        fun equals(player1: Player, player2: Player): Boolean {
             return player1.name == player2.name && player1.email == player2.email
         }
     }

@@ -18,4 +18,9 @@ class ScoreWithPlayerAndHole(
         entityColumn = "holeId"
     )
     var hole: Hole
-) : Parcelable
+) : Parcelable {
+    override fun equals(other: Any?): Boolean = (other is ScoreWithPlayerAndHole)
+            && score == other.score
+            && player == other.player
+            && hole == other.hole
+}

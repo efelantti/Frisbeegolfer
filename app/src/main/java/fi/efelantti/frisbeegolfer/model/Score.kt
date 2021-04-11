@@ -15,4 +15,11 @@ class Score(
     var playerId: Long = 0,
     var holeId: Long = 0,
     var result: Int = 0
-): Parcelable
+) : Parcelable {
+    override fun equals(other: Any?): Boolean = (other is Score)
+            && id == other.id
+            && parentRoundId == other.parentRoundId
+            && playerId == other.playerId
+            && holeId == other.holeId
+            && result == other.result
+}

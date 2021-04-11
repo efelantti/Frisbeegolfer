@@ -14,27 +14,29 @@ class Hole(
     var holeNumber: Int = 0,
     var par: Int = 3,
     var lengthMeters: Int? = 0
-): Parcelable
-{
+) : Parcelable {
+    override fun equals(other: Any?): Boolean = (other is Hole)
+            && holeId == other.holeId
+            && parentCourseId == other.parentCourseId
+            && holeNumber == other.holeNumber
+            && par == other.par
+            && lengthMeters == other.lengthMeters
+
     companion object {
-        fun equals(holes1: List<Hole>, holes2: List<Hole>): Boolean
-        {
-            if(holes1.count() != holes2.count()) return false
-            else
-            {
-                for (i: Int in 0 until holes1.count())
-                {
-                    if(!Hole.equals(holes1[i], holes2[i])) return false
+        fun equals(holes1: List<Hole>, holes2: List<Hole>): Boolean {
+            if (holes1.count() != holes2.count()) return false
+            else {
+                for (i: Int in 0 until holes1.count()) {
+                    if (!Hole.equals(holes1[i], holes2[i])) return false
                 }
             }
             return true
         }
 
-        fun equals(hole1: Hole, hole2: Hole): Boolean
-        {
+        fun equals(hole1: Hole, hole2: Hole): Boolean {
             return hole1.lengthMeters == hole2.lengthMeters && hole1.par == hole2.par && hole1.holeNumber == hole2.holeNumber
         }
-}
+    }
 }
 
 fun Hole.clone(): Hole {
