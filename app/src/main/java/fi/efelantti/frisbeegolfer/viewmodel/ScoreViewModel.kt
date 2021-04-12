@@ -74,7 +74,7 @@ class ScoreViewModel(
     (Refer to https://stackoverflow.com/questions/48315261/using-rooms-relation-with-order-by/64321494)
      */
     private fun sortRound(scores: List<ScoreWithPlayerAndHole>): List<ScoreWithPlayerAndHole> {
-        return scores.sortedWith(compareBy<ScoreWithPlayerAndHole> { it.hole.holeNumber }.thenByDescending { it.player.name })
+        return scores.sortedWith(compareBy<ScoreWithPlayerAndHole> { it.hole.holeNumber }.thenBy { it.player.name })
     }
 
     /*
