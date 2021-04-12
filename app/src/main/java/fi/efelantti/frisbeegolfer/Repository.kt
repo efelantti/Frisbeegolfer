@@ -31,7 +31,7 @@ interface IRepository {
     suspend fun update(course: CourseWithHoles)
 
     suspend fun insertCourseWithHoles(course: CourseWithHoles)
-    fun getCourseWithHolesById(id: Long): CourseWithHoles
+    fun getCourseWithHolesById(id: Long): LiveData<CourseWithHoles>
 
     fun getRoundWithRoundId(roundId: OffsetDateTime): LiveData<RoundWithCourseAndScores>
 
@@ -97,7 +97,7 @@ class Repository(playerDao: PlayerDao, courseDao: CourseDao, roundDao: RoundDao)
         courseDao.insertAll(course.holes)
     }
 
-    override fun getCourseWithHolesById(id: Long): CourseWithHoles
+    override fun getCourseWithHolesById(id: Long): LiveData<CourseWithHoles>
     {
         return courseDao.getCourseWithHolesWithId(id)
     }

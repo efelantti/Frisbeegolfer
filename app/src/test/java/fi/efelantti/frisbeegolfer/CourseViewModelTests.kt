@@ -65,7 +65,7 @@ class CourseViewModelTests {
 
     @Test
     fun getCourseWithHolesById() = testDispatcher.runBlockingTest {
-        coEvery { repository.getCourseWithHolesById(123) } returns courseWithHoles
+        coEvery { repository.getCourseWithHolesById(123) } returns MutableLiveData(courseWithHoles)
         val resultLiveData = courseViewModel.getCourseWithHolesById(123)
         coVerify(exactly = 1) { repository.getCourseWithHolesById(123) }
         val result = resultLiveData.getValueBlocking() ?: throw InvalidObjectException("Null returned as CourseWithHoles.")

@@ -104,6 +104,9 @@ class ScoreViewModel(
         addToIndex(1)
     }
 
+    /*
+    Subtracts one from the current score index. To be used after scoring a hole.
+    */
     fun decrementIndex() {
         addToIndex(-1)
     }
@@ -120,19 +123,22 @@ class ScoreViewModel(
     }
 
     /*
-    Next player BUT current hole / is this needed?
+    TODO - Next player BUT current hole / is this needed?
      */
     fun nextPlayer() {
         refresh()
     }
 
     /*
-    Set index to next hole BUT current player / is this needed?
+    TODO - Set index to next hole BUT current player / is this needed?
      */
     fun nextHole() {
         refresh()
     }
 
+    /*
+    Sets the result of the current score. Calls repository.update as well.
+     */
     fun setResult(scoreToSet: Int) {
         val currentScore = this.currentScore.value
             ?: throw IllegalArgumentException("Cannot set score - current score was null.")

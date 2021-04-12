@@ -227,7 +227,7 @@ class RepositoryTests {
 
         val alternativeMock = mockk<CourseDao>()
         every { alternativeMock.getCoursesWithHoles() } returns MutableLiveData<List<CourseWithHoles>>(emptyList())
-        every { alternativeMock.getCourseWithHolesWithId(0)} returns courseWithHoles
+        every { alternativeMock.getCourseWithHolesWithId(0)} returns MutableLiveData(courseWithHoles)
         repository = Repository(fakePlayerDao, alternativeMock, fakeRoundDao)
 
         repository.getCourseWithHolesById(0)

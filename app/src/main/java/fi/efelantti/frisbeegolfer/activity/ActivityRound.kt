@@ -10,6 +10,7 @@ import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.fragment.FragmentChooseCourse
 import fi.efelantti.frisbeegolfer.fragment.FragmentChoosePlayers
 import fi.efelantti.frisbeegolfer.fragment.FragmentScore
+import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Round
 import fi.efelantti.frisbeegolfer.model.Score
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
@@ -92,7 +93,7 @@ class ActivityRound : AppCompatActivity(), FragmentChooseCourse.FragmentChooseCo
         selectedPlayerIds: List<Long>
     ): OffsetDateTime {
         val roundId = now()
-        courseViewModel.getCourseWithHolesById(selectedCourseId).observe(this, Observer {
+        courseViewModel.getCourseWithHolesById(selectedCourseId).observe(this, Observer<CourseWithHoles> {
             val course =
                 it ?: throw IllegalArgumentException("No course found with id ${selectedCourseId}.")
             val round = Round(dateStarted = roundId, courseId = selectedCourseId)

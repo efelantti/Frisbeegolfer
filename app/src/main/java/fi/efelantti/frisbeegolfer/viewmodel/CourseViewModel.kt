@@ -1,7 +1,6 @@
 package fi.efelantti.frisbeegolfer.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.IRepository
@@ -22,6 +21,11 @@ class CourseViewModel(private val coroutineScopeProvider: CoroutineScope? = null
     }
 
     fun getCourseWithHolesById(id: Long): LiveData<CourseWithHoles> {
+        return repository.getCourseWithHolesById(id)
+    }
+
+    /*
+    fun getCourseWithHolesById(id: Long): LiveData<CourseWithHoles> {
         val result = MutableLiveData<CourseWithHoles>()
         coroutineScope.launch {
             val courseWithHoles = repository.getCourseWithHolesById(id)
@@ -29,6 +33,7 @@ class CourseViewModel(private val coroutineScopeProvider: CoroutineScope? = null
         }
         return result
     }
+     */
 
     /**
      * Launching a new coroutine to insert the data in a non-blocking way

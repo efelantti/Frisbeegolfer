@@ -221,6 +221,15 @@ class ScoreViewModelTests {
 
     @Test
     fun getHoleStatistics() {
-        TODO()
+        var desiredHoleStatistics = HoleStatistics(1,2f,3)
+        every { repository.getHoleStatistics(0,0)} returns MutableLiveData(desiredHoleStatistics)
+
+        var holeStatistics = scoreViewModel.holeStatistics.getValueBlocking() ?: throw InvalidObjectException("Null returned as current score.")
+
+        assertThat(holeStatistics.latestResult, equalTo(desiredHoleStatistics.latestResult))
+        assertThat(holeStatistics.bestResult, equalTo(desiredHoleStatistics.bestResult))
+        assertThat(holeStatistics.avgResult, equalTo(desiredHoleStatistics.avgResult))
+
+
     }
 }
