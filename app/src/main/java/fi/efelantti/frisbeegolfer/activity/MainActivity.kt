@@ -2,35 +2,48 @@ package fi.efelantti.frisbeegolfer.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.fragment.FragmentNavigationScreen
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),
+    FragmentNavigationScreen.FragmentNavigationScreenListener {
+
+    private val navigationScreenTag = "FragmentNavigationScreen"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_refactored)
+        if (savedInstanceState == null) {
+            displayNavigationScreenFragment()
+        }
     }
 
-    fun startNewRound(view: View) {
-        val intent = Intent(this, ActivityRound::class.java)
-        startActivity(intent)
+    private fun displayNavigationScreenFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace(
+                R.id.fragment_container_view,
+                FragmentNavigationScreen(),
+                navigationScreenTag
+            )
+        }
     }
 
-    fun navigateToPlayers(view: View) {
-        val intent = Intent(this, ActivityPlayers::class.java)
-        startActivity(intent)
+    override fun navigateToNewRound() {
+        startActivity(Intent(this, ActivityRound::class.java))
     }
 
-    fun navigateToCourses(view: View) {
-        val intent = Intent(this, ActivityCourses::class.java)
-        startActivity(intent)
+    override fun navigateToContinueRound() {
+        startActivity(Intent(this, ActivityContinueRound::class.java))
     }
 
-    fun navigateToContinueRound(view: View) {
-        val intent = Intent(this, ActivityContinueRound::class.java)
-        startActivity(intent)
+    override fun navigateToCourses() {
+        startActivity(Intent(this, ActivityCourses::class.java))
     }
 
+    override fun navigatePlayers() {
+        startActivity(Intent(this, ActivityPlayers::class.java))
+    }
 }

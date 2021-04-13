@@ -7,6 +7,7 @@ import fi.efelantti.frisbeegolfer.dao.PlayerDao
 import fi.efelantti.frisbeegolfer.dao.RoundDao
 import fi.efelantti.frisbeegolfer.model.*
 import io.mockk.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.equalTo
@@ -28,6 +29,7 @@ import java.time.ZoneOffset
 Using Mockito and MockK for mocking purposes. Couldn't get Mockito to work properly with suspend functions, so MockK is used in those tests instead. Every test
 could be refactored to use MockK for contistency.
  */
+@ExperimentalCoroutinesApi
 class RepositoryTests {
 
     @get:Rule
