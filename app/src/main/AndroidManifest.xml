@@ -18,8 +18,6 @@
         </activity>
         <activity android:name=".activity.ActivityPlayers"
             android:parentActivityName=".activity.MainActivity" />
-        <activity android:name=".activity.ActivityCourses"
-            android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.ActivityRound"
             android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.ActivityContinueRound"
