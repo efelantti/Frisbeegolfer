@@ -7,12 +7,14 @@ import androidx.fragment.app.commit
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.fragment.FragmentCourses
 import fi.efelantti.frisbeegolfer.fragment.FragmentNavigationScreen
+import fi.efelantti.frisbeegolfer.fragment.FragmentPlayers
 
 class MainActivity : AppCompatActivity(),
     FragmentNavigationScreen.FragmentNavigationScreenListener {
 
     private val navigationScreenTag = "FragmentNavigationScreen"
     private val coursesTag = "FragmentCourses"
+    private val playersTag = "FragmentPlayers"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun navigatePlayers() {
-        startActivity(Intent(this, ActivityPlayers::class.java))
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace(R.id.fragment_container_view, FragmentPlayers(), playersTag)
+        }
     }
 }
