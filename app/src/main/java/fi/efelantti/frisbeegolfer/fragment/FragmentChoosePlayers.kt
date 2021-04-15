@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -19,10 +19,11 @@ import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
 class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemClickListener {
 
-    private val playerViewModel by viewModels<PlayerViewModel> {
+    private val playerViewModel by activityViewModels<PlayerViewModel> {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
-        interface FragmentChoosePlayersListener {
+
+    interface FragmentChoosePlayersListener {
 
         fun onPlayersSelected(
             chosenPlayerIds: List<Long>
@@ -54,7 +55,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         // Called when the user selects a contextual menu item
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             return false
-            }
+        }
 
         // Called when the user exits the action mode
         override fun onDestroyActionMode(mode: ActionMode) {
@@ -67,8 +68,8 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
     private fun chooseSelectedPlayers() {
         val players = adapter.getSelectedPlayers()
         actionMode?.finish()
-        if(players == null) throw java.lang.IllegalArgumentException("No players were selected.")
-        sendBackResult(players.map{it.id})
+        if (players == null) throw java.lang.IllegalArgumentException("No players were selected.")
+        sendBackResult(players.map { it.id })
     }
 
     override fun onCreateView(
@@ -103,7 +104,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         fab.setOnClickListener {
             chooseSelectedPlayers()
         }
-   }
+    }
 
     // Call this method to send the data back to the parent activity
     private fun sendBackResult(chosenPlayersIds: List<Long>) {
@@ -127,7 +128,11 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
                 else -> false
             }
             val selectedPlayersCount = adapter.selectedIndeces.count()
-            val title = resources.getQuantityString(R.plurals.numberPlayersSelected, selectedPlayersCount, selectedPlayersCount)
+            val title = resources.getQuantityString(
+                R.plurals.numberPlayersSelected,
+                selectedPlayersCount,
+                selectedPlayersCount
+            )
             actionMode?.setTitle(title)
         }
     }

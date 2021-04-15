@@ -13,7 +13,7 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fi.efelantti.frisbeegolfer.*
@@ -33,7 +33,7 @@ class FragmentNewCourse : DialogFragment() {
     private lateinit var oldCourseData: CourseWithHoles
     private lateinit var recyclerView: EmptyRecyclerView
     private lateinit var newHoles: List<Hole>
-    private val courseViewModel: CourseViewModel by viewModels {
+    private val courseViewModel: CourseViewModel by activityViewModels {
         CourseViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
 

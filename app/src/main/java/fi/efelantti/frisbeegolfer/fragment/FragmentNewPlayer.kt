@@ -15,7 +15,7 @@ import android.widget.Toolbar
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.NewPlayerAction
 import fi.efelantti.frisbeegolfer.R
@@ -25,7 +25,7 @@ import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
 class FragmentNewPlayer : DialogFragment() {
 
-    private val playerViewModel: PlayerViewModel by viewModels {
+    private val playerViewModel: PlayerViewModel by activityViewModels {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
     private val TAG = "FragmentNewPlayer"
@@ -182,7 +182,7 @@ class FragmentNewPlayer : DialogFragment() {
         return false
     }
 
-    fun exitWithResult(result: Int, category: NewPlayerAction?) {
+    private fun exitWithResult(result: Int, category: NewPlayerAction?) {
         // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
         when (category) {
             NewPlayerAction.ADD -> if (result == Activity.RESULT_OK) {

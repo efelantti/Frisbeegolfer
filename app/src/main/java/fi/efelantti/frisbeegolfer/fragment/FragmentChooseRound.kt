@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
@@ -18,7 +18,7 @@ import java.time.OffsetDateTime
 
 class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
 
-    private val roundViewModel: RoundViewModel by viewModels {
+    private val roundViewModel: RoundViewModel by activityViewModels {
         RoundViewModelFactory((requireActivity().applicationContext as FrisbeegolferApplication).repository)
     }
 

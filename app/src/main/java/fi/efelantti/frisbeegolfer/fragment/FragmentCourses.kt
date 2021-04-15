@@ -6,7 +6,7 @@ import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -18,7 +18,7 @@ import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
 class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
 
-    private val courseViewModel: CourseViewModel by viewModels {
+    private val courseViewModel: CourseViewModel by activityViewModels {
         CourseViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
 
