@@ -93,6 +93,7 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
+        //(requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.courses_activity_title)
 
         adapter = CourseListAdapter(activity as Context, this)
         recyclerView = view.findViewById(

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/fragmentNavigationScreen">
+
+    <fragment
+        tools:layout="@layout/fragment_navigation_screen"
+        android:id="@+id/fragmentNavigationScreen"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentNavigationScreen"
+        android:label="@string/app_name">
+        <action
+            android:id="@+id/action_fragmentNavigationScreen_to_fragmentChooseCourse"
+            app:destination="@id/fragmentChooseCourse" />
+        <action
+            android:id="@+id/action_fragmentNavigationScreen_to_fragmentChooseRound"
+            app:destination="@id/fragmentChooseRound" />
+        <action
+            android:id="@+id/action_fragmentNavigationScreen_to_fragmentCourses"
+            app:destination="@id/fragmentCourses" />
+        <action
+            android:id="@+id/action_fragmentNavigationScreen_to_fragmentPlayers"
+            app:destination="@id/fragmentPlayers" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_choose_a_course"
+        android:id="@+id/fragmentChooseCourse"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentChooseCourse"
+        android:label="@string/choose_a_course_title">
+        <action
+            android:id="@+id/action_fragmentChooseCourse_to_fragmentChoosePlayers"
+            app:destination="@id/fragmentChoosePlayers" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_choose_players"
+        android:id="@+id/fragmentChoosePlayers"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentChoosePlayers"
+        android:label="@string/choose_players_title">
+        <action
+            android:id="@+id/action_fragmentChoosePlayers_to_fragmentScore"
+            app:destination="@id/fragmentScore" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_score"
+        android:id="@+id/fragmentScore"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentScore"
+        android:label="@string/score_title">
+        <argument
+            android:name="round_id"
+            app:argType="java.time.OffsetDateTime" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_choose_round"
+        android:id="@+id/fragmentChooseRound"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentChooseRound"
+        android:label="@string/continue_round_activity_title">
+        <action
+            android:id="@+id/action_fragmentChooseRound_to_fragmentScore"
+            app:destination="@id/fragmentScore" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_courses"
+        android:id="@+id/fragmentCourses"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentCourses"
+        android:label="@string/courses_activity_title">
+        <action
+            android:id="@+id/action_fragmentCourses_to_fragmentNewCourse"
+            app:destination="@id/fragmentNewCourse" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_players"
+        android:id="@+id/fragmentPlayers"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentPlayers"
+        android:label="@string/players_activity_title">
+        <action
+            android:id="@+id/action_fragmentPlayers_to_fragmentNewPlayer"
+            app:destination="@id/fragmentNewPlayer" />
+    </fragment>
+    <dialog
+        tools:layout="@layout/fragment_new_course"
+        android:id="@+id/fragmentNewCourse"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentNewCourse"
+        android:label="FragmentNewCourse" />
+    <dialog
+        tools:layout="@layout/fragment_new_player"
+        android:id="@+id/fragmentNewPlayer"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentNewPlayer"
+        android:label="FragmentNewPlayer" />
+</navigation>

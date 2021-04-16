@@ -3,11 +3,17 @@ package fi.efelantti.frisbeegolfer.activity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.fragment.*
+import fi.efelantti.frisbeegolfer.fragment.FragmentChooseCourse
+import fi.efelantti.frisbeegolfer.fragment.FragmentChoosePlayers
+import fi.efelantti.frisbeegolfer.fragment.FragmentChooseRound
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Round
 import fi.efelantti.frisbeegolfer.model.Score
@@ -20,19 +26,11 @@ import kotlin.properties.Delegates
 
 // TODO - Find out why the action bar is not renamed in the fragments
 class MainActivity : AppCompatActivity(),
-    FragmentNavigationScreen.FragmentNavigationScreenListener,
     FragmentChooseRound.FragmentChooseRoundListener,
     FragmentChooseCourse.FragmentChooseCourseListener,
     FragmentChoosePlayers.FragmentChoosePlayersListener {
 
-    private val navigationScreenTag = "FragmentNavigationScreen"
-    private val chooseCourseTag = "FragmentChooseCourse"
-    private val choosePlayersTag = "FragmentChoosePlayers"
-    private val coursesTag = "FragmentCourses"
-    private val playersTag = "FragmentPlayers"
-    private val continueRoundTag = "FragmentContinueRound"
-    private val scoreTag = "FragmentScore"
-
+    private lateinit var appBarConfiguration: AppBarConfiguration
     private var selectedCourseId by Delegates.notNull<Long>()
     private lateinit var selectedPlayerIds: List<Long>
     private val roundViewModel: RoundViewModel by viewModels {
@@ -44,52 +42,31 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_refactored)
-        if (savedInstanceState == null) {
-            displayNavigationScreenFragment()
-        }
+        setContentView(R.layout.activity_main_with_navigation)
+
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.main_content) as NavHostFragment
+        val navController = navHostFragment.navController
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
-    private fun displayNavigationScreenFragment() {
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace(
-                R.id.fragment_container_view,
-                FragmentNavigationScreen(),
-                navigationScreenTag
-            )
-        }
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.main_content)
+        return navController.navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
     }
 
-    override fun navigateToNewRound() {
-        displayChooseCourseFragment()
-    }
-
-    private fun displayChooseCourseFragment() {
-        supportActionBar?.title = getString(R.string.choose_a_course_title)
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace(R.id.fragment_container_view, FragmentChooseCourse(), chooseCourseTag)
-        }
-    }
 
     override fun onCourseSelected(chosenCourseId: Long) {
         selectedCourseId = chosenCourseId
-        displayChoosePlayersFragment()
-    }
-
-    private fun displayChoosePlayersFragment() {
-        supportActionBar?.title = getString(R.string.choose_players_title)
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace(R.id.fragment_container_view, FragmentChoosePlayers(), choosePlayersTag)
-        }
+        //displayChoosePlayersFragment()
     }
 
     override fun onPlayersSelected(chosenPlayerIds: List<Long>) {
         selectedPlayerIds = chosenPlayerIds
         val roundId = addRoundToDatabase(selectedCourseId, selectedPlayerIds)
-        displayScoreFragment(roundId)
+        //displayScoreFragment(roundId)
     }
 
     /**
@@ -121,20 +98,11 @@ class MainActivity : AppCompatActivity(),
         return roundId
     }
 
-    override fun navigateToContinueRound()
-    {
-        supportActionBar?.title = getString(R.string.continue_round_activity_title)
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace(R.id.fragment_container_view, FragmentChooseRound(), continueRoundTag)
-        }
-    }
-
     override fun onRoundSelected(chosenRoundId: OffsetDateTime) {
-        displayScoreFragment(chosenRoundId)
+        //displayScoreFragment(chosenRoundId)
     }
 
-    private fun displayScoreFragment(roundId: OffsetDateTime) {
+    /*private fun displayScoreFragment(roundId: OffsetDateTime) {
         supportActionBar?.title = "Score"
         supportFragmentManager.commit {
             setReorderingAllowed(true)
@@ -142,20 +110,5 @@ class MainActivity : AppCompatActivity(),
                 FragmentScore.newInstance(roundId)
             replace(R.id.fragment_container_view, fragmentScore, scoreTag)
         }
-    }
-
-    override fun navigateToCourses() {
-        //supportActionBar?.title = getString(R.string.courses_activity_title)
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace(R.id.fragment_container_view, FragmentCourses(), coursesTag)
-        }
-    }
-
-    override fun navigatePlayers() {
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            replace(R.id.fragment_container_view, FragmentPlayers(), playersTag)
-        }
-    }
+    }*/
 }

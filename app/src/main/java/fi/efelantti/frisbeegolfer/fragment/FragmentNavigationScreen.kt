@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import fi.efelantti.frisbeegolfer.R
 
 class FragmentNavigationScreen : Fragment() {
@@ -14,15 +15,6 @@ class FragmentNavigationScreen : Fragment() {
     private lateinit var buttonContinueRound: Button
     private lateinit var buttonCourses: Button
     private lateinit var buttonPlayers: Button
-    private lateinit var listener: FragmentNavigationScreenListener
-
-    interface FragmentNavigationScreenListener {
-
-        fun navigateToNewRound()
-        fun navigateToContinueRound()
-        fun navigateToCourses()
-        fun navigatePlayers()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,25 +30,47 @@ class FragmentNavigationScreen : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        listener = activity as FragmentNavigationScreenListener
-
         buttonNewRound = view.findViewById(R.id.button_newRound)
         buttonNewRound.setOnClickListener {
-            listener.navigateToNewRound()
+            navigateToNewRound()
         }
 
         buttonContinueRound = view.findViewById(R.id.button_continue_round)
         buttonContinueRound.setOnClickListener {
-            listener.navigateToContinueRound()
+            navigateToContinueRound()
         }
         buttonCourses = view.findViewById(R.id.button_courses)
         buttonCourses.setOnClickListener {
-            listener.navigateToCourses()
+            navigateToCourses()
         }
 
         buttonPlayers = view.findViewById(R.id.button_players)
         buttonPlayers.setOnClickListener {
-            listener.navigatePlayers()
+            navigateToPlayers()
         }
+    }
+
+    private fun navigateToNewRound() {
+        val directions =
+            FragmentNavigationScreenDirections.actionFragmentNavigationScreenToFragmentChooseCourse()
+        findNavController().navigate(directions)
+    }
+
+    private fun navigateToContinueRound() {
+        val directions =
+            FragmentNavigationScreenDirections.actionFragmentNavigationScreenToFragmentChooseRound()
+        findNavController().navigate(directions)
+    }
+
+    private fun navigateToCourses() {
+        val directions =
+            FragmentNavigationScreenDirections.actionFragmentNavigationScreenToFragmentCourses()
+        findNavController().navigate(directions)
+    }
+
+    private fun navigateToPlayers() {
+        val directions =
+            FragmentNavigationScreenDirections.actionFragmentNavigationScreenToFragmentPlayers()
+        findNavController().navigate(directions)
     }
 }

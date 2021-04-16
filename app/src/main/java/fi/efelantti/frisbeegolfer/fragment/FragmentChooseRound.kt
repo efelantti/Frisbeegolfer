@@ -82,6 +82,7 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
+        //(requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.continue_round_activity_title)
 
         adapter = RoundListAdapter(activity as Context, this)
         recyclerView = view.findViewById(

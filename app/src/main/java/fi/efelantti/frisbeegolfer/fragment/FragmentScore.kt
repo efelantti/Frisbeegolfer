@@ -62,6 +62,8 @@ class FragmentScore : Fragment() {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
+        //(requireActivity() as AppCompatActivity).supportActionBar?.title = "Score"
+
         val roundIdString = requireArguments().getString("roundId")
         val roundId = converters.toOffsetDateTime(roundIdString)
             ?: throw IllegalArgumentException("Round id was null.")

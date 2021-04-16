@@ -85,6 +85,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
+        //(requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.choose_players_title)
 
         adapter = PlayerListAdapterMultiSelect(activity as Context, this)
         recyclerView = view.findViewById<EmptyRecyclerView>(

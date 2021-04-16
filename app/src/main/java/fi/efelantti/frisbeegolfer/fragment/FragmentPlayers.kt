@@ -84,6 +84,7 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
+        //(requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.players_activity_title)
 
         adapter = PlayerListAdapter(requireContext(), this)
         recyclerView = view.findViewById(
