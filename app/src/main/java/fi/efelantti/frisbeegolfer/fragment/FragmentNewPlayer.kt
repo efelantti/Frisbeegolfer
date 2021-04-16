@@ -1,6 +1,5 @@
 package fi.efelantti.frisbeegolfer.fragment
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
@@ -118,14 +117,14 @@ class FragmentNewPlayer : DialogFragment() {
                                     .setPositiveButton(
                                         R.string.button_yes
                                     ) { dialog, which ->
-                                        exitWithResult(Activity.RESULT_OK, actionCategory)
+                                        exitWithResult(actionCategory)
                                     } // A null listener allows the button to dismiss the dialog and take no further action.
                                     .setNegativeButton(R.string.button_no, null)
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .show()
                             }
                         } else {
-                            exitWithResult(Activity.RESULT_OK, actionCategory)
+                            exitWithResult(actionCategory)
                         }
                     } else {
                         Toast.makeText(
@@ -174,7 +173,6 @@ class FragmentNewPlayer : DialogFragment() {
                         ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY
                     ), Toast.LENGTH_LONG
                 )
-                val indexOfPlayer = players.indexOf(existingPlayer)
                 toast.show()
                 return true
             }
@@ -182,25 +180,25 @@ class FragmentNewPlayer : DialogFragment() {
         return false
     }
 
-    private fun exitWithResult(result: Int, category: NewPlayerAction?) {
+    private fun exitWithResult(category: NewPlayerAction?) {
         // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
         when (category) {
-            NewPlayerAction.ADD -> if (result == Activity.RESULT_OK) {
+            NewPlayerAction.ADD -> {
                 val players = playerViewModel.allPlayers.value
-                var duplicateFound = checkIfPlayerAlreadyExists(playerData, players)
+                val duplicateFound = checkIfPlayerAlreadyExists(playerData, players)
                 if (!duplicateFound) {
                     playerViewModel.insert(playerData)
                     dismiss()
                 }
-            } else throw(IllegalArgumentException("Player data not returned as expected."))
-            NewPlayerAction.EDIT -> if (result == Activity.RESULT_OK) {
+            }
+            NewPlayerAction.EDIT -> {
                 val players = playerViewModel.allPlayers.value
-                var duplicateFound = checkIfPlayerAlreadyExists(playerData, players)
+                val duplicateFound = checkIfPlayerAlreadyExists(playerData, players)
                 if (!duplicateFound) {
                     playerViewModel.update(playerData)
                     dismiss()
                 }
-            } else throw(IllegalArgumentException("Player data not returned from activity as expected."))
+            }
         }
     }
 
