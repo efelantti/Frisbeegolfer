@@ -44,11 +44,12 @@ class ScoreViewModel(
                 sortRound(it.scores)
             }
         }
+        sortedScores.value?.let { initCurrentScoreIndex(it) }
+        sortedScores.value?.let { initHelperValues(it) }
         currentScore = Transformations.map(sortedScores) {
             it?.let {
-                initCurrentScoreIndex(it)
-                initHelperValues(it)
-                it[currentScoreIndex]
+                if (currentScoreIndex > -1) it[currentScoreIndex]
+                else null
             }
         }
         holeStatistics = Transformations.switchMap(currentScore) {
@@ -115,6 +116,12 @@ class ScoreViewModel(
     Helper function used for adding a value to the [currentScoreIndex].
      */
     private fun addToIndex(valueToAdd: Int) {
+        if (currentScoreIndex == -1) sortedScores.value?.let { initCurrentScoreIndex(it) }
+        if (numberOfHoles == -1 || numberOfPlayers == -1) sortedScores.value?.let {
+            initHelperValues(
+                it
+            )
+        }
         currentScoreIndex =
             Math.floorMod(currentScoreIndex + valueToAdd, numberOfHoles * numberOfPlayers)
         // Other option, but this does not allow to use "Previous" on zero index.

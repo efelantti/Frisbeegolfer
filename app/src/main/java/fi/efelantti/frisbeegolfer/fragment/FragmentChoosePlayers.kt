@@ -14,15 +14,14 @@ import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.PlayerListAdapterMultiSelect
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.model.Round
-import fi.efelantti.frisbeegolfer.model.Score
+import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.*
 import java.time.OffsetDateTime
 
 
 class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemClickListener {
 
-    private val playerViewModel: PlayerViewModel by activityViewModels<PlayerViewModel> {
+    private val playerViewModel: PlayerViewModel by activityViewModels {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
     private val roundViewModel: RoundViewModel by activityViewModels {
@@ -97,7 +96,13 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
 
         fab = view.findViewById(R.id.fab_choose_players)
         fab.setOnClickListener {
-            chooseSelectedPlayers()
+            val players = chooseSelectedPlayers()
+            val courseId = args.courseId
+            courseViewModel.getCourseWithHolesById(courseId).observe(viewLifecycleOwner, { course ->
+                val roundId = OffsetDateTime.now()
+                roundViewModel.addRoundToDatabase(course, players.map { it.id }, roundId)
+                navigateToScoreFragment(roundId)
+            })
         }
     }
 
@@ -125,44 +130,15 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         }
     }
 
-    private fun chooseSelectedPlayers() {
+    private fun chooseSelectedPlayers(): List<Player> {
         val players = adapter.getSelectedPlayers()
         actionMode?.finish()
-        val courseId = args.courseId
-        val roundId = addRoundToDatabase(courseId, players.map { it.id })
+        return players
+    }
+
+    private fun navigateToScoreFragment(roundId: OffsetDateTime) {
         val action =
             FragmentChoosePlayersDirections.actionFragmentChoosePlayersToFragmentScore(roundId)
         findNavController().navigate(action)
-    }
-
-    /** TODO - Move this logic to viewmodel? This does not add the round.
-     * Adds an entry to the database for the round. Creates all the necessary scores, that are
-     * then later to be edited when playing the round.
-     */
-    private fun addRoundToDatabase(
-        selectedCourseId: Long,
-        selectedPlayerIds: List<Long>
-    ): OffsetDateTime {
-        val roundId = OffsetDateTime.now()
-        courseViewModel.getCourseWithHolesById(selectedCourseId)
-            .observe(viewLifecycleOwner, {
-                val course =
-                    it
-                        ?: throw IllegalArgumentException("No course found with id ${selectedCourseId}.")
-                val round = Round(dateStarted = roundId, courseId = selectedCourseId)
-                roundViewModel.insert(round)
-                for (hole in course.holes) {
-                    for (playerId in selectedPlayerIds) {
-                        val score = Score(
-                            parentRoundId = roundId,
-                            holeId = hole.holeId,
-                            playerId = playerId,
-                            result = 0
-                        )
-                        roundViewModel.insert(score)
-                    }
-                }
-            })
-        return roundId
     }
 }

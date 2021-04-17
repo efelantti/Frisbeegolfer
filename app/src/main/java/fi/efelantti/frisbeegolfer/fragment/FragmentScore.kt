@@ -8,8 +8,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
@@ -21,8 +21,13 @@ import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 
 class FragmentScore : Fragment() {
 
-    val args: FragmentScoreArgs by navArgs()
-    private lateinit var scoreViewModel: ScoreViewModel
+    private val args: FragmentScoreArgs by navArgs()
+    private val scoreViewModel: ScoreViewModel by viewModels {
+        ScoreViewModelFactory(
+            (requireContext().applicationContext as FrisbeegolferApplication).repository,
+            args.roundId
+        )
+    }
     private lateinit var testView: TextView
     private lateinit var playerNameView: TextView
     private lateinit var holeNumberView: TextView
@@ -50,16 +55,6 @@ class FragmentScore : Fragment() {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-
-        val roundId = args.roundId
-
-        scoreViewModel = ViewModelProvider(
-            this,
-            ScoreViewModelFactory(
-                (requireActivity().applicationContext as FrisbeegolferApplication).repository,
-                roundId
-            )
-        ).get(ScoreViewModel::class.java)
 
         testView = view.findViewById(R.id.fragment_score_test_textview)
         playerNameView = view.findViewById(R.id.fragment_score_test_currentPlayer)
