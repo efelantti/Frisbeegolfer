@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import fi.efelantti.frisbeegolfer.Converters
+import androidx.navigation.fragment.navArgs
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.model.HoleStatistics
@@ -18,23 +18,11 @@ import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
-import java.time.OffsetDateTime
 
 class FragmentScore : Fragment() {
 
-    companion object {
-        private val converters = Converters()
-        fun newInstance(roundId: OffsetDateTime): FragmentScore {
-            val frag = FragmentScore()
-            val args = Bundle()
-            args.putString("roundId", converters.fromOffsetDateTime(roundId))
-            frag.arguments = args
-            return frag
-        }
-    }
-
+    val args: FragmentScoreArgs by navArgs()
     private lateinit var scoreViewModel: ScoreViewModel
-    private val converters = Converters()
     private lateinit var testView: TextView
     private lateinit var playerNameView: TextView
     private lateinit var holeNumberView: TextView
@@ -62,11 +50,8 @@ class FragmentScore : Fragment() {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-        //(requireActivity() as AppCompatActivity).supportActionBar?.title = "Score"
 
-        val roundIdString = requireArguments().getString("roundId")
-        val roundId = converters.toOffsetDateTime(roundIdString)
-            ?: throw IllegalArgumentException("Round id was null.")
+        val roundId = args.roundId
 
         scoreViewModel = ViewModelProvider(
             this,

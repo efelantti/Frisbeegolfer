@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.CourseListAdapter
@@ -20,13 +21,6 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
 
     private val courseViewModel: CourseViewModel by activityViewModels {
         CourseViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
-    }
-
-    interface FragmentChooseCourseListener {
-
-        fun onCourseSelected(
-            chosenCourseId: Long
-        )
     }
 
     private lateinit var adapter: CourseListAdapter
@@ -77,7 +71,6 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-        //(requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.choose_a_course_title)
 
         adapter = CourseListAdapter(activity as Context, this)
         recyclerView = view.findViewById(
@@ -103,14 +96,9 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         val course = adapter.getSelectedCourse()
         actionMode?.finish()
         if (course == null) throw java.lang.IllegalArgumentException("No course was selected.")
-        sendBackResult(course.course.courseId)
-    }
-
-    // Call this method to send the data back to the parent activity
-    private fun sendBackResult(chosenCourseId: Long) {
-        // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
-        val listener: FragmentChooseCourseListener = activity as FragmentChooseCourseListener
-        listener.onCourseSelected(chosenCourseId)
+        val action =
+            FragmentChooseCourseDirections.actionFragmentChooseCourseToFragmentChoosePlayers(course.course.courseId)
+        findNavController().navigate(action)
     }
 
     override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {

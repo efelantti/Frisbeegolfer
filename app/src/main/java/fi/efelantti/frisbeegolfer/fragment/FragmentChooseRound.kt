@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
@@ -14,19 +15,11 @@ import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.RoundListAdapter
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
-import java.time.OffsetDateTime
 
 class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
 
     private val roundViewModel: RoundViewModel by activityViewModels {
         RoundViewModelFactory((requireActivity().applicationContext as FrisbeegolferApplication).repository)
-    }
-
-    interface FragmentChooseRoundListener {
-
-        fun onRoundSelected(
-            chosenRoundId: OffsetDateTime
-        )
     }
 
     private lateinit var recyclerView: EmptyRecyclerView
@@ -82,7 +75,6 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-        //(requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.continue_round_activity_title)
 
         adapter = RoundListAdapter(activity as Context, this)
         recyclerView = view.findViewById(
@@ -95,7 +87,6 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         roundViewModel.allRounds.observe(viewLifecycleOwner, Observer { round ->
-            // Update the cached copy of the words in the adapter.
             round?.let { adapter.setRounds(it) }
         })
     }
@@ -104,14 +95,9 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
         val round = adapter.getSelectedRound()
         actionMode?.finish()
         if (round == null) throw java.lang.IllegalArgumentException("No round was selected.")
-        sendBackResult(round.round.dateStarted)
-    }
-
-    // Call this method to send the data back to the parent activity
-    private fun sendBackResult(chosenRoundId: OffsetDateTime) {
-        // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
-        val listener: FragmentChooseRoundListener = activity as FragmentChooseRoundListener
-        listener.onRoundSelected(chosenRoundId)
+        val action =
+            FragmentChooseRoundDirections.actionFragmentChooseRoundToFragmentScore(round.round.dateStarted)
+        findNavController().navigate(action)
     }
 
     override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {

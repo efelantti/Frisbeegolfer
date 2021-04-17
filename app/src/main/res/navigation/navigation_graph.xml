@@ -37,9 +37,13 @@
         android:id="@+id/fragmentChoosePlayers"
         android:name="fi.efelantti.frisbeegolfer.fragment.FragmentChoosePlayers"
         android:label="@string/choose_players_title">
+        <argument
+            android:name="courseId"
+            app:argType="long" />
         <action
             android:id="@+id/action_fragmentChoosePlayers_to_fragmentScore"
-            app:destination="@id/fragmentScore" />
+            app:destination="@id/fragmentScore"
+            app:popUpTo="@id/fragmentNavigationScreen" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_score"
