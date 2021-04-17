@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,22 +15,20 @@ import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.PlayerListAdapterMultiSelect
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.model.Round
-import fi.efelantti.frisbeegolfer.model.Score
-import fi.efelantti.frisbeegolfer.viewmodel.*
+import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
+import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.time.OffsetDateTime
 
 
 class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemClickListener {
 
-    private val playerViewModel: PlayerViewModel by activityViewModels<PlayerViewModel> {
+    private val playerViewModel: PlayerViewModel by activityViewModels {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
-    private val roundViewModel: RoundViewModel by activityViewModels {
+    private val roundViewModel: RoundViewModel by viewModels {
         RoundViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
-    }
-    private val courseViewModel: CourseViewModel by activityViewModels {
-        CourseViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
     private val args: FragmentChoosePlayersArgs by navArgs()
     private lateinit var adapter: PlayerListAdapterMultiSelect
@@ -129,40 +128,14 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         val players = adapter.getSelectedPlayers()
         actionMode?.finish()
         val courseId = args.courseId
-        val roundId = addRoundToDatabase(courseId, players.map { it.id })
+        val roundId = OffsetDateTime.now()
+        roundViewModel.addRoundToDatabase(courseId, players.map { it.id }, roundId)
+        navigateToScoreFragment(roundId)
+    }
+
+    private fun navigateToScoreFragment(roundId: OffsetDateTime) {
         val action =
             FragmentChoosePlayersDirections.actionFragmentChoosePlayersToFragmentScore(roundId)
         findNavController().navigate(action)
-    }
-
-    /** TODO - Move this logic to viewmodel? This does not add the round.
-     * Adds an entry to the database for the round. Creates all the necessary scores, that are
-     * then later to be edited when playing the round.
-     */
-    private fun addRoundToDatabase(
-        selectedCourseId: Long,
-        selectedPlayerIds: List<Long>
-    ): OffsetDateTime {
-        val roundId = OffsetDateTime.now()
-        courseViewModel.getCourseWithHolesById(selectedCourseId)
-            .observe(viewLifecycleOwner, {
-                val course =
-                    it
-                        ?: throw IllegalArgumentException("No course found with id ${selectedCourseId}.")
-                val round = Round(dateStarted = roundId, courseId = selectedCourseId)
-                roundViewModel.insert(round)
-                for (hole in course.holes) {
-                    for (playerId in selectedPlayerIds) {
-                        val score = Score(
-                            parentRoundId = roundId,
-                            holeId = hole.holeId,
-                            playerId = playerId,
-                            result = 0
-                        )
-                        roundViewModel.insert(score)
-                    }
-                }
-            })
-        return roundId
     }
 }

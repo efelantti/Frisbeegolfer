@@ -6,14 +6,16 @@ import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.getViewModelScope
+import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Round
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.model.Score
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
 
 class RoundViewModel(
-    private val coroutineScopeProvider: CoroutineScope? = null,
+    coroutineScopeProvider: CoroutineScope? = null,
     private val repository: IRepository
 ) : ViewModel() {
 
@@ -44,7 +46,31 @@ class RoundViewModel(
         repository.update(score)
     }
 
+    /**
+     * Adds an entry to the database for the round. Creates all the necessary scores, that are
+     * then later to be edited when playing the round.
+     */
+    fun addRoundToDatabase(
+        selectedCourse: CourseWithHoles,
+        selectedPlayerIds: List<Long>,
+        roundId: OffsetDateTime
+    ) = coroutineScope.launch {
+        val round = Round(dateStarted = roundId, courseId = selectedCourse.course.courseId)
+        repository.insert(round)
+        for (hole in selectedCourse.holes) {
+            for (playerId in selectedPlayerIds) {
+                val score = Score(
+                    parentRoundId = roundId,
+                    holeId = hole.holeId,
+                    playerId = playerId,
+                    result = 0
+                )
+                repository.insert(score)
+            }
+        }
+    }
 }
+
 
 @Suppress("UNCHECKED_CAST")
 class RoundViewModelFactory(
