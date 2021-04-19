@@ -24,46 +24,41 @@ class ScoreViewModel(
     ViewModel() {
 
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
-    private val mCurrentRound: LiveData<RoundWithCourseAndScores>
+    val currentRound: LiveData<RoundWithCourseAndScores> = RefreshableLiveData {
+        repository.getRoundWithRoundId(roundId)
+    }
     private var currentScoreIndex: Int = -1
-    val currentRound: RefreshableLiveData<RoundWithCourseAndScores>
-    private val sortedScores: LiveData<List<ScoreWithPlayerAndHole>>
-    val currentScore: LiveData<ScoreWithPlayerAndHole>
-    val holeStatistics: LiveData<HoleStatistics>
+    private val sortedScores: LiveData<List<ScoreWithPlayerAndHole>> =
+        Transformations.map(currentRound) {
+            it?.let {
+                sortRound(it.scores)
+            }
+        }
+    val currentScore: LiveData<ScoreWithPlayerAndHole> = Transformations.map(sortedScores) {
+        it?.let {
+            if (currentScoreIndex >= 0) it[currentScoreIndex]
+            else null
+        }
+    }
+    val holeStatistics: LiveData<HoleStatistics> = Transformations.switchMap(currentScore) {
+        it?.let {
+            repository.getHoleStatistics(it.player.id, it.hole.holeId)
+        }
+    }
 
     private var numberOfPlayers = -1
     private var numberOfHoles = -1
 
     init {
-        mCurrentRound = RefreshableLiveData {
-            repository.getRoundWithRoundId(roundId)
-        }
-        currentRound = mCurrentRound
-        sortedScores = Transformations.map(mCurrentRound) {
-            it?.let {
-                sortRound(it.scores)
-            }
-        }
         sortedScores.value?.let { initCurrentScoreIndex(it) }
         sortedScores.value?.let { initHelperValues(it) }
-        currentScore = Transformations.map(sortedScores) {
-            it?.let {
-                if (currentScoreIndex > -1) it[currentScoreIndex]
-                else null
-            }
-        }
-        holeStatistics = Transformations.switchMap(currentScore) {
-            it?.let {
-                repository.getHoleStatistics(it.player.id, it.hole.holeId)
-            }
-        }
     }
 
     /*
     Used to force refresh the observers of the LiveData object.
      */
     private fun refresh() {
-        currentRound.refresh()
+        (currentRound as RefreshableLiveData).refresh()
     }
 
     fun update(score: Score) = coroutineScope.launch {
