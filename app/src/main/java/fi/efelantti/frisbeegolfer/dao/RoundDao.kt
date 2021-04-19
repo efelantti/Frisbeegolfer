@@ -24,7 +24,7 @@ interface RoundDao {
     suspend fun delete(score: Score)
 
     @Update
-    fun update(score: Score)
+    suspend fun update(score: Score)
 
     @Transaction
     @Query("SELECT * FROM Round ORDER BY datetime(dateStarted) DESC")

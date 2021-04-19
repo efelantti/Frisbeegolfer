@@ -15,14 +15,14 @@ interface IRepository {
     val roundDao: RoundDao
     val allPlayers: LiveData<List<Player>>
     val allCourses: LiveData<List<CourseWithHoles>>
-    val allRounds : LiveData<List<RoundWithCourseAndScores>>
+    val allRounds: LiveData<List<RoundWithCourseAndScores>>
 
     suspend fun insert(player: Player)
 
     suspend fun insert(round: Round)
     suspend fun insert(score: Score)
-    fun update(player: Player)
-    fun update(score: Score)
+    suspend fun update(player: Player)
+    suspend fun update(score: Score)
 
     suspend fun delete(hole: Hole)
 
@@ -40,22 +40,21 @@ interface IRepository {
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
-class Repository(playerDao: PlayerDao, courseDao: CourseDao, roundDao: RoundDao) : IRepository {
-
-    // Room executes all queries on a separate thread.
+class Repository(// Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    override val playerDao = playerDao
-    override val courseDao = courseDao
-    override val roundDao = roundDao
+    override val playerDao: PlayerDao, override val courseDao: CourseDao,
+    override val roundDao: RoundDao
+) : IRepository {
+
     override val allPlayers: LiveData<List<Player>> = playerDao.getPlayers()
     override val allCourses: LiveData<List<CourseWithHoles>> = courseDao.getCoursesWithHoles()
-    override val allRounds : LiveData<List<RoundWithCourseAndScores>> = roundDao.getRounds()
+    override val allRounds: LiveData<List<RoundWithCourseAndScores>> = roundDao.getRounds()
 
     override suspend fun insert(player: Player) {
         playerDao.insert(player)
     }
 
-    override suspend fun insert(round: Round){
+    override suspend fun insert(round: Round) {
         roundDao.insert(round)
     }
 
@@ -63,11 +62,11 @@ class Repository(playerDao: PlayerDao, courseDao: CourseDao, roundDao: RoundDao)
         roundDao.insert(score)
     }
 
-    override fun update(player: Player) {
+    override suspend fun update(player: Player) {
         playerDao.update(player)
     }
 
-    override fun update(score: Score) {
+    override suspend fun update(score: Score) {
         roundDao.update(score)
     }
 

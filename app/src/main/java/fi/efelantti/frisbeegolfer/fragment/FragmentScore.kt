@@ -9,13 +9,9 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.model.HoleStatistics
-import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
-import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 
@@ -70,35 +66,40 @@ class FragmentScore : Fragment() {
         setScoreEditText = view.findViewById(R.id.fragment_score_test_set_score_edittext)
         setScoreButton = view.findViewById(R.id.fragment_score_test_set_score_button)
 
-        scoreViewModel.currentRound.observe(viewLifecycleOwner, Observer<RoundWithCourseAndScores> {
-            it?.let { currentRound ->
+        // TODO - Empty list doesn't contain element at index -1
+        scoreViewModel.currentRound.observe(viewLifecycleOwner, { currentRound ->
+            if (currentRound != null)
                 testView.text = currentRound.round.dateStarted.toString()
-                nextPlayerButton.isEnabled = true
-                nextHoleButton.isEnabled = true
-                incrementIndexButton.isEnabled = true
-                decrementIndexButton.isEnabled = true
-                setScoreButton.isEnabled = true
+            nextPlayerButton.isEnabled = true
+            nextHoleButton.isEnabled = true
+            incrementIndexButton.isEnabled = true
+            decrementIndexButton.isEnabled = true
+            setScoreButton.isEnabled = true
+
+            val sortedScores = scoreViewModel.sortRound(currentRound.scores)
+            scoreViewModel.initCurrentScoreIndex(sortedScores)
+            val currentScore = sortedScores[scoreViewModel.currentScoreIndex]
+            playerNameView.text = currentScore.player.name
+            holeNumberView.text = currentScore.hole.holeNumber.toString()
+            holeParView.text = currentScore.hole.par.toString()
+            setScoreEditText.setText(currentScore.score.result.toString())
+
+            scoreViewModel.getHoleStatistics(currentScore.player.id, currentScore.hole.holeId)
+                .observe(viewLifecycleOwner,
+                    { it2 ->
+                        it2?.let { holeStatistics ->
+                            holeBestView.text = holeStatistics.bestResult.toString()
+                            holeAverageView.text = holeStatistics.avgResult.toString()
+                            holeLatestView.text = holeStatistics.latestResult.toString()
+                        }
+                    })
+
+            setScoreButton.setOnClickListener {
+                val scoreToSet = setScoreEditText.text.toString().toInt()
+                scoreViewModel.setResult(currentScore.score, scoreToSet)
+                scoreViewModel.incrementIndex()
             }
         })
-
-        scoreViewModel.currentScore.observe(viewLifecycleOwner, Observer<ScoreWithPlayerAndHole> {
-            it?.let { currentScore ->
-                playerNameView.text = currentScore.player.name
-                holeNumberView.text = currentScore.hole.holeNumber.toString()
-                holeParView.text = currentScore.hole.par.toString()
-                setScoreEditText.setText(currentScore.score.result.toString())
-            }
-        }
-        )
-
-        scoreViewModel.holeStatistics.observe(viewLifecycleOwner, Observer<HoleStatistics> {
-            it?.let { holeStatistics ->
-                holeBestView.text = holeStatistics.bestResult.toString()
-                holeAverageView.text = holeStatistics.avgResult.toString()
-                holeLatestView.text = holeStatistics.latestResult.toString()
-            }
-        }
-        )
 
         incrementIndexButton.setOnClickListener {
             scoreViewModel.incrementIndex()
@@ -110,12 +111,6 @@ class FragmentScore : Fragment() {
 
         nextHoleButton.setOnClickListener {
             scoreViewModel.nextHole()
-        }
-
-        setScoreButton.setOnClickListener {
-            val scoreToSet = setScoreEditText.text.toString().toInt()
-            scoreViewModel.setResult(scoreToSet)
-            scoreViewModel.incrementIndex()
         }
 
     }

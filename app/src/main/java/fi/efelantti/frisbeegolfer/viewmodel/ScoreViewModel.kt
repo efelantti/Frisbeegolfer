@@ -1,7 +1,6 @@
 package fi.efelantti.frisbeegolfer.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.IRepository
@@ -17,7 +16,7 @@ import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 
 class ScoreViewModel(
-    private val coroutineScopeProvider: CoroutineScope? = null,
+    coroutineScopeProvider: CoroutineScope? = null,
     private val repository: IRepository,
     private val roundId: OffsetDateTime
 ) :
@@ -27,31 +26,12 @@ class ScoreViewModel(
     val currentRound: LiveData<RoundWithCourseAndScores> = RefreshableLiveData {
         repository.getRoundWithRoundId(roundId)
     }
-    private var currentScoreIndex: Int = -1
-    private val sortedScores: LiveData<List<ScoreWithPlayerAndHole>> =
-        Transformations.map(currentRound) {
-            it?.let {
-                sortRound(it.scores)
-            }
-        }
-    val currentScore: LiveData<ScoreWithPlayerAndHole> = Transformations.map(sortedScores) {
-        it?.let {
-            if (currentScoreIndex >= 0) it[currentScoreIndex]
-            else null
-        }
-    }
-    val holeStatistics: LiveData<HoleStatistics> = Transformations.switchMap(currentScore) {
-        it?.let {
-            repository.getHoleStatistics(it.player.id, it.hole.holeId)
-        }
-    }
-
+    var currentScoreIndex = -1
     private var numberOfPlayers = -1
     private var numberOfHoles = -1
 
-    init {
-        sortedScores.value?.let { initCurrentScoreIndex(it) }
-        sortedScores.value?.let { initHelperValues(it) }
+    fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics> {
+        return repository.getHoleStatistics(playerId, holeId)
     }
 
     /*
@@ -69,7 +49,7 @@ class ScoreViewModel(
     Sort the scores list by (hole number, player id). TODO - Avoid this by changing @RELATION to two queries?
     (Refer to https://stackoverflow.com/questions/48315261/using-rooms-relation-with-order-by/64321494)
      */
-    private fun sortRound(scores: List<ScoreWithPlayerAndHole>): List<ScoreWithPlayerAndHole> {
+    fun sortRound(scores: List<ScoreWithPlayerAndHole>): List<ScoreWithPlayerAndHole> {
         return scores.sortedWith(compareBy<ScoreWithPlayerAndHole> { it.hole.holeNumber }.thenBy { it.player.name })
     }
 
@@ -77,7 +57,7 @@ class ScoreViewModel(
     Used to initialize current score, if it's not already initialized.
     Sets the index to either the index of the first hole that's not yet scored OR to the index of the last hole, if all are already scored.
      */
-    private fun initCurrentScoreIndex(sortedScores: List<ScoreWithPlayerAndHole>) {
+    fun initCurrentScoreIndex(sortedScores: List<ScoreWithPlayerAndHole>) {
         if (currentScoreIndex == -1) {
             val firstNotScoredHole = sortedScores.firstOrNull { it.score.result == 0 }
             currentScoreIndex = if (firstNotScoredHole == null) sortedScores.count() - 1
@@ -111,11 +91,10 @@ class ScoreViewModel(
     Helper function used for adding a value to the [currentScoreIndex].
      */
     private fun addToIndex(valueToAdd: Int) {
-        if (currentScoreIndex == -1) sortedScores.value?.let { initCurrentScoreIndex(it) }
-        if (numberOfHoles == -1 || numberOfPlayers == -1) sortedScores.value?.let {
-            initHelperValues(
-                it
-            )
+        val sortedScores = currentRound.value?.scores?.let { sortRound(it) }
+        if (currentScoreIndex == -1) sortedScores?.let { initCurrentScoreIndex(it) }
+        if (numberOfHoles == -1 || numberOfPlayers == -1) sortedScores?.let {
+            initHelperValues(it)
         }
         currentScoreIndex =
             Math.floorMod(currentScoreIndex + valueToAdd, numberOfHoles * numberOfPlayers)
@@ -141,11 +120,9 @@ class ScoreViewModel(
     /*
     Sets the result of the current score. Calls repository.update as well.
      */
-    fun setResult(scoreToSet: Int) {
-        val currentScore = this.currentScore.value
-            ?: throw IllegalArgumentException("Cannot set score - current score was null.")
-        currentScore.score.result = scoreToSet
-        update(currentScore.score)
+    fun setResult(score: Score, resultToSet: Int) {
+        score.result = resultToSet
+        update(score)
     }
 }
 
