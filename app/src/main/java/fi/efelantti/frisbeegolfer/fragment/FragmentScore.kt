@@ -21,7 +21,9 @@ class FragmentScore : Fragment() {
     private val scoreViewModel: ScoreViewModel by viewModels {
         ScoreViewModelFactory(
             (requireContext().applicationContext as FrisbeegolferApplication).repository,
-            args.roundId
+            args.roundId,
+            args.playerIds,
+            args.holeIds
         )
     }
     private lateinit var testView: TextView
@@ -66,10 +68,9 @@ class FragmentScore : Fragment() {
         setScoreEditText = view.findViewById(R.id.fragment_score_test_set_score_edittext)
         setScoreButton = view.findViewById(R.id.fragment_score_test_set_score_button)
 
-        scoreViewModel.setScoreId(args.playerIds.first(), args.holeIds.first())
-
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
             testView.text = currentRound.round.dateStarted.toString()
+            if (currentRound.scores.count() > 0) scoreViewModel.initializeScore(currentRound.scores)
         }
 
         scoreViewModel.currentScore.observe(viewLifecycleOwner) {

@@ -16,7 +16,9 @@ import java.time.OffsetDateTime
 class ScoreViewModel(
     coroutineScopeProvider: CoroutineScope? = null,
     private val repository: IRepository,
-    private val roundId: OffsetDateTime
+    private val roundId: OffsetDateTime,
+    private val playerIds: LongArray,
+    private val holeIds: LongArray
 ) :
     ViewModel() {
 
@@ -39,6 +41,15 @@ class ScoreViewModel(
         scoreIdLiveData.value = Pair(playerId, holeId)
     }
 
+    fun initializeScore(scores: List<ScoreWithPlayerAndHole>) {
+        val sortedScores =
+            scores.sortedWith(compareBy<ScoreWithPlayerAndHole> { it.hole.holeNumber }.thenBy { it.player.name })
+        val firstNotScored = sortedScores.firstOrNull { it.score.result == 0 }
+        val index = if (firstNotScored == null) sortedScores.count() - 1
+        else sortedScores.indexOf(firstNotScored)
+        setScoreId(sortedScores[index].player.id, sortedScores[index].hole.holeId)
+    }
+
     /*
     Used to force refresh the observers of the LiveData object.
      */
@@ -51,37 +62,6 @@ class ScoreViewModel(
     }
 
     /*
-    /*
-    Sort the scores list by (hole number, player id). TODO - Avoid this by changing @RELATION to two queries?
-    (Refer to https://stackoverflow.com/questions/48315261/using-rooms-relation-with-order-by/64321494)
-     */
-    fun sortRound(scores: List<ScoreWithPlayerAndHole>): List<ScoreWithPlayerAndHole> {
-        return scores.sortedWith(compareBy<ScoreWithPlayerAndHole> { it.hole.holeNumber }.thenBy { it.player.name })
-    }
-
-
-
-    /*
-    Used to initialize current score, if it's not already initialized.
-    Sets the index to either the index of the first hole that's not yet scored OR to the index of the last hole, if all are already scored.
-     */
-    fun initCurrentScoreIndex(sortedScores: List<ScoreWithPlayerAndHole>) {
-        if (currentScoreIndex == -1) {
-            val firstNotScoredHole = sortedScores.firstOrNull { it.score.result == 0 }
-            currentScoreIndex = if (firstNotScoredHole == null) sortedScores.count() - 1
-            else sortedScores.indexOf(firstNotScoredHole)
-        }
-    }
-
-
-    /*
-    Used to initialize number of players & holes, which are needed for incrementing & decrementing the score index.
-     */
-    private fun initHelperValues(scores: List<ScoreWithPlayerAndHole>) {
-        if (numberOfHoles == -1) numberOfHoles = scores.distinctBy { it.hole.holeId }.count()
-        if (numberOfPlayers == -1) numberOfPlayers = scores.distinctBy { it.player.id }.count()
-    }
-
     /*
     Adds one to the current score index. To be used after scoring a hole.
      */
@@ -139,8 +119,10 @@ class ScoreViewModel(
 @Suppress("UNCHECKED_CAST")
 class ScoreViewModelFactory(
     private val repository: Repository,
-    private val roundId: OffsetDateTime
+    private val roundId: OffsetDateTime,
+    private val playerIds: LongArray,
+    private val holeIds: LongArray
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
-        (ScoreViewModel(null, repository, roundId) as T)
+        (ScoreViewModel(null, repository, roundId, playerIds, holeIds) as T)
 }
