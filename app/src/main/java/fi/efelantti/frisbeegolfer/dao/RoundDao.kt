@@ -2,10 +2,7 @@ package fi.efelantti.frisbeegolfer.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import fi.efelantti.frisbeegolfer.model.HoleStatistics
-import fi.efelantti.frisbeegolfer.model.Round
-import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
-import fi.efelantti.frisbeegolfer.model.Score
+import fi.efelantti.frisbeegolfer.model.*
 import java.time.OffsetDateTime
 
 @Dao
@@ -40,9 +37,19 @@ interface RoundDao {
     TODO - Latest takes into account the 0, which is currently default value for score. Fix: set score default to null and have this query only take non-null result.
      */
     @Transaction
-    @Query("SELECT" +
-            "(SELECT MIN(result) AS bestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS bestResult," +
-            "(SELECT AVG(result) AS avgResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS avgResult," +
-            "(SELECT result AS latestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId ORDER BY datetime(parentRoundId) desc LIMIT 1) AS latestResult")
+    @Query(
+        "SELECT" +
+                "(SELECT MIN(result) AS bestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS bestResult," +
+                "(SELECT AVG(result) AS avgResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS avgResult," +
+                "(SELECT result AS latestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId ORDER BY datetime(parentRoundId) desc LIMIT 1) AS latestResult"
+    )
     fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics>
+
+    @Transaction
+    @Query("SELECT * FROM Score WHERE parentRoundId=:roundId AND playerId =:playerId AND holeId=:holeId LIMIT 1")
+    fun getScore(
+        roundId: OffsetDateTime,
+        playerId: Long,
+        holeId: Long
+    ): LiveData<ScoreWithPlayerAndHole>
 }

@@ -97,11 +97,13 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         fab = view.findViewById(R.id.fab_choose_players)
         fab.setOnClickListener {
             val players = chooseSelectedPlayers()
+            val playerIds = players.sortedBy { it.name }.map { it.id }
             val courseId = args.courseId
             courseViewModel.getCourseWithHolesById(courseId).observe(viewLifecycleOwner, { course ->
                 val roundId = OffsetDateTime.now()
-                roundViewModel.addRoundToDatabase(course, players.map { it.id }, roundId)
-                navigateToScoreFragment(roundId)
+                val holeIds = course.holes.sortedBy { it.holeNumber }.map { it.holeId }
+                roundViewModel.addRoundToDatabase(course, playerIds, roundId)
+                navigateToScoreFragment(roundId, holeIds.toLongArray(), playerIds.toLongArray())
             })
         }
     }
@@ -136,9 +138,17 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         return players
     }
 
-    private fun navigateToScoreFragment(roundId: OffsetDateTime) {
+    private fun navigateToScoreFragment(
+        roundId: OffsetDateTime,
+        holeIds: LongArray,
+        playerIds: LongArray
+    ) {
         val action =
-            FragmentChoosePlayersDirections.actionFragmentChoosePlayersToFragmentScore(roundId)
+            FragmentChoosePlayersDirections.actionFragmentChoosePlayersToFragmentScore(
+                roundId,
+                holeIds,
+                playerIds
+            )
         findNavController().navigate(action)
     }
 }

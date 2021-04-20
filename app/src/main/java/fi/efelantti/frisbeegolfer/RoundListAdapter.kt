@@ -76,10 +76,14 @@ class RoundListAdapter internal constructor(
         val current = rounds[position]
         holder.roundItemViewStartedOn.text =
             current.round.dateStarted.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-        holder.roundItemViewCourseName.text = res.getString(R.string.city, current.course.name)
-        holder.roundItemViewCity.text = res.getString(R.string.city, current.course.city)
+        holder.roundItemViewCourseName.text =
+            res.getString(R.string.city, current.course.course.name)
+        holder.roundItemViewCity.text = res.getString(R.string.city, current.course.course.city)
         holder.roundItemViewNumberOfPlayers.text =
-            res.getString(R.string.players, current.scores.distinctBy { it.player.name }.map{it.player.name}.joinToString())
+            res.getString(
+                R.string.players,
+                current.scores.distinctBy { it.player.name }.map { it.player.name }.joinToString()
+            )
     }
 
     internal fun setRounds(rounds: List<RoundWithCourseAndScores>) {

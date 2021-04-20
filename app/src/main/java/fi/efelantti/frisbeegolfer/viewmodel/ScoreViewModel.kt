@@ -1,8 +1,6 @@
 package fi.efelantti.frisbeegolfer.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.RefreshableLiveData
 import fi.efelantti.frisbeegolfer.Repository
@@ -26,12 +24,19 @@ class ScoreViewModel(
     val currentRound: LiveData<RoundWithCourseAndScores> = RefreshableLiveData {
         repository.getRoundWithRoundId(roundId)
     }
-    var currentScoreIndex = -1
-    private var numberOfPlayers = -1
-    private var numberOfHoles = -1
+
+    private val scoreIdLiveData = MutableLiveData(Pair(0L, 0L))
+    val currentScore: LiveData<ScoreWithPlayerAndHole> =
+        Transformations.switchMap(scoreIdLiveData) { pair ->
+            repository.getScore(roundId, pair.first, pair.second)
+        }
 
     fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics> {
         return repository.getHoleStatistics(playerId, holeId)
+    }
+
+    fun setScoreId(playerId: Long, holeId: Long) {
+        scoreIdLiveData.value = Pair(playerId, holeId)
     }
 
     /*
@@ -46,12 +51,15 @@ class ScoreViewModel(
     }
 
     /*
+    /*
     Sort the scores list by (hole number, player id). TODO - Avoid this by changing @RELATION to two queries?
     (Refer to https://stackoverflow.com/questions/48315261/using-rooms-relation-with-order-by/64321494)
      */
     fun sortRound(scores: List<ScoreWithPlayerAndHole>): List<ScoreWithPlayerAndHole> {
         return scores.sortedWith(compareBy<ScoreWithPlayerAndHole> { it.hole.holeNumber }.thenBy { it.player.name })
     }
+
+
 
     /*
     Used to initialize current score, if it's not already initialized.
@@ -64,6 +72,7 @@ class ScoreViewModel(
             else sortedScores.indexOf(firstNotScoredHole)
         }
     }
+
 
     /*
     Used to initialize number of players & holes, which are needed for incrementing & decrementing the score index.
@@ -102,6 +111,7 @@ class ScoreViewModel(
         // currentScoreIndex = (currentScoreIndex + valueToAdd).rem(numberOfHoles*numberOfPlayers)
         refresh()
     }
+     */
 
     /*
     TODO - Next player BUT current hole / is this needed?

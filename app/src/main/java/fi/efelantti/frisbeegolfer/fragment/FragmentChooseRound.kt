@@ -95,8 +95,14 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
         val round = adapter.getSelectedRound()
         actionMode?.finish()
         if (round == null) throw java.lang.IllegalArgumentException("No round was selected.")
+        val holeIds = round.course.holes.map { it.holeId }.toLongArray()
+        val playerIds = round.scores.distinctBy { it.player.id }.map { it.player.id }.toLongArray()
         val action =
-            FragmentChooseRoundDirections.actionFragmentChooseRoundToFragmentScore(round.round.dateStarted)
+            FragmentChooseRoundDirections.actionFragmentChooseRoundToFragmentScore(
+                round.round.dateStarted,
+                holeIds,
+                playerIds
+            )
         findNavController().navigate(action)
     }
 

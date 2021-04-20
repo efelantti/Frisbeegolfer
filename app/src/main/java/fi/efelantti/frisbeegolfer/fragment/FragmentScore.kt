@@ -66,47 +66,48 @@ class FragmentScore : Fragment() {
         setScoreEditText = view.findViewById(R.id.fragment_score_test_set_score_edittext)
         setScoreButton = view.findViewById(R.id.fragment_score_test_set_score_button)
 
-        // TODO - Empty list doesn't contain element at index -1
-        scoreViewModel.currentRound.observe(viewLifecycleOwner, { currentRound ->
-            if (currentRound != null)
-                testView.text = currentRound.round.dateStarted.toString()
-            nextPlayerButton.isEnabled = true
-            nextHoleButton.isEnabled = true
-            incrementIndexButton.isEnabled = true
-            decrementIndexButton.isEnabled = true
-            setScoreButton.isEnabled = true
+        scoreViewModel.setScoreId(args.playerIds.first(), args.holeIds.first())
 
-            val sortedScores = scoreViewModel.sortRound(currentRound.scores)
-            scoreViewModel.initCurrentScoreIndex(sortedScores)
-            val currentScore = sortedScores[scoreViewModel.currentScoreIndex]
-            playerNameView.text = currentScore.player.name
-            holeNumberView.text = currentScore.hole.holeNumber.toString()
-            holeParView.text = currentScore.hole.par.toString()
-            setScoreEditText.setText(currentScore.score.result.toString())
+        scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
+            testView.text = currentRound.round.dateStarted.toString()
+        }
 
-            scoreViewModel.getHoleStatistics(currentScore.player.id, currentScore.hole.holeId)
-                .observe(viewLifecycleOwner,
-                    { it2 ->
+        scoreViewModel.currentScore.observe(viewLifecycleOwner) {
+            it?.let { currentScore ->
+                nextPlayerButton.isEnabled = true
+                nextHoleButton.isEnabled = true
+                incrementIndexButton.isEnabled = true
+                decrementIndexButton.isEnabled = true
+                setScoreButton.isEnabled = true
+
+                playerNameView.text = currentScore.player.name
+                holeNumberView.text = currentScore.hole.holeNumber.toString()
+                holeParView.text = currentScore.hole.par.toString()
+                setScoreEditText.setText(currentScore.score.result.toString())
+
+                scoreViewModel.getHoleStatistics(currentScore.player.id, currentScore.hole.holeId)
+                    .observe(viewLifecycleOwner) { it2 ->
                         it2?.let { holeStatistics ->
                             holeBestView.text = holeStatistics.bestResult.toString()
                             holeAverageView.text = holeStatistics.avgResult.toString()
                             holeLatestView.text = holeStatistics.latestResult.toString()
                         }
-                    })
+                    }
 
-            setScoreButton.setOnClickListener {
-                val scoreToSet = setScoreEditText.text.toString().toInt()
-                scoreViewModel.setResult(currentScore.score, scoreToSet)
-                scoreViewModel.incrementIndex()
+                setScoreButton.setOnClickListener {
+                    val scoreToSet = setScoreEditText.text.toString().toInt()
+                    scoreViewModel.setResult(currentScore.score, scoreToSet)
+                    //scoreViewModel.incrementIndex()
+                }
             }
-        })
+        }
 
         incrementIndexButton.setOnClickListener {
-            scoreViewModel.incrementIndex()
+            //scoreViewModel.incrementIndex()
         }
 
         decrementIndexButton.setOnClickListener {
-            scoreViewModel.decrementIndex()
+            //scoreViewModel.decrementIndex()
         }
 
         nextHoleButton.setOnClickListener {

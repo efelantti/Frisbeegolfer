@@ -53,6 +53,12 @@
         <argument
             android:name="round_id"
             app:argType="java.time.OffsetDateTime" />
+        <argument
+            android:name="holeIds"
+            app:argType="long[]" />
+        <argument
+            android:name="playerIds"
+            app:argType="long[]" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_choose_round"

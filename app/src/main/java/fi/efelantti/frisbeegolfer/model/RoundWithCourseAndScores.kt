@@ -16,8 +16,9 @@ class RoundWithCourseAndScores(
     var scores: List<ScoreWithPlayerAndHole>,
     @Relation(
         parentColumn = "courseId",
-        entityColumn = "courseId"
+        entityColumn = "courseId",
+        entity = Course::class
     )
-    var course: Course
+    var course: CourseWithHoles
 ) : Parcelable
 
