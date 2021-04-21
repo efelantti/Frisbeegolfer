@@ -27,7 +27,7 @@ import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
 class FragmentNewCourse : DialogFragment() {
 
-    private val TAG = "FragmentNewCourse"
+    private val _tag = "FragmentNewCourse"
     private var _binding: FragmentNewCourseBinding? = null
     private val binding get() = _binding!!
     private lateinit var courseNameView: EditText
@@ -327,7 +327,7 @@ class FragmentNewCourse : DialogFragment() {
             }
         }
         if (isDuplicate) {
-            Log.e(TAG, "Could not add course data to database - duplicate.")
+            Log.e(_tag, "Could not add course data to database - duplicate.")
             val toast = Toast.makeText(
                 requireContext(), HtmlCompat.fromHtml(
                     "<font color='" + ContextCompat.getColor(

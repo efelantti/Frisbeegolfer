@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.Embedded
 import androidx.room.Relation
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 @Parcelize
 class ScoreWithPlayerAndHole(
@@ -23,4 +24,6 @@ class ScoreWithPlayerAndHole(
             && score == other.score
             && player == other.player
             && hole == other.hole
+
+    override fun hashCode() = Objects.hash(score, player, hole)
 }

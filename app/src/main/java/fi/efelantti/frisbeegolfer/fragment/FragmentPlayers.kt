@@ -22,7 +22,7 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
     private val playerViewModel: PlayerViewModel by activityViewModels {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
-    private val TAG = "FragmentPlayers"
+    private val _tag = "FragmentPlayers"
     private lateinit var adapter: PlayerListAdapter
     private var actionMode: ActionMode? = null
     private lateinit var recyclerView: EmptyRecyclerView

@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 import java.time.OffsetDateTime
+import java.util.*
 
 @Entity
 @Parcelize
@@ -14,10 +15,11 @@ class Round(
     var courseId: Long
 ) : Parcelable {
 
-    override fun equals(other: Any?): Boolean
-        = (other is Round)
-                && dateStarted == other.dateStarted
-                && courseId == other.courseId
+    override fun equals(other: Any?): Boolean = (other is Round)
+            && dateStarted == other.dateStarted
+            && courseId == other.courseId
+
+    override fun hashCode() = Objects.hash(dateStarted, courseId)
 
     companion object {
         fun equals(round1: Round, round2: Round): Boolean {

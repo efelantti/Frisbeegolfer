@@ -3,7 +3,8 @@ package fi.efelantti.frisbeegolfer.model
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Entity
 @Parcelize
@@ -22,12 +23,14 @@ class Hole(
             && par == other.par
             && lengthMeters == other.lengthMeters
 
+    override fun hashCode() = Objects.hash(holeId, parentCourseId, holeNumber, par, lengthMeters)
+
     companion object {
         fun equals(holes1: List<Hole>, holes2: List<Hole>): Boolean {
             if (holes1.count() != holes2.count()) return false
             else {
                 for (i: Int in 0 until holes1.count()) {
-                    if (!Hole.equals(holes1[i], holes2[i])) return false
+                    if (!equals(holes1[i], holes2[i])) return false
                 }
             }
             return true

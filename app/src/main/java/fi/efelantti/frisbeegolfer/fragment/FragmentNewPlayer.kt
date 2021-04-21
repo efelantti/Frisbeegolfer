@@ -30,7 +30,7 @@ class FragmentNewPlayer : DialogFragment() {
     private val playerViewModel: PlayerViewModel by activityViewModels {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
-    private val TAG = "FragmentNewPlayer"
+    private val _tag = "FragmentNewPlayer"
     private lateinit var nameView: EditText
     private lateinit var emailView: EditText
     private lateinit var playerData: Player
@@ -166,7 +166,7 @@ class FragmentNewPlayer : DialogFragment() {
                     existingPlayer
                 )
             ) {
-                Log.e(TAG, "Could not add player data to database - duplicate.")
+                Log.e(_tag, "Could not add player data to database - duplicate.")
                 val toast = Toast.makeText(
                     requireContext(), HtmlCompat.fromHtml(
                         "<font color='" + getColor(
