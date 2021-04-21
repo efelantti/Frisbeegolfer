@@ -7,10 +7,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.*
+import fi.efelantti.frisbeegolfer.databinding.FragmentCoursesBinding
 import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
@@ -18,18 +18,11 @@ import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
 class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
 
+    private var _binding: FragmentCoursesBinding? = null
+    private val binding get() = _binding!!
     private val courseViewModel: CourseViewModel by activityViewModels {
         CourseViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
-
-    interface FragmentChooseCourseListener {
-
-        fun onCourseSelected(
-            chosenCourseId: Long
-        )
-    }
-
-    private val TAG = "fragmentCourses"
     private lateinit var adapter: CourseListAdapter
     private var actionMode: ActionMode? = null
     private lateinit var recyclerView: EmptyRecyclerView
@@ -84,8 +77,9 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentCoursesBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_courses, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(
@@ -93,28 +87,26 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-        //(requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.courses_activity_title)
 
         adapter = CourseListAdapter(activity as Context, this)
-        recyclerView = view.findViewById(
-            R.id.recyclerview_courses
-        )
-        emptyView = view.findViewById(R.id.empty_view_courses)
+        recyclerView = binding.recyclerviewCourses
+        emptyView = binding.emptyViewCourses
         recyclerView.setEmptyView(emptyView)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        courseViewModel.allCourses.observe(viewLifecycleOwner, Observer { courses ->
+        courseViewModel.allCourses.observe(viewLifecycleOwner, { courses ->
             courses?.let { adapter.setCourses(it) }
         })
 
-        fab = view.findViewById(R.id.fab_add_course)
+        fab = binding.fabAddCourse
         fab.setOnClickListener {
             showNewCourseDialog()
         }
     }
 
+    // TODO - Open with Navigation component
     private fun showNewCourseDialog() {
         val fm: FragmentManager = parentFragmentManager
         val dialog: FragmentNewCourse =
@@ -140,5 +132,10 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
                 else -> false
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

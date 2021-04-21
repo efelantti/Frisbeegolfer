@@ -13,15 +13,17 @@ import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.RoundListAdapter
+import fi.efelantti.frisbeegolfer.databinding.FragmentChooseRoundBinding
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 
 class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
 
+    private var _binding: FragmentChooseRoundBinding? = null
+    private val binding get() = _binding!!
     private val roundViewModel: RoundViewModel by activityViewModels {
         RoundViewModelFactory((requireActivity().applicationContext as FrisbeegolferApplication).repository)
     }
-
     private lateinit var recyclerView: EmptyRecyclerView
     private lateinit var adapter: RoundListAdapter
     private lateinit var emptyView: TextView
@@ -66,8 +68,9 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentChooseRoundBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_choose_round, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(
@@ -77,10 +80,8 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = RoundListAdapter(activity as Context, this)
-        recyclerView = view.findViewById(
-            R.id.recyclerview_continue_round
-        )
-        emptyView = view.findViewById(R.id.empty_view_rounds)
+        recyclerView = binding.recyclerviewContinueRound
+        emptyView = binding.emptyViewRounds
 
         recyclerView.setEmptyView(emptyView)
         recyclerView.adapter = adapter
@@ -119,5 +120,10 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
                 else -> false
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

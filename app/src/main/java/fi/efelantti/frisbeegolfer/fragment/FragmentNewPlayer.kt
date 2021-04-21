@@ -18,12 +18,15 @@ import androidx.fragment.app.activityViewModels
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.NewPlayerAction
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.databinding.FragmentNewPlayerBinding
 import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
 class FragmentNewPlayer : DialogFragment() {
 
+    private var _binding: FragmentNewPlayerBinding? = null
+    private val binding get() = _binding!!
     private val playerViewModel: PlayerViewModel by activityViewModels {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
@@ -51,8 +54,9 @@ class FragmentNewPlayer : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentNewPlayerBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_new_player, container)
+        return binding.root
     }
 
     override fun onViewCreated(
@@ -61,15 +65,15 @@ class FragmentNewPlayer : DialogFragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        val toolbar: Toolbar = view.findViewById(R.id.dialog_toolbar)
+        val toolbar: Toolbar = binding.dialogToolbar
         toolbar.setNavigationIcon(R.drawable.ic_close)
         toolbar.inflateMenu(R.menu.appbar_dialog)
 
         val actionCategory =
             requireArguments().getString("action")?.let { NewPlayerAction.valueOf(it) }
 
-        nameView = view.findViewById(R.id.edit_name)
-        emailView = view.findViewById(R.id.edit_email)
+        nameView = binding.editName
+        emailView = binding.editEmail
 
         val oldPlayerData = requireArguments().getParcelable<Player>("playerData")
 
@@ -222,5 +226,10 @@ class FragmentNewPlayer : DialogFragment() {
             }
         }
         return allFieldsValid
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

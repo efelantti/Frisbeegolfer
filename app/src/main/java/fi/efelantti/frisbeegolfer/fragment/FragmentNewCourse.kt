@@ -17,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import fi.efelantti.frisbeegolfer.*
+import fi.efelantti.frisbeegolfer.databinding.FragmentNewCourseBinding
 import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.model.Hole
@@ -27,6 +28,8 @@ import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 class FragmentNewCourse : DialogFragment() {
 
     private val TAG = "FragmentNewCourse"
+    private var _binding: FragmentNewCourseBinding? = null
+    private val binding get() = _binding!!
     private lateinit var courseNameView: EditText
     private lateinit var cityView: EditText
     private lateinit var courseData: CourseWithHoles
@@ -56,8 +59,9 @@ class FragmentNewCourse : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentNewCourseBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_new_course, container)
+        return binding.root
     }
 
     override fun onViewCreated(
@@ -66,24 +70,22 @@ class FragmentNewCourse : DialogFragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        val toolbar: Toolbar = view.findViewById(R.id.dialog_toolbar_new_course)
+        val toolbar: Toolbar = binding.dialogToolbarNewCourse
         toolbar.setNavigationIcon(R.drawable.ic_close)
         toolbar.inflateMenu(R.menu.appbar_dialog)
 
         val actionCategory =
             requireArguments().getString("action")?.let { NewCourseAction.valueOf(it) }
 
-        courseNameView = view.findViewById(R.id.edit_course_name)
-        cityView = view.findViewById(R.id.edit_city)
+        courseNameView = binding.editCourseName
+        cityView = binding.editCity
 
         oldCourseData = requireArguments().getParcelable("courseData")!!
         val oldHolePars = oldCourseData.holes.map { it.par }
         val oldHoleLengthMeter = oldCourseData.holes.map { it.lengthMeters }
 
         val adapter = HoleListAdapter(activity as Context)
-        recyclerView = view.findViewById(
-            R.id.recyclerview_holes
-        )
+        recyclerView = binding.recyclerviewHoles
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -99,8 +101,8 @@ class FragmentNewCourse : DialogFragment() {
             oldCourseData.holes.let { adapter.setHoles(it) }
         }
 
-        val applyHolesButton: Button = view.findViewById(R.id.apply_holes)
-        val numberOfHolesView: EditText = view.findViewById(R.id.edit_number_of_holes)
+        val applyHolesButton: Button = binding.applyHoles
+        val numberOfHolesView: EditText = binding.editNumberOfHoles
         // TODO - Should editing number of holes in an existing course be allowed?
         if (actionCategory == NewCourseAction.EDIT) {
             applyHolesButton.isEnabled = false
@@ -237,6 +239,7 @@ class FragmentNewCourse : DialogFragment() {
     /**
      * Function to get hole attributes updated in the UI. Note that the ID should not be used (since
      * it is not taken from the UI).
+     * TODO - View binding?
      */
     private fun getHoleInformation(): List<Hole> {
         val listToReturn: MutableList<Hole> = mutableListOf()
@@ -258,6 +261,7 @@ class FragmentNewCourse : DialogFragment() {
 
     /**
      * Function to get the current values of the holes's attributes from the UI.
+     * TODO - View binding?
      */
     private fun getHoles(holes: List<Hole>): List<Hole> {
         val listToReturn: MutableList<Hole> = mutableListOf()
@@ -311,28 +315,6 @@ class FragmentNewCourse : DialogFragment() {
         return allFieldsValid
     }
 
-    fun addCourseToDatabase(course: CourseWithHoles, result: Int) {
-        if (result == Activity.RESULT_OK) {
-            val courses = courseViewModel.allCourses.value
-            val duplicateFound = checkIfCourseAlreadyExists(course, courses)
-            if (!duplicateFound) {
-                courseViewModel.insert(course)
-            }
-        } else if (result == Activity.RESULT_CANCELED) {
-        } else throw(IllegalArgumentException("Course data not returned from activity as expected."))
-    }
-
-    fun updateCourseInDatabase(course: CourseWithHoles, result: Int) {
-        when (result) {
-            Activity.RESULT_OK -> {
-                courseViewModel.update(course)
-            }
-            Activity.RESULT_CANCELED -> {
-            }
-            else -> throw(IllegalArgumentException("Course data not returned from activity as expected."))
-        }
-    }
-
     private fun checkIfCourseAlreadyExists(
         course: CourseWithHoles,
         courses: List<CourseWithHoles>?
@@ -360,5 +342,10 @@ class FragmentNewCourse : DialogFragment() {
             return true
         }
         return false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

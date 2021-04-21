@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -14,15 +13,17 @@ import fi.efelantti.frisbeegolfer.CourseListAdapter
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.databinding.FragmentChooseACourseBinding
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
 class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener {
 
+    private var _binding: FragmentChooseACourseBinding? = null
+    private val binding get() = _binding!!
     private val courseViewModel: CourseViewModel by activityViewModels {
         CourseViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
-
     private lateinit var adapter: CourseListAdapter
     private var actionMode: ActionMode? = null
     private lateinit var recyclerView: EmptyRecyclerView
@@ -59,11 +60,13 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentChooseACourseBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_choose_a_course, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(
@@ -73,20 +76,18 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         super.onViewCreated(view, savedInstanceState)
 
         adapter = CourseListAdapter(activity as Context, this)
-        recyclerView = view.findViewById(
-            R.id.recyclerview_choose_a_course
-        )
-        emptyView = view.findViewById(R.id.empty_view_choose_a_course)
+        recyclerView = binding.recyclerviewChooseACourse
+        emptyView = binding.emptyViewChooseACourse
         recyclerView.setEmptyView(emptyView)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        courseViewModel.allCourses.observe(viewLifecycleOwner, Observer { courses ->
+        courseViewModel.allCourses.observe(viewLifecycleOwner, { courses ->
             courses?.let { adapter.setCourses(it) }
         })
 
-        fab = view.findViewById(R.id.fab_choose_course)
+        fab = binding.fabChooseCourse
         fab.setOnClickListener {
             chooseSelectedCourse()
         }
@@ -116,5 +117,10 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
                 else -> false
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

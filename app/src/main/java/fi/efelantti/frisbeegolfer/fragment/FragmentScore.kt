@@ -11,12 +11,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
-import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.databinding.FragmentScoreBinding
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 
 class FragmentScore : Fragment() {
 
+    private var _binding: FragmentScoreBinding? = null
+    private val binding get() = _binding!!
     private val args: FragmentScoreArgs by navArgs()
     private val scoreViewModel: ScoreViewModel by viewModels {
         ScoreViewModelFactory(
@@ -44,8 +46,9 @@ class FragmentScore : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentScoreBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_score, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(
@@ -54,19 +57,19 @@ class FragmentScore : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        testView = view.findViewById(R.id.fragment_score_test_textview)
-        playerNameView = view.findViewById(R.id.fragment_score_test_currentPlayer)
-        holeNumberView = view.findViewById(R.id.fragment_score_test_currentHole)
-        holeParView = view.findViewById(R.id.fragment_score_test_currentHolePar)
-        holeBestView = view.findViewById(R.id.fragment_score_test_currentHoleBest)
-        holeAverageView = view.findViewById(R.id.fragment_score_test_currentHoleAverage)
-        holeLatestView = view.findViewById(R.id.fragment_score_test_currentHoleLatest)
-        nextPlayerButton = view.findViewById(R.id.fragment_score_test_button_next_player)
-        nextHoleButton = view.findViewById(R.id.fragment_score_test_button_next_hole)
-        incrementIndexButton = view.findViewById(R.id.fragment_score_test_button_increment_index)
-        decrementIndexButton = view.findViewById(R.id.fragment_score_test_button_decrement_index)
-        setScoreEditText = view.findViewById(R.id.fragment_score_test_set_score_edittext)
-        setScoreButton = view.findViewById(R.id.fragment_score_test_set_score_button)
+        testView = binding.fragmentScoreTestTextview
+        playerNameView = binding.fragmentScoreTestCurrentPlayer
+        holeNumberView = binding.fragmentScoreTestCurrentHole
+        holeParView = binding.fragmentScoreTestCurrentHolePar
+        holeBestView = binding.fragmentScoreTestCurrentHoleBest
+        holeAverageView = binding.fragmentScoreTestCurrentHoleAverage
+        holeLatestView = binding.fragmentScoreTestCurrentHoleLatest
+        nextPlayerButton = binding.fragmentScoreTestButtonNextPlayer
+        nextHoleButton = binding.fragmentScoreTestButtonNextHole
+        incrementIndexButton = binding.fragmentScoreTestButtonIncrementIndex
+        decrementIndexButton = binding.fragmentScoreTestButtonDecrementIndex
+        setScoreEditText = binding.fragmentScoreTestSetScoreEdittext
+        setScoreButton = binding.fragmentScoreTestSetScoreButton
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
             testView.text = currentRound.round.dateStarted.toString()
@@ -98,22 +101,31 @@ class FragmentScore : Fragment() {
                 setScoreButton.setOnClickListener {
                     val scoreToSet = setScoreEditText.text.toString().toInt()
                     scoreViewModel.setResult(currentScore.score, scoreToSet)
-                    //scoreViewModel.incrementIndex()
+                    scoreViewModel.nextScore()
                 }
             }
         }
 
         incrementIndexButton.setOnClickListener {
-            //scoreViewModel.incrementIndex()
+            scoreViewModel.nextScore()
         }
 
         decrementIndexButton.setOnClickListener {
-            //scoreViewModel.decrementIndex()
+            scoreViewModel.previousScore()
+        }
+
+        nextPlayerButton.setOnClickListener {
+            scoreViewModel.nextPlayer()
         }
 
         nextHoleButton.setOnClickListener {
             scoreViewModel.nextHole()
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

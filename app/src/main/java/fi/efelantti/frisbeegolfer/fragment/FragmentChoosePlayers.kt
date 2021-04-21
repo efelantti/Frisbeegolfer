@@ -14,6 +14,7 @@ import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.PlayerListAdapterMultiSelect
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.databinding.FragmentChoosePlayersBinding
 import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.*
 import java.time.OffsetDateTime
@@ -21,6 +22,8 @@ import java.time.OffsetDateTime
 
 class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemClickListener {
 
+    private var _binding: FragmentChoosePlayersBinding? = null
+    private val binding get() = _binding!!
     private val playerViewModel: PlayerViewModel by activityViewModels {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
@@ -70,8 +73,9 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentChoosePlayersBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_choose_players, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(
@@ -81,10 +85,8 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         super.onViewCreated(view, savedInstanceState)
 
         adapter = PlayerListAdapterMultiSelect(activity as Context, this)
-        recyclerView = view.findViewById(
-            R.id.recyclerview_choose_players
-        )
-        emptyView = view.findViewById(R.id.empty_view_choose_players)
+        recyclerView = binding.recyclerviewChoosePlayers
+        emptyView = binding.emptyViewChoosePlayers
         recyclerView.setEmptyView(emptyView)
 
         recyclerView.adapter = adapter
@@ -94,7 +96,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
             courses?.let { adapter.setPlayers(it) }
         })
 
-        fab = view.findViewById(R.id.fab_choose_players)
+        fab = binding.fabChoosePlayers
         fab.setOnClickListener {
             val players = chooseSelectedPlayers()
             val playerIds = players.sortedBy { it.name }.map { it.id }
@@ -150,5 +152,10 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
                 playerIds
             )
         findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

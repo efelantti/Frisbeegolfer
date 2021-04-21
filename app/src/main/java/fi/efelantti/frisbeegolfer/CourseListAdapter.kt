@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import fi.efelantti.frisbeegolfer.databinding.RecyclerviewCourseBinding
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 
 
@@ -21,27 +22,27 @@ class CourseListAdapter internal constructor(
         fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
     }
 
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val res: Resources = context.resources
     private var courses = emptyList<CourseWithHoles>()
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: ListItemClickListener = onClickListener
 
-    inner class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val courseCard: CardView = itemView.findViewById(R.id.courseCard)
+    inner class CourseViewHolder(val binding: RecyclerviewCourseBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+        val courseCard: CardView = binding.courseCard
         val originalBackgroundColor: Int = courseCard.cardBackgroundColor.defaultColor
-        val courseItemViewCourseName: TextView = itemView.findViewById(R.id.txtCourseName)
-        val courseItemViewCity: TextView = itemView.findViewById(R.id.txtCity)
-        val courseItemViewNumberOfHoles: TextView = itemView.findViewById(R.id.txtNumberOfHoles)
+        val courseItemViewCourseName: TextView = binding.txtCourseName
+        val courseItemViewCity: TextView = binding.txtCity
+        val courseItemViewNumberOfHoles: TextView = binding.txtNumberOfHoles
 
-        init{
+        init {
             itemView.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
-            val position: Int = getAdapterPosition()
-            var shouldStartActionMode: Boolean
+            val position: Int = bindingAdapterPosition
+            val shouldStartActionMode: Boolean
             val previousSelectedPosition = selectedPosition
             if (selectedPosition == position) {
                 resetSelectedPosition()
@@ -57,8 +58,9 @@ class CourseListAdapter internal constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_course, parent, false)
-        return CourseViewHolder(itemView)
+        val binding =
+            RecyclerviewCourseBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CourseViewHolder(binding)
     }
 
     // TODO - Change setBackgroundColor to Select?
@@ -82,8 +84,8 @@ class CourseListAdapter internal constructor(
     }
 
     internal fun getSelectedCourse(): CourseWithHoles? {
-        if (selectedPosition == defaultSelectedPosition) return null
-        else return courses[selectedPosition]
+        return if (selectedPosition == defaultSelectedPosition) null
+        else courses[selectedPosition]
     }
 
     internal fun resetSelectedPosition()
@@ -93,15 +95,6 @@ class CourseListAdapter internal constructor(
         notifyItemChanged(previousSelectedPosition)
         notifyItemChanged(selectedPosition)
     }
-
-    /*private fun fetchColorOnBackground(): Int {
-        val typedValue = TypedValue()
-        val a: TypedArray =
-            context.obtainStyledAttributes(typedValue.data, intArrayOf(R.attr.colorPrimary))
-        val color = a.getColor(0, 0)
-        a.recycle()
-        return color
-    }*/
 
     override fun getItemCount() = courses.size
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import fi.efelantti.frisbeegolfer.databinding.RecyclerviewRoundBinding
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import java.time.format.DateTimeFormatter
 
@@ -22,29 +23,29 @@ class RoundListAdapter internal constructor(
         fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
     }
 
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val res: Resources = context.resources
     private var rounds = emptyList<RoundWithCourseAndScores>()
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: ListItemClickListener = onClickListener
 
-    inner class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class CourseViewHolder(binding: RecyclerviewRoundBinding) :
+        RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
-        val roundCard: CardView = itemView.findViewById(R.id.roundCard)
+        val roundCard: CardView = binding.roundCard
         val originalBackgroundColor: Int = roundCard.cardBackgroundColor.defaultColor
-        val roundItemViewStartedOn: TextView = itemView.findViewById(R.id.txtStartedOn)
-        val roundItemViewCourseName: TextView = itemView.findViewById(R.id.txtCourseNameRound)
-        val roundItemViewCity: TextView = itemView.findViewById(R.id.txtCityRound)
-        val roundItemViewNumberOfPlayers: TextView = itemView.findViewById(R.id.numberOfPlayers)
+        val roundItemViewStartedOn: TextView = binding.txtStartedOn
+        val roundItemViewCourseName: TextView = binding.txtCourseNameRound
+        val roundItemViewCity: TextView = binding.txtCityRound
+        val roundItemViewNumberOfPlayers: TextView = binding.numberOfPlayers
 
         init {
             itemView.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
-            val position: Int = adapterPosition
-            var shouldStartActionMode: Boolean
+            val position: Int = bindingAdapterPosition
+            val shouldStartActionMode: Boolean
             val previousSelectedPosition = selectedPosition
             if (selectedPosition == position) {
                 resetSelectedPosition()
@@ -60,8 +61,9 @@ class RoundListAdapter internal constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_round, parent, false)
-        return CourseViewHolder(itemView)
+        val binding =
+            RecyclerviewRoundBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CourseViewHolder(binding)
     }
 
     // TODO - Change setBackgroundColor to Select?

@@ -1,7 +1,6 @@
 package fi.efelantti.frisbeegolfer
 
 import android.content.Context
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,31 +8,28 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import fi.efelantti.frisbeegolfer.databinding.RecyclerviewHoleBinding
 import fi.efelantti.frisbeegolfer.model.Hole
 
 class HoleListAdapter internal constructor(
     context: Context
 ) : RecyclerView.Adapter<HoleListAdapter.HoleViewHolder>() {
 
-    private var holes: List<Hole> = emptyList<Hole>()
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private val res: Resources = context.resources
-    private val context = context
+    private var holes: List<Hole> = emptyList()
 
-    inner class HoleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val holeRow: CardView = itemView.findViewById(R.id.holeCard)
-        val holeIndexTextView: TextView = itemView.findViewById(R.id.recyclerView_hole_item_hole_index)
-        val decrementButton: Button = itemView.findViewById(R.id.decrement_par)
-        val incrementButton: Button = itemView.findViewById(R.id.increment_par)
-        val parCountView: TextView = itemView.findViewById(R.id.parCount)
-        val holeLengthView: TextView = itemView.findViewById(R.id.edit_length)
+    inner class HoleViewHolder(val binding: RecyclerviewHoleBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        val holeRow: CardView = binding.holeCard
+        val holeIndexTextView: TextView = binding.recyclerViewHoleItemHoleIndex
+        val decrementButton: Button = binding.decrementPar
+        val incrementButton: Button = binding.incrementPar
+        val parCountView: TextView = binding.parCount
+        val holeLengthView: TextView = binding.editLength
         var par: Int = 3
 
-        fun incrementPar()
-        {
-            if(par < 9)
-            {
-                par = par+1
+        fun incrementPar() {
+            if (par < 9) {
+                par += 1
             }
         }
 
@@ -41,44 +37,46 @@ class HoleListAdapter internal constructor(
         {
             if(par > 1)
             {
-                par = par - 1
+                par -= 1
             }
         }
 
         fun updateViews() {
             parCountView.text = "" + par
-            if(par == 9) incrementButton.setVisibility(View.INVISIBLE)
-            else incrementButton.setVisibility(View.VISIBLE)
-            if(par == 1 ) decrementButton.setVisibility(View.INVISIBLE)
-            else decrementButton.setVisibility(View.VISIBLE)
+            if (par == 9) incrementButton.visibility = View.INVISIBLE
+            else incrementButton.visibility = View.VISIBLE
+            if (par == 1) decrementButton.visibility = View.INVISIBLE
+            else decrementButton.visibility = View.VISIBLE
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HoleViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_hole, parent, false)
-        return HoleViewHolder(itemView)
+        val binding =
+            RecyclerviewHoleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return HoleViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: HoleViewHolder, position: Int) {
-        var hole: Hole = holes[position]
-        holder.holeIndexTextView.text = if (hole.holeNumber == 0) (position+1).toString() else hole.holeNumber.toString()
+        val hole: Hole = holes[position]
+        holder.holeIndexTextView.text =
+            if (hole.holeNumber == 0) (position + 1).toString() else hole.holeNumber.toString()
         holder.parCountView.text = hole.par.toString()
         holder.par = holder.parCountView.text.toString().toInt()
         holder.holeLengthView.text = hole.lengthMeters?.toString()
 
-        if(holder.par == 9) holder.incrementButton.setVisibility(View.INVISIBLE)
-        else holder.incrementButton.setVisibility(View.VISIBLE)
-        if(holder.par == 1 ) holder.decrementButton.setVisibility(View.INVISIBLE)
-        else holder.decrementButton.setVisibility(View.VISIBLE)
+        if (holder.par == 9) holder.incrementButton.visibility = View.INVISIBLE
+        else holder.incrementButton.visibility = View.VISIBLE
+        if (holder.par == 1) holder.decrementButton.visibility = View.INVISIBLE
+        else holder.decrementButton.visibility = View.VISIBLE
 
-        holder.decrementButton.setOnClickListener(View.OnClickListener {
+        holder.decrementButton.setOnClickListener {
             holder.decrementPar()
             holder.updateViews()
-        })
-        holder.incrementButton.setOnClickListener(View.OnClickListener {
+        }
+        holder.incrementButton.setOnClickListener {
             holder.incrementPar()
             holder.updateViews()
-        })
+        }
     }
 
     internal fun setHoles(holes: List<Hole>) {

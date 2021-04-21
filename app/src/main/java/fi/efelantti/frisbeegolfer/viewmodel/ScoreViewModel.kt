@@ -27,7 +27,7 @@ class ScoreViewModel(
         repository.getRoundWithRoundId(roundId)
     }
 
-    private val scoreIdLiveData = MutableLiveData(Pair(0L, 0L))
+    private val scoreIdLiveData = MutableLiveData(Pair(playerIds[0], holeIds[0]))
     val currentScore: LiveData<ScoreWithPlayerAndHole> =
         Transformations.switchMap(scoreIdLiveData) { pair ->
             repository.getScore(roundId, pair.first, pair.second)
@@ -61,50 +61,66 @@ class ScoreViewModel(
         repository.update(score)
     }
 
-    /*
-    /*
-    Adds one to the current score index. To be used after scoring a hole.
-     */
-    fun incrementIndex() {
-        addToIndex(1)
-    }
 
-    /*
-    Subtracts one from the current score index. To be used after scoring a hole.
-    */
-    fun decrementIndex() {
-        addToIndex(-1)
-    }
-
-    /*
-    Helper function used for adding a value to the [currentScoreIndex].
-     */
-    private fun addToIndex(valueToAdd: Int) {
-        val sortedScores = currentRound.value?.scores?.let { sortRound(it) }
-        if (currentScoreIndex == -1) sortedScores?.let { initCurrentScoreIndex(it) }
-        if (numberOfHoles == -1 || numberOfPlayers == -1) sortedScores?.let {
-            initHelperValues(it)
+    fun previousScore() {
+        val indexOfCurrentPlayer = playerIds.indexOf(scoreIdLiveData.value!!.first)
+        if (indexOfCurrentPlayer == 0) { // Last player on previous hole.
+            val indexOfCurrentHole = holeIds.indexOf(scoreIdLiveData.value!!.second)
+            val newHoleIndex = Math.floorMod(indexOfCurrentHole - 1, holeIds.count())
+            val newHoleId = holeIds[newHoleIndex]
+            setScoreId(playerIds.last(), newHoleId)
+        } else {
+            previousPlayer()
         }
-        currentScoreIndex =
-            Math.floorMod(currentScoreIndex + valueToAdd, numberOfHoles * numberOfPlayers)
-        // Other option, but this does not allow to use "Previous" on zero index.
-        // currentScoreIndex = (currentScoreIndex + valueToAdd).rem(numberOfHoles*numberOfPlayers)
-        refresh()
     }
-     */
+
+    fun nextScore() {
+        val indexOfCurrentPlayer = playerIds.indexOf(scoreIdLiveData.value!!.first)
+        if (indexOfCurrentPlayer == playerIds.count() - 1) { // Last player on current hole
+            nextHole()
+        } else {
+            nextPlayer()
+        }
+    }
 
     /*
-    TODO - Next player BUT current hole / is this needed?
+    Previous player BUT current hole.
+     */
+    fun previousPlayer() {
+        val indexOfCurrentPlayer = playerIds.indexOf(scoreIdLiveData.value!!.first)
+        val newPlayerIndex = Math.floorMod(indexOfCurrentPlayer - 1, playerIds.count())
+        val newPlayerId = playerIds[newPlayerIndex]
+        setScoreId(newPlayerId, scoreIdLiveData.value!!.second)
+    }
+
+    /*
+    Next player BUT current hole.
      */
     fun nextPlayer() {
-        refresh()
+        val indexOfCurrentPlayer = playerIds.indexOf(scoreIdLiveData.value!!.first)
+        val newPlayerIndex = Math.floorMod(indexOfCurrentPlayer + 1, playerIds.count())
+        val newPlayerId = playerIds[newPlayerIndex]
+        setScoreId(newPlayerId, scoreIdLiveData.value!!.second)
     }
 
     /*
-    TODO - Set index to next hole BUT current player / is this needed?
+    Previous hole and first player.
+     */
+    fun previousHole() {
+        val indexOfCurrentHole = holeIds.indexOf(scoreIdLiveData.value!!.second)
+        val newHoleIndex = Math.floorMod(indexOfCurrentHole - 1, holeIds.count())
+        val newHoleId = holeIds[newHoleIndex]
+        setScoreId(playerIds.first(), newHoleId)
+    }
+
+    /*
+    Next hole first player.
      */
     fun nextHole() {
-        refresh()
+        val indexOfCurrentHole = holeIds.indexOf(scoreIdLiveData.value!!.second)
+        val newHoleIndex = Math.floorMod(indexOfCurrentHole + 1, holeIds.count())
+        val newHoleId = holeIds[newHoleIndex]
+        setScoreId(playerIds.first(), newHoleId)
     }
 
     /*

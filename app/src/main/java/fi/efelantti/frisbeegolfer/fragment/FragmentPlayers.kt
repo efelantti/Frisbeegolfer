@@ -10,16 +10,18 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.*
+import fi.efelantti.frisbeegolfer.databinding.FragmentPlayersBinding
 import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
 class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
 
+    private var _binding: FragmentPlayersBinding? = null
+    private val binding get() = _binding!!
     private val playerViewModel: PlayerViewModel by activityViewModels {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
-
     private val TAG = "FragmentPlayers"
     private lateinit var adapter: PlayerListAdapter
     private var actionMode: ActionMode? = null
@@ -75,8 +77,9 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentPlayersBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_players, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(
@@ -84,13 +87,10 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-        //(requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.players_activity_title)
 
         adapter = PlayerListAdapter(requireContext(), this)
-        recyclerView = view.findViewById(
-            R.id.recyclerview
-        )
-        emptyView = view.findViewById(R.id.empty_view)
+        recyclerView = binding.recyclerview
+        emptyView = binding.emptyView
         recyclerView.setEmptyView(emptyView)
 
         recyclerView.adapter = adapter
@@ -100,12 +100,13 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
             players?.let { adapter.setPlayers(it) }
         })
 
-        fab = view.findViewById(R.id.fab)
+        fab = binding.fab
         fab.setOnClickListener {
             showNewPlayerDialog()
         }
     }
 
+    // TODO - Navigation component
     private fun showNewPlayerDialog() {
         val fm: FragmentManager = parentFragmentManager
         val dialog: FragmentNewPlayer =
@@ -131,5 +132,10 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
                 else -> false
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

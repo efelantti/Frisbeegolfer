@@ -9,40 +9,41 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerBinding
 import fi.efelantti.frisbeegolfer.model.Player
 
 
 class PlayerListAdapter internal constructor(
     context: Context,
-    onClickListener: PlayerListAdapter.ListItemClickListener
+    onClickListener: ListItemClickListener
 ) : RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolder>() {
 
     interface ListItemClickListener {
         fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
     }
 
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val res: Resources = context.resources
     private var players = emptyList<Player>() // Cached copy of words
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
-    private val mOnClickListener: PlayerListAdapter.ListItemClickListener = onClickListener
+    private val mOnClickListener: ListItemClickListener = onClickListener
 
-    inner class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class PlayerViewHolder(binding: RecyclerviewPlayerBinding) :
+        RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
-        val playerCard: CardView = itemView.findViewById(R.id.playerCard)
+        val playerCard: CardView = binding.playerCard
         val originalBackgroundColor: Int = playerCard.cardBackgroundColor.defaultColor
-        val playerItemViewName: TextView = itemView.findViewById(R.id.txtFullName)
-        val playerItemViewEmail: TextView = itemView.findViewById(R.id.txtEmail)
+        val playerItemViewName: TextView = binding.txtFullName
+        val playerItemViewEmail: TextView = binding.txtEmail
 
         init {
             itemView.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
-            val position: Int = getAdapterPosition()
-            var previousSelectedPosition = selectedPosition
-            var shouldStartActionMode: Boolean
+            val position: Int = bindingAdapterPosition
+            val previousSelectedPosition = selectedPosition
+            val shouldStartActionMode: Boolean
             if (selectedPosition == position) {
                 resetSelectedPosition()
                 shouldStartActionMode = false
@@ -57,8 +58,9 @@ class PlayerListAdapter internal constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_player, parent, false)
-        return PlayerViewHolder(itemView)
+        val binding =
+            RecyclerviewPlayerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PlayerViewHolder(binding)
     }
 
     // TODO - Change setBackgroundColor to Select?
@@ -78,8 +80,8 @@ class PlayerListAdapter internal constructor(
     }
 
     internal fun getSelectedPlayer(): Player? {
-        if (selectedPosition == defaultSelectedPosition) return null
-        else return players[selectedPosition]
+        return if (selectedPosition == defaultSelectedPosition) null
+        else players[selectedPosition]
     }
 
     internal fun setPlayers(players: List<Player>) {
@@ -88,22 +90,11 @@ class PlayerListAdapter internal constructor(
     }
 
     internal fun resetSelectedPosition() {
-        var previousSelectedPosition = selectedPosition
+        val previousSelectedPosition = selectedPosition
         selectedPosition = defaultSelectedPosition
         notifyItemChanged(previousSelectedPosition)
         notifyItemChanged(selectedPosition)
     }
-
-    /*
-    private fun fetchColorOnBackground(): Int {
-        val typedValue = TypedValue()
-        val a: TypedArray =
-            context.obtainStyledAttributes(typedValue.data, intArrayOf(R.attr.colorPrimary))
-        val color = a.getColor(0, 0)
-        a.recycle()
-        return color
-    }
-    */
 
     override fun getItemCount() = players.size
 }
