@@ -3,8 +3,6 @@
     <dimen name="button_margin_horizontal">16dp</dimen>
     <dimen name="button_margin_between">8dp</dimen>
     <dimen name="button_height">64dp</dimen>
-    <dimen name="big_padding">16dp</dimen>
     <dimen name="min_height">48dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="font_size_subheader">16sp</dimen>
+    <dimen name="font_size_sub_header">16sp</dimen>
     </resources>

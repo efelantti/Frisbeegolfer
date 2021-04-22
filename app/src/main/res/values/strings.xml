@@ -22,7 +22,6 @@
     <string name="add_player">Add player</string>
 
     <!-- Text for save button. -->
-    <string name="button_save">Save</string>
 
     <!-- Formatting for how email is displayed. Includes the label. -->
     <string name="email_descriptor">Email: <xliff:g id="email" example="example@example.com">%s</xliff:g></string>
@@ -43,7 +42,6 @@
     <string name="text_activity_new_player_title_edit">Edit player</string>
 
     <!-- Label for cancel button. -->
-    <string name="button_cancel">Cancel</string>
 
     <!-- Label for a positive confirmation button. -->
     <string name="button_yes">Yes</string>
@@ -76,7 +74,6 @@
     <string name="player_selected">Player selected</string>
 
     <!-- Name of the close action in the appbar. -->
-    <string name="action_close">Close</string>
 
     <!-- Name of the save action in the appbar. -->
     <string name="action_save">Save</string>
@@ -148,7 +145,6 @@
     <string name="hint_word_length">Length (meters)</string>
 
     <!-- Label for field "Par". -->
-    <string name="hint_word_par">Par</string>
 
     <!-- Header for field "Hole number". -->
     <string name="hole_number_header">#</string>
@@ -193,7 +189,7 @@
     <string name="continue_round_activity_title">Select a round to continue</string>
     <string name="score_title">Score</string>
 
-    <!-- String that is displayed on the app bar when user has selecte at least one player for a round. -->
+    <!-- String that is displayed on the app bar when user has selected at least one player for a round. -->
     <plurals name="numberPlayersSelected">
         <item quantity="one">%d player selected</item>
         <item quantity="other">%d players selected</item>

@@ -21,7 +21,7 @@ class FragmentNavigationScreen : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentNavigationScreenBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root

@@ -53,7 +53,7 @@ class FragmentNewPlayer : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentNewPlayerBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root

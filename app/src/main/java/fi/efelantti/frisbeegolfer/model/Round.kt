@@ -3,7 +3,7 @@ package fi.efelantti.frisbeegolfer.model
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -20,11 +20,4 @@ class Round(
             && courseId == other.courseId
 
     override fun hashCode() = Objects.hash(dateStarted, courseId)
-
-    companion object {
-        fun equals(round1: Round, round2: Round): Boolean {
-            //TODO - Implement if needed
-            throw NotImplementedError()
-        }
-    }
 }

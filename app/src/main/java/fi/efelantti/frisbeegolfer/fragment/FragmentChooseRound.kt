@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
@@ -67,7 +66,7 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentChooseRoundBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
@@ -87,7 +86,7 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        roundViewModel.allRounds.observe(viewLifecycleOwner, Observer { round ->
+        roundViewModel.allRounds.observe(viewLifecycleOwner, { round ->
             round?.let { adapter.setRounds(it) }
         })
     }

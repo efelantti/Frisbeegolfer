@@ -14,9 +14,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 //TODO - Consider export schema
-@Database(entities = arrayOf(Player::class, Course::class, Hole::class, Round::class, Score::class), version = 13, exportSchema = false)
+@Database(
+    entities = [Player::class, Course::class, Hole::class, Round::class, Score::class],
+    version = 13,
+    exportSchema = false
+)
 @TypeConverters(Converters::class)
-public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
+abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
 
     abstract fun playerDao(): PlayerDao
     abstract fun courseDao(): CourseDao
@@ -59,28 +63,28 @@ public abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
 
         override fun onOpen(db: SupportSQLiteDatabase) {
             super.onOpen(db)
-            INSTANCE?.let { database ->
+            INSTANCE?.let {
                 scope.launch {
-                    populateDatabase(database.roundDao())
+                    //populateDatabase(database.roundDao())
                 }
             }
         }
 
-        suspend fun populateDatabase(roundDao: RoundDao) {
+        /*suspend fun populateDatabase(roundDao: RoundDao) {
 
-            /*var round = Round()
+            var round = Round()
             roundDao.insert(round)
 
             round = Round(dateStarted = OffsetDateTime.now())
             roundDao.insert(round)
 
             round = Round(dateStarted = OffsetDateTime.of(2020, 6, 1, 13, 37, 0, 0, ZoneOffset.of("+02:00")))
-            roundDao.insert(round)*/
+            roundDao.insert(round)
             // Examples in case needed to add.
             //var player = Player(firstName = "Esa", lastName = "Esimerkki", email = "esa@esimerkki.com", nickName = "")
             //playerDao.insert(player)
             //player = Player(firstName = "Maisa", lastName = "Mallikappale", email = "maisa@mallikappale.com", nickName = "")
             //playerDao.insert(player)
-        }
+        }*/
     }
 }

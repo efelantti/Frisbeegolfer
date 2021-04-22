@@ -6,7 +6,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.*
@@ -22,7 +21,6 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
     private val playerViewModel: PlayerViewModel by activityViewModels {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
-    private val _tag = "FragmentPlayers"
     private lateinit var adapter: PlayerListAdapter
     private var actionMode: ActionMode? = null
     private lateinit var recyclerView: EmptyRecyclerView
@@ -76,7 +74,7 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentPlayersBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
@@ -96,7 +94,7 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        playerViewModel.allPlayers.observe(viewLifecycleOwner, Observer { players ->
+        playerViewModel.allPlayers.observe(viewLifecycleOwner, { players ->
             players?.let { adapter.setPlayers(it) }
         })
 

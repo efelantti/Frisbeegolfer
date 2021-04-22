@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
-    private val coroutineScopeProvider: CoroutineScope? = null,
+    coroutineScopeProvider: CoroutineScope? = null,
     private val repository: IRepository
 ) : ViewModel() {
 

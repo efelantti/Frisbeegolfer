@@ -76,7 +76,7 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCoursesBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root

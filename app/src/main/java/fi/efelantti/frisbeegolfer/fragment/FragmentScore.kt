@@ -45,7 +45,7 @@ class FragmentScore : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentScoreBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
@@ -57,7 +57,7 @@ class FragmentScore : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        testView = binding.fragmentScoreTestTextview
+        testView = binding.fragmentScoreTestTextView
         playerNameView = binding.fragmentScoreTestCurrentPlayer
         holeNumberView = binding.fragmentScoreTestCurrentHole
         holeParView = binding.fragmentScoreTestCurrentHolePar
@@ -68,7 +68,7 @@ class FragmentScore : Fragment() {
         nextHoleButton = binding.fragmentScoreTestButtonNextHole
         incrementIndexButton = binding.fragmentScoreTestButtonIncrementIndex
         decrementIndexButton = binding.fragmentScoreTestButtonDecrementIndex
-        setScoreEditText = binding.fragmentScoreTestSetScoreEdittext
+        setScoreEditText = binding.fragmentScoreTestSetScoreEditText
         setScoreButton = binding.fragmentScoreTestSetScoreButton
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->

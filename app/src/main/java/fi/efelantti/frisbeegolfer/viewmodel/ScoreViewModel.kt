@@ -37,7 +37,7 @@ class ScoreViewModel(
         return repository.getHoleStatistics(playerId, holeId)
     }
 
-    fun setScoreId(playerId: Long, holeId: Long) {
+    private fun setScoreId(playerId: Long, holeId: Long) {
         scoreIdLiveData.value = Pair(playerId, holeId)
     }
 
@@ -51,11 +51,12 @@ class ScoreViewModel(
     }
 
     /*
+    /*
     Used to force refresh the observers of the LiveData object.
      */
     private fun refresh() {
         (currentRound as RefreshableLiveData).refresh()
-    }
+    }*/
 
     fun update(score: Score) = coroutineScope.launch {
         repository.update(score)

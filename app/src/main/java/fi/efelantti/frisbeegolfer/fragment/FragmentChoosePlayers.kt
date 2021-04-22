@@ -72,7 +72,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentChoosePlayersBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root

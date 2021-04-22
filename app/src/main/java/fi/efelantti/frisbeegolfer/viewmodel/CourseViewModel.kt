@@ -11,7 +11,10 @@ import fi.efelantti.frisbeegolfer.model.Hole
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class CourseViewModel(private val coroutineScopeProvider: CoroutineScope? = null, private val repository: IRepository) : ViewModel() {
+class CourseViewModel(
+    coroutineScopeProvider: CoroutineScope? = null,
+    private val repository: IRepository
+) : ViewModel() {
 
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
     val allCourses: LiveData<List<CourseWithHoles>> = repository.allCourses

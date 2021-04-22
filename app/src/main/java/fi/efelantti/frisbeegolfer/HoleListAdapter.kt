@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewHoleBinding
 import fi.efelantti.frisbeegolfer.model.Hole
@@ -19,7 +18,6 @@ class HoleListAdapter internal constructor(
 
     inner class HoleViewHolder(val binding: RecyclerviewHoleBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val holeRow: CardView = binding.holeCard
         val holeIndexTextView: TextView = binding.recyclerViewHoleItemHoleIndex
         val decrementButton: Button = binding.decrementPar
         val incrementButton: Button = binding.incrementPar

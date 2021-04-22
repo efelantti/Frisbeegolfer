@@ -58,7 +58,7 @@ class FragmentNewCourse : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentNewCourseBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root

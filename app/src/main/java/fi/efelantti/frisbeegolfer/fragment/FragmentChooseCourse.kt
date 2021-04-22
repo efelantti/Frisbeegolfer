@@ -63,7 +63,7 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentChooseACourseBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root

@@ -13,13 +13,15 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RoundID: " />
+            android:text="RoundID: "
+            tools:ignore="HardcodedText" />
 
         <TextView
-            android:id="@+id/fragment_score_test_textview"
+            android:id="@+id/fragment_score_test_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Test" />
+            android:text="Test"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
@@ -30,13 +32,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Player: " />
+            android:text="Player: "
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/fragment_score_test_currentPlayer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Player" />
+            android:text="Player"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
@@ -46,13 +50,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hole number: " />
+            android:text="Hole number: "
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/fragment_score_test_currentHole"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hole #" />
+            android:text="Hole #"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
@@ -62,13 +68,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Par: " />
+            android:text="Par: "
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/fragment_score_test_currentHolePar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Par" />
+            android:text="Par"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
@@ -78,13 +86,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Best: " />
+            android:text="Best: "
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/fragment_score_test_currentHoleBest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Best" />
+            android:text="Best"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
@@ -94,13 +104,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Average: " />
+            android:text="Average: "
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/fragment_score_test_currentHoleAverage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Average" />
+            android:text="Average"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
@@ -110,13 +122,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Latest: " />
+            android:text="Latest: "
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/fragment_score_test_currentHoleLatest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Latest" />
+            android:text="Latest"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <Button
@@ -124,14 +138,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="Next player" />
+        android:text="Next player"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/fragment_score_test_button_next_hole"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="Next hole" />
+        android:text="Next hole"
+        tools:ignore="HardcodedText" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -143,14 +159,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Next" />
+            android:text="Next"
+            tools:ignore="ButtonStyle,HardcodedText" />
 
         <Button
             android:id="@+id/fragment_score_test_button_decrement_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Previous" />
+            android:text="Previous"
+            tools:ignore="ButtonStyle,HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
@@ -158,16 +176,18 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/fragment_score_test_set_score_edittext"
+            android:id="@+id/fragment_score_test_set_score_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:inputType="number"
+            tools:ignore="Autofill,LabelFor" />
 
         <Button
             android:id="@+id/fragment_score_test_set_score_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Set score"></Button>
+            android:text="Set score"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 </LinearLayout>

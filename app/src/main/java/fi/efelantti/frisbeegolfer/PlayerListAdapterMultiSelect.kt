@@ -3,7 +3,9 @@ package fi.efelantti.frisbeegolfer
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +14,7 @@ import fi.efelantti.frisbeegolfer.model.Player
 
 class PlayerListAdapterMultiSelect internal constructor(
     context: Context,
-    onClickListener: PlayerListAdapterMultiSelect.ListItemClickListener
+    onClickListener: ListItemClickListener
 ) : RecyclerView.Adapter<PlayerListAdapterMultiSelect.PlayerViewHolder>() {
 
     interface ListItemClickListener {
@@ -23,7 +25,7 @@ class PlayerListAdapterMultiSelect internal constructor(
     private val res: Resources = context.resources
     private var players = emptyList<Player>() // Cached copy of words
     var selectedIndeces = mutableListOf<Int>()
-    private val mOnClickListener: PlayerListAdapterMultiSelect.ListItemClickListener = onClickListener
+    private val mOnClickListener: ListItemClickListener = onClickListener
 
     inner class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val playerCard: CardView = itemView.findViewById(R.id.playerCard)
@@ -36,19 +38,18 @@ class PlayerListAdapterMultiSelect internal constructor(
         }
 
         override fun onClick(v: View?) {
-            val position: Int = getAdapterPosition()
-            val playerAtSelectedPosition = players[position]
-            var shouldStartActionMode: Boolean
-            if (selectedIndeces.contains(position)) {
+            val position: Int = bindingAdapterPosition
+            players[position]
+            val shouldStartActionMode: Boolean
+            (if (selectedIndeces.contains(position)) {
                 selectedIndeces.remove(position)
                 notifyItemChanged(position)
-                if (selectedIndeces.count() == 0) shouldStartActionMode = false
-                else shouldStartActionMode = true
+                selectedIndeces.count() != 0
             } else {
                 selectedIndeces.add(position)
                 notifyItemChanged(position)
-                shouldStartActionMode = true
-            }
+                true
+            }).also { shouldStartActionMode = it }
             mOnClickListener.onListItemClick(position, shouldStartActionMode)
         }
     }
@@ -82,26 +83,13 @@ class PlayerListAdapterMultiSelect internal constructor(
         notifyDataSetChanged()
     }
 
-    internal fun resetSelectedPlayers()
-    {
-        var previousSelectedIndeces = selectedIndeces
-        selectedIndeces = mutableListOf<Int>()
-        for(index in previousSelectedIndeces)
-        {
+    internal fun resetSelectedPlayers() {
+        val previousSelectedIndeces = selectedIndeces
+        selectedIndeces = mutableListOf()
+        for (index in previousSelectedIndeces) {
             notifyItemChanged(index)
         }
     }
-
-    /*
-    private fun fetchColorOnBackground(): Int {
-        val typedValue = TypedValue()
-        val a: TypedArray =
-            context.obtainStyledAttributes(typedValue.data, intArrayOf(R.attr.colorPrimary))
-        val color = a.getColor(0, 0)
-        a.recycle()
-        return color
-    }
-    */
 
     override fun getItemCount() = players.size
 }
