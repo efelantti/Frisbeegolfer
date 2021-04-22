@@ -90,10 +90,24 @@
         tools:layout="@layout/fragment_new_course"
         android:id="@+id/fragmentNewCourse"
         android:name="fi.efelantti.frisbeegolfer.fragment.FragmentNewCourse"
-        android:label="FragmentNewCourse" />
+        android:label="FragmentNewCourse">
+        <argument
+            android:name="actionType"
+            app:argType="string" />
+        <argument
+            android:name="courseId"
+            app:argType="long" />
+    </dialog>
     <dialog
         tools:layout="@layout/fragment_new_player"
         android:id="@+id/fragmentNewPlayer"
-        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentNewPlayer"
-        android:label="FragmentNewPlayer" />
+        android:label="FragmentNewPlayer"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentNewPlayer">
+        <argument
+            android:name="actionType"
+            app:argType="string" />
+        <argument
+            android:name="playerId"
+            app:argType="long" />
+    </dialog>
 </navigation>

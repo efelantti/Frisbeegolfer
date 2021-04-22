@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.databinding.FragmentPlayersBinding
-import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
@@ -57,11 +56,17 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
 
         private fun editSelectedCourse() {
             val player = adapter.getSelectedPlayer()
-                ?: throw java.lang.IllegalArgumentException("No course was selected.")
-            val fm: FragmentManager = parentFragmentManager
-            val dialog: FragmentNewPlayer =
-                FragmentNewPlayer.newInstance(NewPlayerAction.EDIT.toString(), player)
-            dialog.show(fm, "fragment_newPlayer")
+                ?: throw java.lang.IllegalArgumentException("No player was selected.")
+            //val fm: FragmentManager = parentFragmentManager
+            //val dialog: FragmentNewPlayer =
+            //    FragmentNewPlayer.newInstance(NewPlayerAction.EDIT.toString(), player)
+            //dialog.show(fm, "fragment_newPlayer")
+            val action =
+                FragmentPlayersDirections.actionFragmentPlayersToFragmentNewPlayer(
+                    NewPlayerAction.EDIT.toString(),
+                    player.id
+                )
+            findNavController().navigate(action)
         }
 
         // Called when the user exits the action mode
@@ -106,13 +111,12 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
 
     // TODO - Navigation component
     private fun showNewPlayerDialog() {
-        val fm: FragmentManager = parentFragmentManager
-        val dialog: FragmentNewPlayer =
-            FragmentNewPlayer.newInstance(
+        val action =
+            FragmentPlayersDirections.actionFragmentPlayersToFragmentNewPlayer(
                 NewPlayerAction.ADD.toString(),
-                Player()
+                -1L
             )
-        dialog.show(fm, "fragment_newPlayer")
+        findNavController().navigate(action)
     }
 
     override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
@@ -125,9 +129,7 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
                 null -> {
                     // Start the CAB using the ActionMode.Callback defined above
                     actionMode = activity?.startActionMode(actionModeCallback)
-                    true
                 }
-                else -> false
             }
         }
     }

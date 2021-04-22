@@ -112,9 +112,7 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
                 null -> {
                     // Start the CAB using the ActionMode.Callback defined above
                     actionMode = activity?.startActionMode(actionModeCallback)
-                    true
                 }
-                else -> false
             }
         }
     }

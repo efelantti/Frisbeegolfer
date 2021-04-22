@@ -114,9 +114,7 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
                 null -> {
                     // Start the CAB using the ActionMode.Callback defined above
                     actionMode = activity?.startActionMode(actionModeCallback)
-                    true
                 }
-                else -> false
             }
         }
     }

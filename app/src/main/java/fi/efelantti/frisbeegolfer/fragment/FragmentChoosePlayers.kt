@@ -120,9 +120,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
                 null -> {
                     // Start the CAB using the ActionMode.Callback defined above
                     actionMode = activity?.startActionMode(actionModeCallback)
-                    true
                 }
-                else -> false
             }
             val selectedPlayersCount = adapter.selectedIndeces.count()
             val title = resources.getQuantityString(
