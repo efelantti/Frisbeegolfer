@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.util.Patterns
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toolbar
@@ -36,6 +34,7 @@ class FragmentNewPlayer : DialogFragment() {
     private lateinit var nameView: EditText
     private lateinit var emailView: EditText
     private lateinit var playerData: Player
+    private var isFinalized = false
 
     override fun getTheme(): Int {
         return R.style.DialogTheme
@@ -48,6 +47,72 @@ class FragmentNewPlayer : DialogFragment() {
         _binding = FragmentNewPlayerBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.appbar_dialog, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val saveMenuItem = menu.findItem(R.id.action_save)
+        saveMenuItem.isEnabled = isFinalized
+        super.onPrepareOptionsMenu(menu)
+    }
+
+    /*
+    Passed to onClickHandler for save menu item.
+     */
+    private fun saveData(oldPlayerData: Player?, actionCategory: NewPlayerAction) {
+        val requiredFields: List<EditText> = listOf(nameView)
+        if (areValidFields(requiredFields) and isValidEmail(emailView)) {
+
+            val name = nameView.text.toString().trim()
+            val email = emailView.text.toString().trim()
+
+            playerData = Player(
+                name = name,
+                email = email
+            )
+
+            if (actionCategory == NewPlayerAction.EDIT) {
+                if (oldPlayerData == null) throw IllegalArgumentException("Cannot edit player data - it was null.")
+                else playerData.id =
+                    oldPlayerData.id // Take id from old player in order to update it to database.
+                if (Player.equals(
+                        playerData,
+                        oldPlayerData
+                    )
+                ) {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.player_data_not_edited),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    AlertDialog.Builder(context)
+                        .setTitle(getString(R.string.dialog_title_overwrite))
+                        .setMessage(getString(R.string.dialog_message_confirm_overwrite)) // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(
+                            R.string.button_yes
+                        ) { _, _ ->
+                            exitWithResult(actionCategory)
+                        } // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton(R.string.button_no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show()
+                }
+            } else {
+                exitWithResult(actionCategory)
+            }
+        } else {
+            Toast.makeText(
+                context,
+                getString(R.string.error_message_requiredFields),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     override fun onViewCreated(
@@ -67,72 +132,27 @@ class FragmentNewPlayer : DialogFragment() {
 
         val oldPlayerId = args.playerId
         playerViewModel.getPlayerById(oldPlayerId).observe(viewLifecycleOwner) { player ->
-            if (oldPlayerId == -1L) {
+            if (actionCategory == NewPlayerAction.ADD) {
+                isFinalized = true
+                requireActivity().invalidateOptionsMenu()
                 toolbar.title = getString(R.string.text_activity_new_player_title_add)
             } else if (player != null) {
+                isFinalized = true
+                requireActivity().invalidateOptionsMenu()
                 toolbar.title = getString(R.string.text_activity_new_player_title_edit)
                 nameView.setText(player.name)
                 emailView.setText(player.email)
             }
-        }
-
-        toolbar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_save -> {
-                    val requiredFields: List<EditText> = listOf(nameView)
-                    if (areValidFields(requiredFields) and isValidEmail(emailView)) {
-
-                        val name = nameView.text.toString().trim()
-                        val email = emailView.text.toString().trim()
-
-                        playerData = Player(
-                            name = name,
-                            email = email
-                        )
-
-                        if (actionCategory == NewPlayerAction.EDIT) {
-                            if (oldPlayerData == null) throw IllegalArgumentException("Cannot edit player data - it was null.")
-                            else playerData.id =
-                                oldPlayerData.id // Take id from old player in order to update it to database.
-                            if (Player.equals(
-                                    playerData,
-                                    oldPlayerData
-                                )
-                            ) {
-                                Toast.makeText(
-                                    context,
-                                    getString(R.string.player_data_not_edited),
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            } else {
-                                AlertDialog.Builder(context)
-                                    .setTitle(getString(R.string.dialog_title_overwrite))
-                                    .setMessage(getString(R.string.dialog_message_confirm_overwrite)) // Specifying a listener allows you to take an action before dismissing the dialog.
-                                    // The dialog is automatically dismissed when a dialog button is clicked.
-                                    .setPositiveButton(
-                                        R.string.button_yes
-                                    ) { dialog, which ->
-                                        exitWithResult(actionCategory)
-                                    } // A null listener allows the button to dismiss the dialog and take no further action.
-                                    .setNegativeButton(R.string.button_no, null)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show()
-                            }
-                        } else {
-                            exitWithResult(actionCategory)
-                        }
-                    } else {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.error_message_requiredFields),
-                            Toast.LENGTH_SHORT
-                        ).show()
+            toolbar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_save -> {
+                        saveData(player, actionCategory)
+                        return@OnMenuItemClickListener true
                     }
-                    return@OnMenuItemClickListener true
                 }
-            }
-            false
-        })
+                false
+            })
+        }
         toolbar.setNavigationOnClickListener {
             AlertDialog.Builder(context)
                 .setTitle(getString(R.string.dialog_title_cancel))
@@ -140,7 +160,7 @@ class FragmentNewPlayer : DialogFragment() {
                 // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton(
                     R.string.button_yes
-                ) { dialog, which ->
+                ) { _, _ ->
                     dismiss()
                 } // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton(R.string.button_no, null)

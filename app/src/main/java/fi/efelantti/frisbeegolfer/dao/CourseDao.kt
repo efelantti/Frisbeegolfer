@@ -28,7 +28,7 @@ interface CourseDao {
     suspend fun delete(course: Course)
 
     @Update
-    fun update(course: Course)
+    suspend fun update(course: Course)
 
     @Transaction
     @Query("SELECT * FROM Course")

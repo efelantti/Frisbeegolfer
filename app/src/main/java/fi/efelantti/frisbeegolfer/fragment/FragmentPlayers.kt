@@ -57,10 +57,6 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
         private fun editSelectedCourse() {
             val player = adapter.getSelectedPlayer()
                 ?: throw java.lang.IllegalArgumentException("No player was selected.")
-            //val fm: FragmentManager = parentFragmentManager
-            //val dialog: FragmentNewPlayer =
-            //    FragmentNewPlayer.newInstance(NewPlayerAction.EDIT.toString(), player)
-            //dialog.show(fm, "fragment_newPlayer")
             val action =
                 FragmentPlayersDirections.actionFragmentPlayersToFragmentNewPlayer(
                     NewPlayerAction.EDIT.toString(),

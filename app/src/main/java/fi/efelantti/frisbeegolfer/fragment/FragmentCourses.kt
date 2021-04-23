@@ -7,12 +7,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.databinding.FragmentCoursesBinding
-import fi.efelantti.frisbeegolfer.model.Course
-import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
@@ -60,10 +59,12 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
         private fun editSelectedCourse() {
             val course = adapter.getSelectedCourse()
                 ?: throw java.lang.IllegalArgumentException("No course was selected.")
-            val fm: FragmentManager = parentFragmentManager
-            val dialog: FragmentNewCourse =
-                FragmentNewCourse.newInstance(NewCourseAction.EDIT.toString(), course)
-            dialog.show(fm, "fragment_newPlayer")
+            val action =
+                FragmentCoursesDirections.actionFragmentCoursesToFragmentNewCourse(
+                    NewCourseAction.EDIT.toString(),
+                    course.course.courseId
+                )
+            findNavController().navigate(action)
         }
 
         // Called when the user exits the action mode
@@ -106,15 +107,14 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
         }
     }
 
-    // TODO - Open with Navigation component
     private fun showNewCourseDialog() {
         val fm: FragmentManager = parentFragmentManager
-        val dialog: FragmentNewCourse =
-            FragmentNewCourse.newInstance(
+        val action =
+            FragmentCoursesDirections.actionFragmentCoursesToFragmentNewCourse(
                 NewCourseAction.ADD.toString(),
-                CourseWithHoles(Course(), emptyList())
+                -1L
             )
-        dialog.show(fm, "fragment_newCourse")
+        findNavController().navigate(action)
     }
 
     override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
