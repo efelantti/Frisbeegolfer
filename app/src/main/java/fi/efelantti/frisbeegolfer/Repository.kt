@@ -41,6 +41,8 @@ interface IRepository {
         playerId: Long,
         holeId: Long
     ): LiveData<ScoreWithPlayerAndHole>
+
+    fun getPlayerById(id: Long): LiveData<Player>
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -120,5 +122,9 @@ class Repository(// Room executes all queries on a separate thread.
         holeId: Long
     ): LiveData<ScoreWithPlayerAndHole> {
         return roundDao.getScore(roundId, playerId, holeId)
+    }
+
+    override fun getPlayerById(id: Long): LiveData<Player> {
+        return playerDao.getPlayerById(id)
     }
 }

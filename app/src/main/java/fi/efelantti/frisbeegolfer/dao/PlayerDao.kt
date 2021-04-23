@@ -21,4 +21,7 @@ interface PlayerDao {
 
     @Update
     suspend fun update(player: Player)
+
+    @Query("SELECT * from Player WHERE id=:id")
+    fun getPlayerById(id: Long): LiveData<Player>
 }

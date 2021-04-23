@@ -26,6 +26,10 @@ class PlayerViewModel(
         repository.insert(player)
     }
 
+    fun getPlayerById(id: Long): LiveData<Player> {
+        return repository.getPlayerById(id)
+    }
+
     /**
      * Launching a new coroutine to update the data in a non-blocking way
      */

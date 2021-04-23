@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.NewPlayerAction
 import fi.efelantti.frisbeegolfer.R
@@ -27,6 +28,7 @@ class FragmentNewPlayer : DialogFragment() {
 
     private var _binding: FragmentNewPlayerBinding? = null
     private val binding get() = _binding!!
+    private val args: FragmentNewPlayerArgs by navArgs()
     private val playerViewModel: PlayerViewModel by activityViewModels {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
@@ -34,17 +36,6 @@ class FragmentNewPlayer : DialogFragment() {
     private lateinit var nameView: EditText
     private lateinit var emailView: EditText
     private lateinit var playerData: Player
-
-    companion object {
-        fun newInstance(action: String, player: Player): FragmentNewPlayer {
-            val frag = FragmentNewPlayer()
-            val args = Bundle()
-            args.putParcelable("playerData", player)
-            args.putString("action", action)
-            frag.arguments = args
-            return frag
-        }
-    }
 
     override fun getTheme(): Int {
         return R.style.DialogTheme
@@ -69,20 +60,20 @@ class FragmentNewPlayer : DialogFragment() {
         toolbar.setNavigationIcon(R.drawable.ic_close)
         toolbar.inflateMenu(R.menu.appbar_dialog)
 
-        val actionCategory =
-            requireArguments().getString("action")?.let { NewPlayerAction.valueOf(it) }
+        val actionCategory = NewPlayerAction.valueOf(args.actionType)
 
         nameView = binding.editName
         emailView = binding.editEmail
 
-        val oldPlayerData = requireArguments().getParcelable<Player>("playerData")
-
-        if (actionCategory == NewPlayerAction.ADD) {
-            toolbar.title = getString(R.string.text_activity_new_player_title_add)
-        } else if (actionCategory == NewPlayerAction.EDIT) {
-            toolbar.title = getString(R.string.text_activity_new_player_title_edit)
-            nameView.setText(oldPlayerData?.name)
-            emailView.setText(oldPlayerData?.email)
+        val oldPlayerId = args.playerId
+        playerViewModel.getPlayerById(oldPlayerId).observe(viewLifecycleOwner) { player ->
+            if (oldPlayerId == -1L) {
+                toolbar.title = getString(R.string.text_activity_new_player_title_add)
+            } else if (player != null) {
+                toolbar.title = getString(R.string.text_activity_new_player_title_edit)
+                nameView.setText(player.name)
+                emailView.setText(player.email)
+            }
         }
 
         toolbar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item ->
