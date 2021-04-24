@@ -196,13 +196,48 @@ class RoundDaoTests {
 
     @Test
     @Throws(Exception::class)
+    fun getHoleStatisticsWithNoScores() = runBlocking {
+        val roundWithId = roundDao.getRoundWithId(roundId)
+
+        val result = roundWithId.getValueBlocking()
+            ?: throw InvalidObjectException("null returned as players")
+        result.scores.forEach { roundDao.delete(it.score) }
+
+        val roundIds = listOf(
+            OffsetDateTime.of(2010, 12, 3, 1, 0, 0, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2020, 11, 2, 14, 0, 0, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2000, 12, 1, 2, 0, 0, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2015, 10, 11, 7, 0, 0, 0, ZoneOffset.UTC),
+            OffsetDateTime.of(2001, 2, 1, 5, 0, 0, 0, ZoneOffset.UTC)
+        )
+        val rounds = listOf(
+            Round(roundIds[0], courseId),
+            Round(roundIds[1], courseId),
+            Round(roundIds[2], courseId),
+            Round(roundIds[3], courseId),
+            Round(roundIds[4], courseId)
+        )
+        rounds.forEach { roundDao.insert(it) }
+
+        val holeStatisticsLD = roundDao.getHoleStatistics(playerId, holeIds[0])
+        val holeStatistics = holeStatisticsLD.getValueBlocking()
+            ?: throw InvalidObjectException("null returned as courses")
+
+        assertThat(holeStatistics.avgResult, equalTo(null))
+        assertThat(holeStatistics.bestResult, equalTo(null))
+        assertThat(holeStatistics.latestResult, equalTo(null))
+
+    }
+
+    @Test
+    @Throws(Exception::class)
     fun getHoleStatistics() = runBlocking {
         val roundWithId = roundDao.getRoundWithId(roundId)
 
         // the .getValueBlocking cannot be run on the background thread - needs the InstantTaskExecutorRule
         val result = roundWithId.getValueBlocking()
             ?: throw InvalidObjectException("null returned as players")
-        result.scores.forEach{roundDao.delete(it.score)}
+        result.scores.forEach { roundDao.delete(it.score) }
 
         val roundIds = listOf(
             OffsetDateTime.of(2010, 12,3, 1,0,0,0,ZoneOffset.UTC),

@@ -188,6 +188,7 @@
     <!-- Title for activity Continue round. -->
     <string name="continue_round_activity_title">Select a round to continue</string>
     <string name="score_title">Score</string>
+    <string name="notApplicable">N/A</string>
 
     <!-- String that is displayed on the app bar when user has selected at least one player for a round. -->
     <plurals name="numberPlayersSelected">

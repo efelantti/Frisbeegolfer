@@ -57,7 +57,7 @@ class CourseDaoTests {
     @After
     @Throws(IOException::class)
     fun closeDB() {
-        // TODO - Can't close the database - otherwise test crashes... See https://stackoverflow.com/questions/61044457/android-room-instrumented-tests-crashing-when-properly-closing-db-connection
+        // Can't close the database - otherwise test crashes... See https://stackoverflow.com/questions/61044457/android-room-instrumented-tests-crashing-when-properly-closing-db-connection
         // db.close()
     }
 

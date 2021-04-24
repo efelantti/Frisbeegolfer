@@ -21,9 +21,6 @@ interface CourseDao {
     @Insert
     suspend fun insert(course: Course): Long
 
-    //TODO - Figure out how to delete a course.
-    //TODO - When deleting a course, also its holes should be deleted.
-    //TODO - What happens to stats when a course is deleted?
     @Delete
     suspend fun delete(course: Course)
 
@@ -42,7 +39,6 @@ interface CourseDao {
     @Query("SELECT * FROM Hole")
     fun getHoles(): LiveData<List<Hole>>
 
-    //TODO - What happens to stats when a hole is deleted?
     @Delete
     suspend fun delete(hole: Hole)
 }

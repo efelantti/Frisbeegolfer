@@ -1,16 +1,26 @@
 package fi.efelantti.frisbeegolfer.model
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
-@Entity
+@Entity(
+    foreignKeys = [ForeignKey(
+        entity = Course::class,
+        parentColumns = arrayOf("courseId"),
+        childColumns = arrayOf("parentCourseId"),
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 @Parcelize
 class Hole(
     @PrimaryKey(autoGenerate = true)
     var holeId: Long = 0,
+    @ColumnInfo(index = true)
     var parentCourseId: Long = 0,
     var holeNumber: Int = 0,
     var par: Int = 3,

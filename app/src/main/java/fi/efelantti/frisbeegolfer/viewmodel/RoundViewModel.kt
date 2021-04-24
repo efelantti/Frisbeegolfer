@@ -63,7 +63,7 @@ class RoundViewModel(
                     parentRoundId = roundId,
                     holeId = hole.holeId,
                     playerId = playerId,
-                    result = 0
+                    result = null
                 )
                 repository.insert(score)
             }

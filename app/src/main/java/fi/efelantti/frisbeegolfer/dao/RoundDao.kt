@@ -34,14 +34,11 @@ interface RoundDao {
     /*
     Gets the best (minimum) result, average and latest result from the score table.
     Latest result is determined by ordering scoreId's and then choosing the result from the score with the highest scoreId.
-    TODO - Latest takes into account the 0, which is currently default value for score. Fix: set score default to null and have this query only take non-null result.
+    Latest takes into account the 0, which is currently default value for score. Fix: set score default to null and have this query only take non-null result.
      */
     @Transaction
     @Query(
-        "SELECT" +
-                "(SELECT MIN(result) AS bestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS bestResult," +
-                "(SELECT AVG(result) AS avgResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS avgResult," +
-                "(SELECT result AS latestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId ORDER BY datetime(parentRoundId) desc LIMIT 1) AS latestResult"
+        "SELECT (SELECT MIN(result) AS bestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS bestResult, (SELECT AVG(result) AS avgResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS avgResult,(SELECT result AS latestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId AND result is not null ORDER BY datetime(parentRoundId) desc LIMIT 1) AS latestResult"
     )
     fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics>
 

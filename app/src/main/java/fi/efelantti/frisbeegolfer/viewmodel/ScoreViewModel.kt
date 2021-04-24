@@ -45,7 +45,8 @@ class ScoreViewModel(
     fun initializeScore(scores: List<ScoreWithPlayerAndHole>) {
         val sortedScores =
             scores.sortedWith(compareBy<ScoreWithPlayerAndHole> { it.hole.holeNumber }.thenBy { it.player.name })
-        val firstNotScored = sortedScores.firstOrNull { it.score.result == 0 }
+        val firstNotScored =
+            sortedScores.firstOrNull { it.score.result == 0 || it.score.result == null }
         val index = if (firstNotScored == null) sortedScores.count() - 1
         else sortedScores.indexOf(firstNotScored)
         setScoreId(sortedScores[index].player.id, sortedScores[index].hole.holeId)

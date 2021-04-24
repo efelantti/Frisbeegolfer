@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
+import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.FragmentScoreBinding
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
@@ -87,14 +88,20 @@ class FragmentScore : Fragment() {
                 playerNameView.text = currentScore.player.name
                 holeNumberView.text = currentScore.hole.holeNumber.toString()
                 holeParView.text = currentScore.hole.par.toString()
-                setScoreEditText.setText(currentScore.score.result.toString())
+                setScoreEditText.setText("3")
 
                 scoreViewModel.getHoleStatistics(currentScore.player.id, currentScore.hole.holeId)
                     .observe(viewLifecycleOwner) { it2 ->
                         it2?.let { holeStatistics ->
-                            holeBestView.text = holeStatistics.bestResult.toString()
-                            holeAverageView.text = holeStatistics.avgResult.toString()
-                            holeLatestView.text = holeStatistics.latestResult.toString()
+                            if (holeStatistics.bestResult == null) holeBestView.text =
+                                getString(R.string.notApplicable)
+                            else holeBestView.text = holeStatistics.bestResult.toString()
+                            if (holeStatistics.avgResult == null) holeAverageView.text =
+                                getString(R.string.notApplicable)
+                            else holeAverageView.text = holeStatistics.avgResult.toString()
+                            if (holeStatistics.latestResult == null) holeLatestView.text =
+                                getString(R.string.notApplicable)
+                            else holeLatestView.text = holeStatistics.latestResult.toString()
                         }
                     }
 

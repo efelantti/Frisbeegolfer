@@ -1,21 +1,47 @@
 package fi.efelantti.frisbeegolfer.model
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 import java.time.OffsetDateTime
 import java.util.*
 
-@Entity
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = Round::class,
+            parentColumns = arrayOf("dateStarted"),
+            childColumns = arrayOf("parentRoundId"),
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Player::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("playerId"),
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Hole::class,
+            parentColumns = arrayOf("holeId"),
+            childColumns = arrayOf("holeId"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 @Parcelize
 class Score(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
+    @ColumnInfo(index = true)
     var parentRoundId: OffsetDateTime,
+    @ColumnInfo(index = true)
     var playerId: Long = 0,
+    @ColumnInfo(index = true)
     var holeId: Long = 0,
-    var result: Int = 0
+    var result: Int? = null
 ) : Parcelable {
     override fun equals(other: Any?): Boolean = (other is Score)
             && id == other.id
