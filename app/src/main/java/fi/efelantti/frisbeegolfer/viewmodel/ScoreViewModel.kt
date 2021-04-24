@@ -27,6 +27,7 @@ class ScoreViewModel(
         repository.getRoundWithRoundId(roundId)
     }
 
+
     private val scoreIdLiveData = MutableLiveData(Pair(playerIds[0], holeIds[0]))
     val currentScore: LiveData<ScoreWithPlayerAndHole> =
         Transformations.switchMap(scoreIdLiveData) { pair ->

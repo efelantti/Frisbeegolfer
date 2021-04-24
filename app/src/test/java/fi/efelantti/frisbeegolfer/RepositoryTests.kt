@@ -109,10 +109,34 @@ class RepositoryTests {
         val roundId2 = OffsetDateTime.of(2010, 6,1,12,0,0,0, ZoneOffset.UTC)
 
         `when`(fakeRoundDao.getRounds())
-            .thenReturn(MutableLiveData(listOf(
-                RoundWithCourseAndScores(Round(courseId=0, dateStarted= roundId), listOf(ScoreWithPlayerAndHole(hole=Hole(), player=Player(), score=Score(parentRoundId = roundId))), Course()),
-                RoundWithCourseAndScores(Round(courseId=1, dateStarted= roundId2), listOf(ScoreWithPlayerAndHole(hole=Hole(), player=Player(), score=Score(parentRoundId = roundId2))), Course())
-            )))
+            .thenReturn(
+                MutableLiveData(
+                    listOf(
+                        RoundWithCourseAndScores(
+                            Round(courseId = 0, dateStarted = roundId),
+                            listOf(
+                                ScoreWithPlayerAndHole(
+                                    hole = Hole(),
+                                    player = Player(),
+                                    score = Score(parentRoundId = roundId)
+                                )
+                            ),
+                            CourseWithHoles(Course(), emptyList())
+                        ),
+                        RoundWithCourseAndScores(
+                            Round(courseId = 1, dateStarted = roundId2),
+                            listOf(
+                                ScoreWithPlayerAndHole(
+                                    hole = Hole(),
+                                    player = Player(),
+                                    score = Score(parentRoundId = roundId2)
+                                )
+                            ),
+                            CourseWithHoles(Course(), emptyList())
+                        )
+                    )
+                )
+            )
         repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
         val allRounds = repository.allRounds
         val result = allRounds.getValueBlocking() ?: throw InvalidObjectException("null returned as players")
@@ -174,11 +198,21 @@ class RepositoryTests {
     @Test
     fun deleteRoundWithScores() = runBlockingTest {
         val roundId = OffsetDateTime.of(2020,1,1,12,0,0,0, ZoneOffset.UTC)
-        val round = Round(roundId , courseId = 0)
-        val roundWithCourseAndScores = RoundWithCourseAndScores(round, listOf(ScoreWithPlayerAndHole(hole=Hole(), player=Player(), score=Score(parentRoundId = roundId))), Course())
+        val round = Round(roundId, courseId = 0)
+        val roundWithCourseAndScores = RoundWithCourseAndScores(
+            round,
+            listOf(
+                ScoreWithPlayerAndHole(
+                    hole = Hole(),
+                    player = Player(),
+                    score = Score(parentRoundId = roundId)
+                )
+            ),
+            CourseWithHoles(Course(), emptyList())
+        )
 
         val alternativeMock = mockk<RoundDao>()
-        every { alternativeMock.getRounds() } returns MutableLiveData<List<RoundWithCourseAndScores>>(emptyList())
+        every { alternativeMock.getRounds() } returns MutableLiveData(emptyList())
         coEvery { alternativeMock.delete(roundWithCourseAndScores.round) } returns Unit
         for (score in roundWithCourseAndScores.scores)
         {
@@ -240,8 +274,18 @@ class RepositoryTests {
     @Test
     fun getRoundWithRoundId() = runBlockingTest {
         val roundId = OffsetDateTime.of(2020,1,1,12,0,0,0, ZoneOffset.UTC)
-        val round = Round(roundId , courseId = 0)
-        val roundWithCourseAndScores = RoundWithCourseAndScores(round, listOf(ScoreWithPlayerAndHole(hole=Hole(), player=Player(), score=Score(parentRoundId = roundId))), Course())
+        val round = Round(roundId, courseId = 0)
+        val roundWithCourseAndScores = RoundWithCourseAndScores(
+            round,
+            listOf(
+                ScoreWithPlayerAndHole(
+                    hole = Hole(),
+                    player = Player(),
+                    score = Score(parentRoundId = roundId)
+                )
+            ),
+            CourseWithHoles(Course(), emptyList())
+        )
 
         val alternativeMock = mockk<RoundDao>()
         every { alternativeMock.getRounds() } returns MutableLiveData<List<RoundWithCourseAndScores>>(emptyList())

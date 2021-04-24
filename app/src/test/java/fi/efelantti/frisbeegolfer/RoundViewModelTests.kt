@@ -2,10 +2,7 @@ package fi.efelantti.frisbeegolfer
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import fi.efelantti.frisbeegolfer.model.Course
-import fi.efelantti.frisbeegolfer.model.Round
-import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
-import fi.efelantti.frisbeegolfer.model.Score
+import fi.efelantti.frisbeegolfer.model.*
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +25,11 @@ class RoundViewModelTests {
     private val roundId = OffsetDateTime.of(2020, 12, 31, 12, 0, 0, 0, ZoneOffset.UTC)
     private val round = Round(dateStarted = roundId, courseId = 213)
     private val roundWithCourseAndScores =
-        RoundWithCourseAndScores(round, course = Course(), scores = emptyList())
+        RoundWithCourseAndScores(
+            round,
+            course = CourseWithHoles(Course(), emptyList()),
+            scores = emptyList()
+        )
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
