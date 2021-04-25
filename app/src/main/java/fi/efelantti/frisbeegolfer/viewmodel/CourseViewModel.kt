@@ -41,8 +41,8 @@ class CourseViewModel(
         repository.update(course)
     }
 
-    fun courseExists(id: Long): LiveData<Boolean> {
-        return repository.courseExists(id)
+    fun courseExists(name: String, city: String): LiveData<Boolean> {
+        return repository.courseExists(name, city)
     }
 }
 

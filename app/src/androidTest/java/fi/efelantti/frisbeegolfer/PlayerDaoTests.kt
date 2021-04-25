@@ -110,8 +110,8 @@ class PlayerDaoTests {
     @Test
     @Throws(Exception::class)
     fun playerExistsReturnsTrueWhenPlayerExists() = runBlocking {
-        val exists = playerDao.playerExists(playerId)
-        var result =
+        val exists = playerDao.playerExists("Tester")
+        val result =
             exists.getValueBlocking() ?: throw InvalidObjectException("null returned as result")
         assertThat(result, equalTo(true))
     }
@@ -119,8 +119,8 @@ class PlayerDaoTests {
     @Test
     @Throws(Exception::class)
     fun playerExistsReturnsFalseWhenPlayerDoesNotExist() = runBlocking {
-        val exists = playerDao.playerExists(-1)
-        var result =
+        val exists = playerDao.playerExists("")
+        val result =
             exists.getValueBlocking() ?: throw InvalidObjectException("null returned as result")
         assertThat(result, equalTo(false))
     }

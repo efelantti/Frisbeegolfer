@@ -37,8 +37,8 @@ class PlayerViewModel(
         repository.update(player)
     }
 
-    fun playerExists(id: Long): LiveData<Boolean> {
-        return repository.playerExists(id)
+    fun playerExists(name: String): LiveData<Boolean> {
+        return repository.playerExists(name)
     }
 }
 

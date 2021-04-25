@@ -152,17 +152,35 @@ class CourseDaoTests {
     @Test
     @Throws(Exception::class)
     fun courseExistsReturnsTrueWhenCourseExists() = runBlocking {
-        val exists = courseDao.courseExists(courseId)
-        var result =
+        val exists = courseDao.courseExists("Test course", "Test city")
+        val result =
             exists.getValueBlocking() ?: throw InvalidObjectException("null returned as result")
         assertThat(result, equalTo(true))
     }
 
     @Test
     @Throws(Exception::class)
+    fun courseExistsReturnsFalseWhenOnlyNameMatches() = runBlocking {
+        val exists = courseDao.courseExists("Test course", "")
+        val result =
+            exists.getValueBlocking() ?: throw InvalidObjectException("null returned as result")
+        assertThat(result, equalTo(false))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun courseExistsReturnsFalseWhenOnlyCityMatches() = runBlocking {
+        val exists = courseDao.courseExists("", "Test city")
+        val result =
+            exists.getValueBlocking() ?: throw InvalidObjectException("null returned as result")
+        assertThat(result, equalTo(false))
+    }
+
+    @Test
+    @Throws(Exception::class)
     fun courseExistsReturnsFalseWhenCourseDoesNotExist() = runBlocking {
-        val exists = courseDao.courseExists(-1)
-        var result =
+        val exists = courseDao.courseExists("", "")
+        val result =
             exists.getValueBlocking() ?: throw InvalidObjectException("null returned as result")
         assertThat(result, equalTo(false))
     }

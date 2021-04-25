@@ -43,8 +43,8 @@ interface IRepository {
     ): LiveData<ScoreWithPlayerAndHole>
 
     fun getPlayerById(id: Long): LiveData<Player>
-    fun playerExists(id: Long): LiveData<Boolean>
-    fun courseExists(id: Long): LiveData<Boolean>
+    fun playerExists(name: String): LiveData<Boolean>
+    fun courseExists(name: String, city: String): LiveData<Boolean>
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -130,11 +130,11 @@ class Repository(// Room executes all queries on a separate thread.
         return playerDao.getPlayerById(id)
     }
 
-    override fun playerExists(id: Long): LiveData<Boolean> {
-        return playerDao.playerExists(id)
+    override fun playerExists(name: String): LiveData<Boolean> {
+        return playerDao.playerExists(name)
     }
 
-    override fun courseExists(id: Long): LiveData<Boolean> {
-        return courseDao.courseExists(id)
+    override fun courseExists(name: String, city: String): LiveData<Boolean> {
+        return courseDao.courseExists(name, city)
     }
 }
