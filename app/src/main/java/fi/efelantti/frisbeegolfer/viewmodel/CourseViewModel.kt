@@ -27,17 +27,6 @@ class CourseViewModel(
         return repository.getCourseWithHolesById(id)
     }
 
-    /*
-    fun getCourseWithHolesById(id: Long): LiveData<CourseWithHoles> {
-        val result = MutableLiveData<CourseWithHoles>()
-        coroutineScope.launch {
-            val courseWithHoles = repository.getCourseWithHolesById(id)
-            result.postValue(courseWithHoles)
-        }
-        return result
-    }
-     */
-
     /**
      * Launching a new coroutine to insert the data in a non-blocking way
      */
@@ -50,6 +39,10 @@ class CourseViewModel(
      */
     fun update(course: CourseWithHoles) = coroutineScope.launch {
         repository.update(course)
+    }
+
+    fun courseExists(id: Long): LiveData<Boolean> {
+        return repository.courseExists(id)
     }
 }
 

@@ -36,6 +36,10 @@ class PlayerViewModel(
     fun update(player: Player) = coroutineScope.launch {
         repository.update(player)
     }
+
+    fun playerExists(id: Long): LiveData<Boolean> {
+        return repository.playerExists(id)
+    }
 }
 
 @Suppress("UNCHECKED_CAST")

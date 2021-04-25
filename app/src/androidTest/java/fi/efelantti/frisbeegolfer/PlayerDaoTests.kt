@@ -23,6 +23,7 @@ import java.util.concurrent.Executors
 class PlayerDaoTests {
     private lateinit var playerDao: PlayerDao
     private lateinit var db: FrisbeegolferRoomDatabase
+    private var playerId = -1L
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -37,13 +38,13 @@ class PlayerDaoTests {
         playerDao = db.playerDao()
 
         val player = Player(name = "Tester", email = "email")
-        playerDao.insert(player)
+        playerId = playerDao.insertAndGetId(player)
     }
 
     @After
     @Throws(IOException::class)
     fun closeDB() {
-        // TODO - Can't close the database - otherwise test crashes... See https://stackoverflow.com/questions/61044457/android-room-instrumented-tests-crashing-when-properly-closing-db-connection
+        // Can't close the database - otherwise test crashes... See https://stackoverflow.com/questions/61044457/android-room-instrumented-tests-crashing-when-properly-closing-db-connection
         // db.close()
     }
 
@@ -104,5 +105,23 @@ class PlayerDaoTests {
             ?: throw InvalidObjectException("null returned as players")
 
         assertThat(result.count(), equalTo(0))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun playerExistsReturnsTrueWhenPlayerExists() = runBlocking {
+        val exists = playerDao.playerExists(playerId)
+        var result =
+            exists.getValueBlocking() ?: throw InvalidObjectException("null returned as result")
+        assertThat(result, equalTo(true))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun playerExistsReturnsFalseWhenPlayerDoesNotExist() = runBlocking {
+        val exists = playerDao.playerExists(-1)
+        var result =
+            exists.getValueBlocking() ?: throw InvalidObjectException("null returned as result")
+        assertThat(result, equalTo(false))
     }
 }

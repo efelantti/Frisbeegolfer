@@ -75,7 +75,7 @@ class RoundDaoTests {
     @After
     @Throws(IOException::class)
     fun closeDB() {
-        // TODO - Can't close the database - otherwise test crashes... See https://stackoverflow.com/questions/61044457/android-room-instrumented-tests-crashing-when-properly-closing-db-connection
+        // Can't close the database - otherwise test crashes... See https://stackoverflow.com/questions/61044457/android-room-instrumented-tests-crashing-when-properly-closing-db-connection
         // db.close()
     }
 
@@ -256,13 +256,33 @@ class RoundDaoTests {
         rounds.forEach{roundDao.insert(it)}
 
         val scores: List<Score> = listOf(
-            Score(parentRoundId = roundIds[0], playerId = playerId, holeId = holeIds[0], result= 1),
-            Score(parentRoundId = roundIds[1], playerId = playerId, holeId = holeIds[0], result = 3),
-            Score(parentRoundId = roundIds[2], playerId = playerId, holeId = holeIds[1], result = 2),
-            Score(parentRoundId = roundIds[3], playerId = playerId, holeId = holeIds[0], result = 2),
+            Score(
+                parentRoundId = roundIds[0],
+                playerId = playerId,
+                holeId = holeIds[0],
+                result = 1
+            ),
+            Score(
+                parentRoundId = roundIds[1],
+                playerId = playerId,
+                holeId = holeIds[0],
+                result = 3
+            ),
+            Score(
+                parentRoundId = roundIds[2],
+                playerId = playerId,
+                holeId = holeIds[1],
+                result = 2
+            ),
+            Score(
+                parentRoundId = roundIds[3],
+                playerId = playerId,
+                holeId = holeIds[0],
+                result = 2
+            ),
             Score(parentRoundId = roundIds[4], playerId = playerId, holeId = holeIds[0], result = 2)
         )
-        scores.forEach{roundDao.insert(it)}
+        scores.forEach { roundDao.insert(it) }
 
         val holeStatisticsLD = roundDao.getHoleStatistics(playerId, holeIds[0])
         val holeStatistics = holeStatisticsLD.getValueBlocking()
@@ -271,6 +291,56 @@ class RoundDaoTests {
         assertThat(holeStatistics.avgResult, equalTo(2F))
         assertThat(holeStatistics.bestResult, equalTo(1))
         assertThat(holeStatistics.latestResult, equalTo(3))
+    }
 
+    @Test
+    @Throws(Exception::class)
+    fun deleteRoundWhenCourseIsDeleted() = runBlocking {
+        var allRounds = roundDao.getRounds()
+
+        // the .getValueBlocking cannot be run on the background thread - needs the InstantTaskExecutorRule
+        var result = allRounds.getValueBlocking()
+            ?: throw InvalidObjectException("null returned as players")
+
+        val resultRound = result[0]
+        courseDao.delete(resultRound.course.course)
+        allRounds = roundDao.getRounds()
+        result = allRounds.getValueBlocking()
+            ?: throw InvalidObjectException("null returned as courses")
+        assertThat(result.count(), equalTo(0))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun deleteScoreWhenHoleIsDeleted() = runBlocking {
+        var allRounds = roundDao.getRounds()
+
+        // the .getValueBlocking cannot be run on the background thread - needs the InstantTaskExecutorRule
+        var result = allRounds.getValueBlocking()
+            ?: throw InvalidObjectException("null returned as players")
+
+        val resultRound = result[0]
+        courseDao.delete(resultRound.course.holes[0])
+        allRounds = roundDao.getRounds()
+        result =
+            allRounds.getValueBlocking() ?: throw InvalidObjectException("null returned as courses")
+        assertThat(result[0].scores.count(), equalTo(2))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun deleteScoreWhenPlayerIsDeleted() = runBlocking {
+        var allRounds = roundDao.getRounds()
+
+        // the .getValueBlocking cannot be run on the background thread - needs the InstantTaskExecutorRule
+        var result = allRounds.getValueBlocking()
+            ?: throw InvalidObjectException("null returned as players")
+
+        val resultRound = result[0]
+        playerDao.delete(resultRound.scores[0].player)
+        allRounds = roundDao.getRounds()
+        result =
+            allRounds.getValueBlocking() ?: throw InvalidObjectException("null returned as courses")
+        assertThat(result[0].scores.count(), equalTo(0))
     }
 }

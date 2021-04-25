@@ -40,6 +40,8 @@ class CourseDaoTests {
 
         val course = Course(name = "Test course", city = "Test city")
         courseId = courseDao.insert(course)
+        val otherCourse = Course(name = "Mumbo", city = "Jumbo")
+        val otherCourseId = courseDao.insert(otherCourse)
 
         val holes = listOf(
             Hole(parentCourseId = courseId, par = 3, holeNumber = 1, lengthMeters = 100),
@@ -49,7 +51,7 @@ class CourseDaoTests {
 
         courseDao.insertAll(holes)
 
-        val holeFromOtherCourse = Hole(parentCourseId = courseId + 1, par = 3, holeNumber = 4)
+        val holeFromOtherCourse = Hole(parentCourseId = otherCourseId, par = 3, holeNumber = 4)
 
         courseDao.insertAll(listOf(holeFromOtherCourse)) // To see that only holes with same course id are fetched.
     }
@@ -70,7 +72,7 @@ class CourseDaoTests {
         val result = allCourses.getValueBlocking()
             ?: throw InvalidObjectException("null returned as players")
 
-        assertThat(result.count(), equalTo(1))
+        assertThat(result.count(), equalTo(2))
 
         val resultCourse = result[0]
 
@@ -94,7 +96,7 @@ class CourseDaoTests {
         allCourses = courseDao.getCoursesWithHoles()
         result = allCourses.getValueBlocking()
             ?: throw InvalidObjectException("null returned as courses")
-        assertThat(result.count(), equalTo(1))
+        assertThat(result.count(), equalTo(2))
         resultCourse = result[0]
         assertThat(resultCourse.course.city, equalTo("Some other name"))
         assertThat(resultCourse.course.name, equalTo("Test course"))
@@ -115,7 +117,7 @@ class CourseDaoTests {
         allCourses = courseDao.getCoursesWithHoles()
         result = allCourses.getValueBlocking()
             ?: throw InvalidObjectException("null returned as courses")
-        assertThat(result.count(), equalTo(0))
+        assertThat(result.count(), equalTo(1))
     }
 
     @Test
@@ -128,8 +130,40 @@ class CourseDaoTests {
 
         assertThat(resultCourse.holes.count(), equalTo(3))
 
-        resultCourse.holes.sortedBy { it.holeNumber }.forEach {hole ->
+        resultCourse.holes.sortedBy { it.holeNumber }.forEach { hole ->
             assertThat(hole.parentCourseId, equalTo(courseId))
         }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun deleteHolesWhenParentCourseIsDeleted() = runBlocking {
+        val allCourses = courseDao.getCoursesWithHoles()
+        val result = allCourses.getValueBlocking()
+            ?: throw InvalidObjectException("null returned as courses")
+        val resultCourse = result[0]
+
+        courseDao.delete(resultCourse.course)
+        val holes = courseDao.getHoles().getValueBlocking()
+            ?: throw InvalidObjectException("null returned as holes")
+        assertThat(holes.count(), equalTo(1))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun courseExistsReturnsTrueWhenCourseExists() = runBlocking {
+        val exists = courseDao.courseExists(courseId)
+        var result =
+            exists.getValueBlocking() ?: throw InvalidObjectException("null returned as result")
+        assertThat(result, equalTo(true))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun courseExistsReturnsFalseWhenCourseDoesNotExist() = runBlocking {
+        val exists = courseDao.courseExists(-1)
+        var result =
+            exists.getValueBlocking() ?: throw InvalidObjectException("null returned as result")
+        assertThat(result, equalTo(false))
     }
 }

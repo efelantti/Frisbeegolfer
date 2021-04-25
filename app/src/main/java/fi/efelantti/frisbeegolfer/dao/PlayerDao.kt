@@ -24,4 +24,7 @@ interface PlayerDao {
 
     @Query("SELECT * from Player WHERE id=:id")
     fun getPlayerById(id: Long): LiveData<Player>
+
+    @Query("SELECT EXISTS(SELECT * FROM Player WHERE id = :id)")
+    fun playerExists(id: Long): LiveData<Boolean>
 }

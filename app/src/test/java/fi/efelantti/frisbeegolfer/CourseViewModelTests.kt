@@ -68,7 +68,15 @@ class CourseViewModelTests {
         coEvery { repository.getCourseWithHolesById(123) } returns MutableLiveData(courseWithHoles)
         val resultLiveData = courseViewModel.getCourseWithHolesById(123)
         coVerify(exactly = 1) { repository.getCourseWithHolesById(123) }
-        val result = resultLiveData.getValueBlocking() ?: throw InvalidObjectException("Null returned as CourseWithHoles.")
+        val result = resultLiveData.getValueBlocking()
+            ?: throw InvalidObjectException("Null returned as CourseWithHoles.")
         assertThat(CourseWithHoles.equals(result, courseWithHoles), equalTo(true))
+    }
+
+    @Test
+    fun courseExists() = testDispatcher.runBlockingTest {
+        coEvery { repository.courseExists(0) } returns MutableLiveData(true)
+        val resultLiveData = courseViewModel.courseExists(0)
+        coVerify(exactly = 1) { repository.courseExists(0) }
     }
 }
