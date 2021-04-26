@@ -169,49 +169,34 @@ class FragmentNewPlayer : DialogFragment() {
         }
     }
 
-    private fun checkIfPlayerAlreadyExists(player: Player, players: List<Player>?): Boolean {
-        if (players == null) return false
-        for (existingPlayer: Player in players) {
-            if (Player.equals(
-                    player,
-                    existingPlayer
-                )
-            ) {
-                Log.e(_tag, "Could not add player data to database - duplicate.")
-                val toast = Toast.makeText(
-                    requireContext(), HtmlCompat.fromHtml(
-                        "<font color='" + getColor(
-                            requireContext(),
-                            R.color.colorErrorMessage
-                        ) + "' ><b>" + getString(
-                            R.string.error_duplicate_player
-                        ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY
-                    ), Toast.LENGTH_LONG
-                )
-                toast.show()
-                return true
-            }
-        }
-        return false
+    private fun showPlayerAlreadyExistsError() {
+        Log.e(_tag, "Could not add player data to database - duplicate.")
+        val toast = Toast.makeText(
+            requireContext(), HtmlCompat.fromHtml(
+                "<font color='" + getColor(
+                    requireContext(),
+                    R.color.colorErrorMessage
+                ) + "' ><b>" + getString(
+                    R.string.error_duplicate_player
+                ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY
+            ), Toast.LENGTH_LONG
+        )
+        toast.show()
     }
 
     private fun exitWithResult(category: NewPlayerAction?) {
         // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
-        when (category) {
-            NewPlayerAction.ADD -> {
-                val players = playerViewModel.allPlayers.value
-                val duplicateFound = checkIfPlayerAlreadyExists(playerData, players)
-                if (!duplicateFound) {
+        if (playerData.name == null) throw IllegalArgumentException("Player name was null.")
+        playerViewModel.playerExists(playerData.name!!).observe(viewLifecycleOwner) {
+            it?.let { duplicateFound ->
+                if (!duplicateFound && category == NewPlayerAction.ADD) {
                     playerViewModel.insert(playerData)
                     dismiss()
-                }
-            }
-            NewPlayerAction.EDIT -> {
-                val players = playerViewModel.allPlayers.value
-                val duplicateFound = checkIfPlayerAlreadyExists(playerData, players)
-                if (!duplicateFound) {
+                } else if (!duplicateFound && category == NewPlayerAction.EDIT) {
                     playerViewModel.update(playerData)
                     dismiss()
+                } else {
+                    showPlayerAlreadyExistsError()
                 }
             }
         }

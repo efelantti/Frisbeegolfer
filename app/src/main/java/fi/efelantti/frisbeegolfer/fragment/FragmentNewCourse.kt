@@ -195,62 +195,68 @@ class FragmentNewCourse : DialogFragment() {
         oldHolePars: List<Int>,
         oldHoleLengthMeter: List<Int?>
     ) {
+        val courseName = courseNameView.text.toString().trim()
+        val city = cityView.text.toString().trim()
+        val holes = getHoleInformation()
         val requiredFields: List<EditText> = listOf(courseNameView, cityView)
         if (areValidFields(requiredFields)) {
+            if (holes.count() > 0) {
+                val courseData = CourseWithHoles(
+                    course = Course
+                        (
+                        name = courseName,
+                        city = city
+                    ),
+                    holes = holes
+                )
 
-            val courseName = courseNameView.text.toString().trim()
-            val city = cityView.text.toString().trim()
-            val holes = getHoleInformation()
-
-            val courseData = CourseWithHoles(
-                course = Course
-                    (
-                    name = courseName,
-                    city = city
-                ),
-                holes = holes
-            )
-
-            if (actionCategory == NewCourseAction.EDIT && oldCourseData != null) {
-                courseData.course.courseId =
-                    oldCourseData.course.courseId // Take id from old course in order to update it to database.
-                if (CourseWithHoles.equals(
-                        courseData,
-                        oldCourseData
-                    ) && courseData.holes.count() == oldHolePars.count()
-                    && courseData.holes.withIndex()
-                        .all { it.value.par == oldHolePars[it.index] }
-                    && courseData.holes.withIndex()
-                        .all { it.value.lengthMeters == oldHoleLengthMeter[it.index] }
-                ) {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.player_data_not_edited),
-                        Toast.LENGTH_LONG
-                    ).show()
+                if (actionCategory == NewCourseAction.EDIT && oldCourseData != null) {
+                    courseData.course.courseId =
+                        oldCourseData.course.courseId // Take id from old course in order to update it to database.
+                    if (CourseWithHoles.equals(
+                            courseData,
+                            oldCourseData
+                        ) && courseData.holes.count() == oldHolePars.count()
+                        && courseData.holes.withIndex()
+                            .all { it.value.par == oldHolePars[it.index] }
+                        && courseData.holes.withIndex()
+                            .all { it.value.lengthMeters == oldHoleLengthMeter[it.index] }
+                    ) {
+                        Toast.makeText(
+                            context,
+                            getString(R.string.player_data_not_edited),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        AlertDialog.Builder(context)
+                            .setTitle(getString(R.string.dialog_title_overwrite))
+                            .setMessage(getString(R.string.dialog_message_confirm_overwrite)) // Specifying a listener allows you to take an action before dismissing the dialog.
+                            // The dialog is automatically dismissed when a dialog button is clicked.
+                            .setPositiveButton(
+                                R.string.button_yes
+                            ) { _, _ ->
+                                // Update the course and the holes
+                                oldCourseData.course.name = courseData.course.name
+                                oldCourseData.course.city = courseData.course.city
+                                oldCourseData.holes.forEachIndexed { index, hole ->
+                                    hole.par = holes[index].par
+                                    hole.lengthMeters = holes[index].lengthMeters
+                                }
+                                exitFragmentWithResult(actionCategory, oldCourseData)
+                            } // A null listener allows the button to dismiss the dialog and take no further action.
+                            .setNegativeButton(R.string.button_no, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show()
+                    }
                 } else {
-                    AlertDialog.Builder(context)
-                        .setTitle(getString(R.string.dialog_title_overwrite))
-                        .setMessage(getString(R.string.dialog_message_confirm_overwrite)) // Specifying a listener allows you to take an action before dismissing the dialog.
-                        // The dialog is automatically dismissed when a dialog button is clicked.
-                        .setPositiveButton(
-                            R.string.button_yes
-                        ) { _, _ ->
-                            // Update the course and the holes
-                            oldCourseData.course.name = courseData.course.name
-                            oldCourseData.course.city = courseData.course.city
-                            oldCourseData.holes.forEachIndexed { index, hole ->
-                                hole.par = holes[index].par
-                                hole.lengthMeters = holes[index].lengthMeters
-                            }
-                            exitFragmentWithResult(actionCategory, oldCourseData)
-                        } // A null listener allows the button to dismiss the dialog and take no further action.
-                        .setNegativeButton(R.string.button_no, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show()
+                    exitFragmentWithResult(actionCategory, courseData)
                 }
             } else {
-                exitFragmentWithResult(actionCategory, courseData)
+                Toast.makeText(
+                    context,
+                    getString(R.string.error_message_noHoles),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         } else {
             Toast.makeText(
@@ -310,23 +316,21 @@ class FragmentNewCourse : DialogFragment() {
     // Call this method to send the data back to the parent fragment
     private fun exitFragmentWithResult(category: NewCourseAction?, courseData: CourseWithHoles?) {
         // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
-        when (category) {
-            NewCourseAction.ADD -> {
-                if (courseData != null) {
-                    val courses = courseViewModel.allCourses.value
-                    val duplicateFound = checkIfCourseAlreadyExists(courseData, courses)
-                    if (!duplicateFound) {
-                        courseViewModel.insert(courseData)
-                        dismiss()
+        if (courseData != null && courseData.course.name != null && courseData.course.city != null) {
+            courseViewModel.courseExists(courseData.course.name!!, courseData.course.city!!)
+                .observe(viewLifecycleOwner) {
+                    it?.let { duplicateFound ->
+                        if (!duplicateFound && category == NewCourseAction.ADD) {
+                            courseViewModel.insert(courseData)
+                            dismiss()
+                        } else if (!duplicateFound && category == NewCourseAction.EDIT) {
+                            courseViewModel.update(courseData)
+                            dismiss()
+                        } else {
+                            showCourseAlreadyExistsMessage()
+                        }
                     }
                 }
-            }
-            NewCourseAction.EDIT -> {
-                if (courseData != null) {
-                    courseViewModel.update(courseData)
-                    dismiss()
-                }
-            }
         }
     }
 
@@ -341,33 +345,19 @@ class FragmentNewCourse : DialogFragment() {
         return allFieldsValid
     }
 
-    private fun checkIfCourseAlreadyExists(
-        course: CourseWithHoles,
-        courses: List<CourseWithHoles>?
-    ): Boolean {
-        if (courses == null) return false
-        var isDuplicate = false
-        for (existingCourse: CourseWithHoles in courses) {
-            if (Course.equals(course.course, existingCourse.course)) {
-                isDuplicate = true
-            }
-        }
-        if (isDuplicate) {
-            Log.e(_tag, "Could not add course data to database - duplicate.")
-            val toast = Toast.makeText(
-                requireContext(), HtmlCompat.fromHtml(
-                    "<font color='" + ContextCompat.getColor(
-                        requireContext(),
-                        R.color.colorErrorMessage
-                    ) + "' ><b>" + getString(
-                        R.string.error_duplicate_course
-                    ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY
-                ), Toast.LENGTH_LONG
-            )
-            toast.show()
-            return true
-        }
-        return false
+    private fun showCourseAlreadyExistsMessage() {
+        Log.e(_tag, "Could not add course data to database - duplicate.")
+        val toast = Toast.makeText(
+            requireContext(), HtmlCompat.fromHtml(
+                "<font color='" + ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorErrorMessage
+                ) + "' ><b>" + getString(
+                    R.string.error_duplicate_course
+                ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY
+            ), Toast.LENGTH_LONG
+        )
+        toast.show()
     }
 
     override fun onDestroyView() {

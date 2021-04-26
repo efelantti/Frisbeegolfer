@@ -65,7 +65,7 @@
     <string name="no_players_available_when_choosing">No players found. Please add at least one player first.</string>
 
     <!-- Error message that displayed when user tries to create a new player with information that already exists in database. -->
-    <string name="error_duplicate_player">A player with same details already exists!</string>
+    <string name="error_duplicate_player">A player with same name already exists!</string>
 
     <!-- Message that is displayed when user tries to save, but no data is modified. -->
     <string name="player_data_not_edited">No value was changed</string>
@@ -189,6 +189,7 @@
     <string name="continue_round_activity_title">Select a round to continue</string>
     <string name="score_title">Score</string>
     <string name="notApplicable">N/A</string>
+    <string name="error_message_noHoles">Please add at least one hole.</string>
 
     <!-- String that is displayed on the app bar when user has selected at least one player for a round. -->
     <plurals name="numberPlayersSelected">
