@@ -11,17 +11,23 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
-import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerBinding
+import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerWithEmailBinding
+import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerWithoutEmailBinding
 import fi.efelantti.frisbeegolfer.model.Player
 
 
 class PlayerListAdapter internal constructor(
     context: Context,
     onClickListener: ListItemClickListener
-) : RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ListItemClickListener {
         fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
+    }
+
+    enum class PlayerType(val id: Int) {
+        PlayerWithEmail(id = 0),
+        PlayerWithoutEmail(id = 1)
     }
 
     private val res: Resources = context.resources
@@ -32,9 +38,13 @@ class PlayerListAdapter internal constructor(
     private lateinit var builder: TextDrawable.IBuilder
     private val generator = ColorGenerator.MATERIAL
 
-    inner class PlayerViewHolder(binding: RecyclerviewPlayerBinding) :
-        RecyclerView.ViewHolder(binding.root),
-        View.OnClickListener {
+    override fun getItemViewType(position: Int): Int {
+        return if (players[position].email.isNullOrBlank()) PlayerType.PlayerWithoutEmail.id
+        else PlayerType.PlayerWithEmail.id
+    }
+
+    inner class PlayerWithEmailViewHolder(binding: RecyclerviewPlayerWithEmailBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         val playerCard: ConstraintLayout = binding.playerItem
         val originalBackgroundColor: Int = Color.WHITE
@@ -67,30 +77,100 @@ class PlayerListAdapter internal constructor(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
-        val binding =
-            RecyclerviewPlayerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PlayerViewHolder(binding)
+    inner class PlayerWithoutEmailViewHolder(binding: RecyclerviewPlayerWithoutEmailBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+
+        val playerCard: ConstraintLayout = binding.playerItem
+        val originalBackgroundColor: Int = Color.WHITE
+        val playerIcon = binding.playerInitialImage
+        val playerItemViewName: TextView = binding.txtFullName
+
+        init {
+            itemView.setOnClickListener(this)
+            builder = TextDrawable.builder()
+                .beginConfig()
+                .endConfig()
+                .round()
+        }
+
+        override fun onClick(v: View?) {
+            val position: Int = bindingAdapterPosition
+            val previousSelectedPosition = selectedPosition
+            val shouldStartActionMode: Boolean
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                shouldStartActionMode = false
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                shouldStartActionMode = true
+            }
+            mOnClickListener.onListItemClick(position, shouldStartActionMode)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            PlayerType.PlayerWithEmail.id -> {
+                val binding =
+                    RecyclerviewPlayerWithEmailBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                PlayerWithEmailViewHolder(binding)
+            }
+            else -> {
+                val binding =
+                    RecyclerviewPlayerWithoutEmailBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                PlayerWithoutEmailViewHolder(binding)
+            }
+        }
     }
 
     // TODO - Change setBackgroundColor to Select?
-    override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
-        if (selectedPosition == position) {
-            holder.playerCard.setBackgroundColor(Color.YELLOW)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (getItemViewType(position) == PlayerType.PlayerWithEmail.id) {
+            val playerWithEmailHolder = holder as PlayerWithEmailViewHolder
+            if (selectedPosition == position) {
+                playerWithEmailHolder.playerCard.setBackgroundColor(Color.YELLOW)
 
+            } else {
+                playerWithEmailHolder.playerCard.setBackgroundColor(playerWithEmailHolder.originalBackgroundColor)
+            }
+
+            val current = players[position]
+            val color = generator.getColor(current.name)
+            val initial = current.name?.take(1)
+            val icon = builder.build(initial, color)
+            playerWithEmailHolder.playerIcon.setImageDrawable(icon)
+            playerWithEmailHolder.playerItemViewName.text = current.name
+            var email = current.email?.trim()
+            if (email.isNullOrBlank()) email = "-"
+            playerWithEmailHolder.playerItemViewEmail.text =
+                res.getString(R.string.email_descriptor, email)
         } else {
-            holder.playerCard.setBackgroundColor(holder.originalBackgroundColor)
+            val playerWithOutEmailHolder = holder as PlayerWithoutEmailViewHolder
+            if (selectedPosition == position) {
+                playerWithOutEmailHolder.playerCard.setBackgroundColor(Color.YELLOW)
+
+            } else {
+                playerWithOutEmailHolder.playerCard.setBackgroundColor(playerWithOutEmailHolder.originalBackgroundColor)
+            }
+
+            val current = players[position]
+            val color = generator.getColor(current.name)
+            val initial = current.name?.take(1)
+            val icon = builder.build(initial, color)
+            playerWithOutEmailHolder.playerIcon.setImageDrawable(icon)
+            playerWithOutEmailHolder.playerItemViewName.text = current.name
         }
 
-        val current = players[position]
-        val color = generator.getColor(current.name)
-        val initial = current.name?.take(1)
-        val icon = builder.build(initial, color)
-        holder.playerIcon.setImageDrawable(icon)
-        holder.playerItemViewName.text = current.name
-        var email = current.email?.trim()
-        if (email.isNullOrBlank()) email = "-"
-        holder.playerItemViewEmail.text = res.getString(R.string.email_descriptor, email)
     }
 
     internal fun getSelectedPlayer(): Player? {

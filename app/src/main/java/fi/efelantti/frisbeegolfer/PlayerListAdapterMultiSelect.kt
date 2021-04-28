@@ -55,7 +55,7 @@ class PlayerListAdapterMultiSelect internal constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_player, parent, false)
+        val itemView = inflater.inflate(R.layout.recyclerview_player_with_email, parent, false)
         return PlayerViewHolder(itemView)
     }
 
