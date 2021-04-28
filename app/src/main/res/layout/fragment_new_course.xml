@@ -100,7 +100,8 @@
              android:hint="@string/hint_word_number_of_holes"
              android:text="@integer/default_amount_of_holes"
              android:inputType="number"
-             android:minHeight="@dimen/min_height"
+            android:imeOptions="actionDone"
+            android:minHeight="@dimen/min_height"
              android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
         <Button

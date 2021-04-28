@@ -56,8 +56,7 @@ class HoleListAdapter internal constructor(
 
     override fun onBindViewHolder(holder: HoleViewHolder, position: Int) {
         val hole: Hole = holes[position]
-        holder.holeIndexTextView.text =
-            if (hole.holeNumber == 0) (position + 1).toString() else hole.holeNumber.toString()
+        holder.holeIndexTextView.text = (position + 1).toString()
         holder.parCountView.text = hole.par.toString()
         holder.par = holder.parCountView.text.toString().toInt()
         holder.holeLengthView.text = hole.lengthMeters?.toString()

@@ -100,4 +100,7 @@ dependencies {
     // Test helpers for LiveData
     androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
+
+    // For rounded initial icon
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 }

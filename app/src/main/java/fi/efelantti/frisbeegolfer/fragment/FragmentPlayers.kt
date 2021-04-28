@@ -6,12 +6,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.databinding.FragmentPlayersBinding
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
+
 
 class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
 
@@ -94,18 +96,24 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
 
         playerViewModel.allPlayers.observe(viewLifecycleOwner, { players ->
             players?.let { adapter.setPlayers(it) }
         })
 
+        // TODO - Sometimes FAB is not enabled even though it should be!
         fab = binding.fab
         fab.setOnClickListener {
             showNewPlayerDialog()
         }
     }
 
-    // TODO - Navigation component
     private fun showNewPlayerDialog() {
         val action =
             FragmentPlayersDirections.actionFragmentPlayersToFragmentNewPlayer(

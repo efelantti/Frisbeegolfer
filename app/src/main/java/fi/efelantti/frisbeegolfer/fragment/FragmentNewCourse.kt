@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -23,7 +24,6 @@ import fi.efelantti.frisbeegolfer.model.clone
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
-// TODO - Refactor into separate add and edit fragments.
 class FragmentNewCourse : DialogFragment() {
 
     private val _tag = "FragmentNewCourse"
@@ -50,13 +50,7 @@ class FragmentNewCourse : DialogFragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         val saveMenuItem = menu.findItem(R.id.action_save)
-        if (isFinalized) {
-            saveMenuItem.isEnabled = true
-            saveMenuItem.icon.alpha = 255
-        } else {
-            saveMenuItem.isEnabled = false
-            saveMenuItem.icon.alpha = 130
-        }
+        saveMenuItem.isEnabled = isFinalized
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -97,17 +91,29 @@ class FragmentNewCourse : DialogFragment() {
         val numberOfHolesView: EditText = binding.editNumberOfHoles
 
         val oldCourseId = args.courseId
-        courseViewModel.getCourseWithHolesById(oldCourseId)
-            .observe(viewLifecycleOwner) { oldCourseData ->
-                if (actionCategory == NewCourseAction.ADD) {
-                    isFinalized = true
-                    requireActivity().invalidateOptionsMenu()
-                    oldHolePars = emptyList()
-                    oldHoleLengthMeter = emptyList()
-                    toolbar.title = getString(R.string.text_activity_new_course_title_add)
-                    newHoles = emptyList()
-                    adapter.setHoles(newHoles)
-                } else if (actionCategory == NewCourseAction.EDIT) {
+        lateinit var saveAction: Toolbar.OnMenuItemClickListener
+
+        if (actionCategory == NewCourseAction.ADD) {
+            isFinalized = true
+            requireActivity().invalidateOptionsMenu()
+            oldHolePars = emptyList()
+            oldHoleLengthMeter = emptyList()
+            toolbar.title = getString(R.string.text_activity_new_course_title_add)
+            newHoles = emptyList()
+            adapter.setHoles(newHoles)
+            saveAction = Toolbar.OnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_save -> {
+                        createNewCourse()
+                        return@OnMenuItemClickListener true
+                    }
+                }
+                false
+            }
+            toolbar.setOnMenuItemClickListener(saveAction)
+        } else if (actionCategory == NewCourseAction.EDIT) {
+            courseViewModel.getCourseWithHolesById(oldCourseId)
+                .observe(viewLifecycleOwner) { oldCourseData ->
                     if (oldCourseData != null) {
                         isFinalized = false
                         requireActivity().invalidateOptionsMenu()
@@ -121,156 +127,194 @@ class FragmentNewCourse : DialogFragment() {
                         courseNameView.setText(oldCourseData.course.name)
                         cityView.setText(oldCourseData.course.city)
                         oldCourseData.holes.let { adapter.setHoles(it) }
+                        saveAction = Toolbar.OnMenuItemClickListener { item ->
+                            when (item.itemId) {
+                                R.id.action_save -> {
+                                    editCourse(
+                                        oldCourseData,
+                                        oldHolePars,
+                                        oldHoleLengthMeter
+                                    )
+                                    return@OnMenuItemClickListener true
+                                }
+                            }
+                            false
+                        }
+                        toolbar.setOnMenuItemClickListener(saveAction)
                     }
                 }
-                toolbar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.action_save -> {
-                            saveData(actionCategory, oldCourseData, oldHolePars, oldHoleLengthMeter)
-                            return@OnMenuItemClickListener true
-                        }
-                    }
-                    false
-                })
-            }
+        }
 
         applyHolesButton.setOnClickListener {
-            val numberOfHolesToSet: Int? = numberOfHolesView.text.toString().toIntOrNull()
-            val maximumNumberOfHoles: Int = resources.getInteger(R.integer.max_amount_of_holes)
-            if (numberOfHolesToSet == null || numberOfHolesToSet <= 0 || numberOfHolesToSet > maximumNumberOfHoles) {
-                numberOfHolesView.error =
-                    getString(R.string.invalid_number_of_holes, maximumNumberOfHoles)
-            } else {
-                val holesBefore = adapter.itemCount
-                when {
-                    numberOfHolesToSet == holesBefore -> {
-                        // Nothing needs to be done
-                    }
-                    numberOfHolesToSet > holesBefore -> {
-                        // Take existing holes and add new ones after them.
-                        val holesToSet: List<Hole> =
-                            getHoles(List(holesBefore) { Hole() }) + List(numberOfHolesToSet - holesBefore) { Hole() }
-                        adapter.setHoles(holesToSet)
-                    }
-                    numberOfHolesToSet < holesBefore -> {
-                        // Take existing holes and remove items from the end of the list.
-                        val holesToSet: List<Hole> =
-                            getHoles(List(holesBefore) { Hole() }).subList(0, numberOfHolesToSet)
-                        // Require confirmation from user to remove holes
-                        AlertDialog.Builder(context)
-                            .setTitle(getString(R.string.remove_holes))
-                            .setMessage(getString(R.string.dialog_message_confirm_remove_holes)) // Specifying a listener allows you to take an action before dismissing the dialog.
-                            // The dialog is automatically dismissed when a dialog button is clicked.
-                            .setPositiveButton(
-                                R.string.button_yes
-                            ) { _, _ ->
-                                adapter.setHoles(holesToSet)
-                            } // A null listener allows the button to dismiss the dialog and take no further action.
-                            .setNegativeButton(R.string.button_no, null)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show()
-                    }
+            //applyHoles(numberOfHolesView, adapter)
+            numberOfHolesView.onEditorAction(EditorInfo.IME_ACTION_DONE)
+        }
+
+        numberOfHolesView.setOnEditorActionListener { _, actionId, _ ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    applyHoles(numberOfHolesView, adapter)
+                    false
                 }
+                else -> false
             }
         }
+
+
         toolbar.setNavigationOnClickListener {
-            AlertDialog.Builder(context)
-                .setTitle(getString(R.string.dialog_title_cancel))
-                .setMessage(getString(R.string.dialog_message_cancel)) // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton(
-                    R.string.button_yes
-                ) { _, _ ->
-                    dismiss()
-                } // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton(R.string.button_no, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show()
+            showCancelDialog()
         }
     }
 
-    private fun saveData(
-        actionCategory: NewCourseAction,
-        oldCourseData: CourseWithHoles?,
+    /*
+    Function that should be invoked when user clicks on the "Apply" (holes) button.
+    Makes sure that the number of holes to set is valid. Also asks confirmation from the user before removing any holes.
+     */
+    private fun applyHoles(numberOfHolesView: EditText, adapter: HoleListAdapter) {
+        val numberOfHolesToSet: Int? = numberOfHolesView.text.toString().toIntOrNull()
+        val maximumNumberOfHoles: Int = resources.getInteger(R.integer.max_amount_of_holes)
+        if (numberOfHolesToSet == null || numberOfHolesToSet <= 0 || numberOfHolesToSet > maximumNumberOfHoles) {
+            numberOfHolesView.error =
+                getString(R.string.invalid_number_of_holes, maximumNumberOfHoles)
+        } else {
+            val holesBefore = adapter.itemCount
+            when {
+                numberOfHolesToSet == holesBefore -> {
+                    // Nothing needs to be done
+                }
+                numberOfHolesToSet > holesBefore -> {
+                    // Take existing holes and add new ones after them.
+                    val holesToSet: List<Hole> =
+                        getHoles(List(holesBefore) { Hole() }) + List(numberOfHolesToSet - holesBefore) { Hole() }
+                    adapter.setHoles(holesToSet)
+                }
+                numberOfHolesToSet < holesBefore -> {
+                    // Take existing holes and remove items from the end of the list.
+                    val holesToSet: List<Hole> =
+                        getHoles(List(holesBefore) { Hole() }).subList(0, numberOfHolesToSet)
+                    // Require confirmation from user to remove holes
+                    askConfirmationFromUserToRemoveHoles(adapter, holesToSet)
+                }
+            }
+        }
+    }
+
+    /*
+    If the new number of holes is less than before, some holes are removed. Before this is done, confirmation needs to be required from the user.
+     */
+    private fun askConfirmationFromUserToRemoveHoles(
+        adapter: HoleListAdapter,
+        holesToSet: List<Hole>
+    ) {
+        AlertDialog.Builder(context)
+            .setTitle(getString(R.string.remove_holes))
+            .setMessage(getString(R.string.dialog_message_confirm_remove_holes))
+            .setPositiveButton(
+                R.string.button_yes
+            ) { _, _ ->
+                adapter.setHoles(holesToSet)
+            }
+            .setNegativeButton(R.string.button_no, null)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show()
+    }
+
+    /*
+    Function for creating a new course and adding it to database.
+    Parses the data from the UI, validates it and then adds the course to database, checking that it doesn't already exist.
+     */
+    private fun createNewCourse() {
+        val courseName = courseNameView.text.toString().trim()
+        val city = cityView.text.toString().trim()
+        val holes = getHoleInformation()
+        val isValidCourseName = validateCourseName(courseName)
+        val isValidCity = validateCity(city)
+        val isValidNumberOfHoles = validateNumberOfHoles(holes)
+        if (!isValidCourseName) {
+            setFieldError(courseNameView)
+        }
+        if (!isValidCity) {
+            setFieldError(cityView)
+        }
+        if (!isValidNumberOfHoles) {
+            showInvalidNumberOfHolesMessage()
+        }
+        if (isValidCourseName && isValidCity && isValidNumberOfHoles) {
+            courseViewModel.courseExists(courseName, city)
+                .observe(viewLifecycleOwner) {
+                    it?.let { duplicateFound ->
+                        if (!duplicateFound) {
+                            val courseData = CourseWithHoles(
+                                course = Course
+                                    (
+                                    name = courseName,
+                                    city = city
+                                ),
+                                holes = holes
+                            )
+                            courseViewModel.insert(courseData)
+                            dismiss()
+                        } else {
+                            showCourseAlreadyExistsMessage()
+                        }
+                    }
+                }
+        }
+    }
+
+    /*
+Function for editing an existing course and updating it in the database.
+Parses the data from the UI, validates it and then udpates the course in the database, checking that it's new information doesn't already exist in the database.
+ */
+    private fun editCourse(
+        oldCourseData: CourseWithHoles,
         oldHolePars: List<Int>,
         oldHoleLengthMeter: List<Int?>
     ) {
         val courseName = courseNameView.text.toString().trim()
         val city = cityView.text.toString().trim()
         val holes = getHoleInformation()
-        val requiredFields: List<EditText> = listOf(courseNameView, cityView)
-        if (areValidFields(requiredFields)) {
-            if (holes.count() > 0) {
-                val courseData = CourseWithHoles(
-                    course = Course
-                        (
-                        name = courseName,
-                        city = city
-                    ),
-                    holes = holes
-                )
-
-                if (actionCategory == NewCourseAction.EDIT && oldCourseData != null) {
-                    courseData.course.courseId =
-                        oldCourseData.course.courseId // Take id from old course in order to update it to database.
-                    if (CourseWithHoles.equals(
-                            courseData,
-                            oldCourseData
-                        ) && courseData.holes.count() == oldHolePars.count()
-                        && courseData.holes.withIndex()
-                            .all { it.value.par == oldHolePars[it.index] }
-                        && courseData.holes.withIndex()
-                            .all { it.value.lengthMeters == oldHoleLengthMeter[it.index] }
-                    ) {
-                        Toast.makeText(
-                            context,
-                            getString(R.string.player_data_not_edited),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else {
-                        AlertDialog.Builder(context)
-                            .setTitle(getString(R.string.dialog_title_overwrite))
-                            .setMessage(getString(R.string.dialog_message_confirm_overwrite)) // Specifying a listener allows you to take an action before dismissing the dialog.
-                            // The dialog is automatically dismissed when a dialog button is clicked.
-                            .setPositiveButton(
-                                R.string.button_yes
-                            ) { _, _ ->
-                                // Update the course and the holes
-                                oldCourseData.course.name = courseData.course.name
-                                oldCourseData.course.city = courseData.course.city
-                                oldCourseData.holes.forEachIndexed { index, hole ->
-                                    hole.par = holes[index].par
-                                    hole.lengthMeters = holes[index].lengthMeters
-                                }
-                                exitFragmentWithResult(actionCategory, oldCourseData)
-                            } // A null listener allows the button to dismiss the dialog and take no further action.
-                            .setNegativeButton(R.string.button_no, null)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show()
-                    }
-                } else {
-                    exitFragmentWithResult(actionCategory, courseData)
-                }
+        val isValidCourseName = validateCourseName(courseName)
+        val isValidCity = validateCity(city)
+        val isValidNumberOfHoles = validateNumberOfHoles(holes)
+        if (!isValidCourseName) {
+            setFieldError(courseNameView)
+        }
+        if (!isValidCity) {
+            setFieldError(cityView)
+        }
+        if (!isValidNumberOfHoles) {
+            showInvalidNumberOfHolesMessage()
+        }
+        if (isValidCourseName && isValidCity && isValidNumberOfHoles) {
+            val courseData = CourseWithHoles(
+                course = Course
+                    (
+                    courseId = oldCourseData.course.courseId,
+                    name = courseName,
+                    city = city
+                ),
+                holes = holes
+            )
+            if (CourseWithHoles.equals(
+                    courseData,
+                    oldCourseData
+                ) && courseData.holes.count() == oldHolePars.count()
+                && courseData.holes.withIndex()
+                    .all { it.value.par == oldHolePars[it.index] }
+                && courseData.holes.withIndex()
+                    .all { it.value.lengthMeters == oldHoleLengthMeter[it.index] }
+            ) {
+                showDataNotEditedError()
             } else {
-                Toast.makeText(
-                    context,
-                    getString(R.string.error_message_noHoles),
-                    Toast.LENGTH_SHORT
-                ).show()
+                showOverwriteDialog(oldCourseData, courseData, holes)
             }
-        } else {
-            Toast.makeText(
-                context,
-                getString(R.string.error_message_requiredFields),
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 
     /**
      * Function to get hole attributes updated in the UI. Note that the ID should not be used (since
      * it is not taken from the UI).
-     * TODO - View binding?
      */
     private fun getHoleInformation(): List<Hole> {
         val listToReturn: MutableList<Hole> = mutableListOf()
@@ -292,7 +336,6 @@ class FragmentNewCourse : DialogFragment() {
 
     /**
      * Function to get the current values of the holes's attributes from the UI.
-     * TODO - View binding?
      */
     private fun getHoles(holes: List<Hole>): List<Hole> {
         val listToReturn: MutableList<Hole> = mutableListOf()
@@ -313,38 +356,38 @@ class FragmentNewCourse : DialogFragment() {
         return listToReturn
     }
 
-    // Call this method to send the data back to the parent fragment
-    private fun exitFragmentWithResult(category: NewCourseAction?, courseData: CourseWithHoles?) {
-        // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
-        if (courseData != null && courseData.course.name != null && courseData.course.city != null) {
-            courseViewModel.courseExists(courseData.course.name!!, courseData.course.city!!)
-                .observe(viewLifecycleOwner) {
-                    it?.let { duplicateFound ->
-                        if (!duplicateFound && category == NewCourseAction.ADD) {
-                            courseViewModel.insert(courseData)
-                            dismiss()
-                        } else if (!duplicateFound && category == NewCourseAction.EDIT) {
-                            courseViewModel.update(courseData)
-                            dismiss()
-                        } else {
-                            showCourseAlreadyExistsMessage()
-                        }
-                    }
-                }
-        }
+    /*
+    Validates that city name is OK.
+     */
+    private fun validateCity(city: String): Boolean {
+        return !TextUtils.isEmpty(city)
     }
 
-    private fun areValidFields(fields: List<EditText>): Boolean {
-        var allFieldsValid = true
-        for (field: EditText in fields) {
-            if (TextUtils.isEmpty(field.text.trim())) {
-                field.error = getString(R.string.invalid_field, field.hint)
-                allFieldsValid = false
-            }
-        }
-        return allFieldsValid
+    /*
+    Validates that course name is OK.
+     */
+    private fun validateCourseName(courseName: String): Boolean {
+        return !TextUtils.isEmpty(courseName)
     }
 
+
+    /*
+    Validates that hole count is OK.
+     */
+    private fun validateNumberOfHoles(holes: List<Hole>): Boolean {
+        return holes.count() > 0
+    }
+
+    /*
+    Helper function for setting error text to a field. Assumes that field.hint contains name of the data.
+     */
+    private fun setFieldError(field: EditText) {
+        field.error = getString(R.string.invalid_field, field.hint)
+    }
+
+    /*
+    Displayed if the course already exists in the database.
+     */
     private fun showCourseAlreadyExistsMessage() {
         Log.e(_tag, "Could not add course data to database - duplicate.")
         val toast = Toast.makeText(
@@ -358,6 +401,100 @@ class FragmentNewCourse : DialogFragment() {
             ), Toast.LENGTH_LONG
         )
         toast.show()
+    }
+
+    /*
+    Displayed if the number of holes is not valid.
+     */
+    private fun showInvalidNumberOfHolesMessage() {
+        Toast.makeText(
+            context,
+            getString(R.string.error_message_noHoles),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    /*
+    Asked when user clicks on Save, when editing an existing Course. Asks whether user wants to overwrite previous information.
+    Also updates the course.
+     */
+    private fun showOverwriteDialog(
+        oldCourseData: CourseWithHoles,
+        newCourseData: CourseWithHoles,
+        newHoles: List<Hole>
+    ) {
+        AlertDialog.Builder(context)
+            .setTitle(getString(R.string.dialog_title_overwrite))
+            .setMessage(getString(R.string.dialog_message_confirm_overwrite))
+            .setPositiveButton(
+                R.string.button_yes
+            ) { _, _ ->
+                // Update the course and the holes
+
+                // No need to check for duplicates, if the course name or city name hasn't changed.
+                if (oldCourseData.course.name == newCourseData.course.name && oldCourseData.course.city == newCourseData.course.city) {
+                    oldCourseData.course.name = newCourseData.course.name
+                    oldCourseData.course.city = newCourseData.course.city
+                    oldCourseData.holes.forEachIndexed { index, hole ->
+                        hole.par = newHoles[index].par
+                        hole.lengthMeters = newHoles[index].lengthMeters
+                    }
+                    courseViewModel.update(oldCourseData)
+                    dismiss()
+                    // If the course name or city name has changed, then check for duplicates
+                } else {
+                    courseViewModel.courseExists(
+                        newCourseData.course.name!!,
+                        newCourseData.course.city!!
+                    ).observe(viewLifecycleOwner) {
+                        it?.let { duplicateFound ->
+                            if (!duplicateFound) {
+                                oldCourseData.course.name = newCourseData.course.name
+                                oldCourseData.course.city = newCourseData.course.city
+                                oldCourseData.holes.forEachIndexed { index, hole ->
+                                    hole.par = newHoles[index].par
+                                    hole.lengthMeters = newHoles[index].lengthMeters
+                                    courseViewModel.update(oldCourseData)
+                                    dismiss()
+                                }
+                            } else {
+                                showCourseAlreadyExistsMessage()
+                            }
+                        }
+                    }
+                }
+            }
+            .setNegativeButton(R.string.button_no, null)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show()
+    }
+
+    /*
+    Shown when user clicks on the "Cancel" button.
+     */
+    private fun showCancelDialog() {
+        AlertDialog.Builder(context)
+            .setTitle(getString(R.string.dialog_title_cancel))
+            .setMessage(getString(R.string.dialog_message_cancel))
+            .setPositiveButton(
+                R.string.button_yes
+            ) { _, _ ->
+                dismiss()
+            }
+            .setNegativeButton(R.string.button_no, null)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show()
+    }
+
+    /*
+    Displayed if user clicks on Save but nothing was changed.
+     */
+    private fun showDataNotEditedError() {
+        Toast.makeText(
+            context,
+            getString(R.string.player_data_not_edited),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     override fun onDestroyView() {

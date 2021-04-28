@@ -28,7 +28,7 @@ class PlayerListAdapterMultiSelect internal constructor(
     private val mOnClickListener: ListItemClickListener = onClickListener
 
     inner class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val playerCard: CardView = itemView.findViewById(R.id.playerCard)
+        val playerCard: CardView = itemView.findViewById(R.id.playerItem)
         val originalBackgroundColor: Int = playerCard.cardBackgroundColor.defaultColor
         val playerItemViewName: TextView = itemView.findViewById(R.id.txtFullName)
         val playerItemViewEmail: TextView = itemView.findViewById(R.id.txtEmail)

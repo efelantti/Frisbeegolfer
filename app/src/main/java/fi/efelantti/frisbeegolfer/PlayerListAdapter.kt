@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.amulyakhare.textdrawable.TextDrawable
+import com.amulyakhare.textdrawable.util.ColorGenerator
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerBinding
 import fi.efelantti.frisbeegolfer.model.Player
 
@@ -27,17 +29,25 @@ class PlayerListAdapter internal constructor(
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: ListItemClickListener = onClickListener
+    private lateinit var builder: TextDrawable.IBuilder
+    private val generator = ColorGenerator.MATERIAL
 
     inner class PlayerViewHolder(binding: RecyclerviewPlayerBinding) :
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
-        val playerCard: CardView = binding.playerCard
-        val originalBackgroundColor: Int = playerCard.cardBackgroundColor.defaultColor
+
+        val playerCard: ConstraintLayout = binding.playerItem
+        val originalBackgroundColor: Int = Color.WHITE
+        val playerIcon = binding.playerInitialImage
         val playerItemViewName: TextView = binding.txtFullName
         val playerItemViewEmail: TextView = binding.txtEmail
 
         init {
             itemView.setOnClickListener(this)
+            builder = TextDrawable.builder()
+                .beginConfig()
+                .endConfig()
+                .round()
         }
 
         override fun onClick(v: View?) {
@@ -73,6 +83,10 @@ class PlayerListAdapter internal constructor(
         }
 
         val current = players[position]
+        val color = generator.getColor(current.name)
+        val initial = current.name?.take(1)
+        val icon = builder.build(initial, color)
+        holder.playerIcon.setImageDrawable(icon)
         holder.playerItemViewName.text = current.name
         var email = current.email?.trim()
         if (email.isNullOrBlank()) email = "-"
