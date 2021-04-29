@@ -25,13 +25,8 @@ class PlayerListAdapter internal constructor(
         fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
     }
 
-    enum class PlayerType(val id: Int) {
-        PlayerWithEmail(id = 0),
-        PlayerWithoutEmail(id = 1)
-    }
-
     private val res: Resources = context.resources
-    private var players = emptyList<Player>() // Cached copy of words
+    private var players = emptyList<Player>()
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: ListItemClickListener = onClickListener
@@ -39,8 +34,8 @@ class PlayerListAdapter internal constructor(
     private val generator = ColorGenerator.MATERIAL
 
     override fun getItemViewType(position: Int): Int {
-        return if (players[position].email.isNullOrBlank()) PlayerType.PlayerWithoutEmail.id
-        else PlayerType.PlayerWithEmail.id
+        return if (players[position].hasEmail()) Player.PlayerType.PlayerWithoutEmail.id
+        else Player.PlayerType.PlayerWithEmail.id
     }
 
     inner class PlayerWithEmailViewHolder(binding: RecyclerviewPlayerWithEmailBinding) :
@@ -61,19 +56,24 @@ class PlayerListAdapter internal constructor(
         }
 
         override fun onClick(v: View?) {
-            val position: Int = bindingAdapterPosition
-            val previousSelectedPosition = selectedPosition
-            val shouldStartActionMode: Boolean
+            onClickHandler(bindingAdapterPosition)
+        }
+
+        fun bind(position: Int) {
             if (selectedPosition == position) {
-                resetSelectedPosition()
-                shouldStartActionMode = false
+                playerCard.setBackgroundColor(Color.YELLOW)
+
             } else {
-                selectedPosition = position
-                notifyItemChanged(previousSelectedPosition)
-                notifyItemChanged(selectedPosition)
-                shouldStartActionMode = true
+                playerCard.setBackgroundColor(originalBackgroundColor)
             }
-            mOnClickListener.onListItemClick(position, shouldStartActionMode)
+
+            val current = players[position]
+            val color = generator.getColor(current.name)
+            val initial = current.name?.take(1)
+            val icon = builder.build(initial, color)
+            playerIcon.setImageDrawable(icon)
+            playerItemViewName.text = current.name
+            playerItemViewEmail.text = res.getString(R.string.email_descriptor, current.email)
         }
     }
 
@@ -94,25 +94,29 @@ class PlayerListAdapter internal constructor(
         }
 
         override fun onClick(v: View?) {
-            val position: Int = bindingAdapterPosition
-            val previousSelectedPosition = selectedPosition
-            val shouldStartActionMode: Boolean
+            onClickHandler(bindingAdapterPosition)
+        }
+
+        fun bind(position: Int) {
             if (selectedPosition == position) {
-                resetSelectedPosition()
-                shouldStartActionMode = false
+                playerCard.setBackgroundColor(Color.YELLOW)
+
             } else {
-                selectedPosition = position
-                notifyItemChanged(previousSelectedPosition)
-                notifyItemChanged(selectedPosition)
-                shouldStartActionMode = true
+                playerCard.setBackgroundColor(originalBackgroundColor)
             }
-            mOnClickListener.onListItemClick(position, shouldStartActionMode)
+
+            val current = players[position]
+            val color = generator.getColor(current.name)
+            val initial = current.name?.take(1)
+            val icon = builder.build(initial, color)
+            playerIcon.setImageDrawable(icon)
+            playerItemViewName.text = current.name
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            PlayerType.PlayerWithEmail.id -> {
+            Player.PlayerType.PlayerWithEmail.id -> {
                 val binding =
                     RecyclerviewPlayerWithEmailBinding.inflate(
                         LayoutInflater.from(parent.context),
@@ -135,40 +139,10 @@ class PlayerListAdapter internal constructor(
 
     // TODO - Change setBackgroundColor to Select?
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (getItemViewType(position) == PlayerType.PlayerWithEmail.id) {
-            val playerWithEmailHolder = holder as PlayerWithEmailViewHolder
-            if (selectedPosition == position) {
-                playerWithEmailHolder.playerCard.setBackgroundColor(Color.YELLOW)
-
-            } else {
-                playerWithEmailHolder.playerCard.setBackgroundColor(playerWithEmailHolder.originalBackgroundColor)
-            }
-
-            val current = players[position]
-            val color = generator.getColor(current.name)
-            val initial = current.name?.take(1)
-            val icon = builder.build(initial, color)
-            playerWithEmailHolder.playerIcon.setImageDrawable(icon)
-            playerWithEmailHolder.playerItemViewName.text = current.name
-            var email = current.email?.trim()
-            if (email.isNullOrBlank()) email = "-"
-            playerWithEmailHolder.playerItemViewEmail.text =
-                res.getString(R.string.email_descriptor, email)
+        if (getItemViewType(position) == Player.PlayerType.PlayerWithEmail.id) {
+            (holder as PlayerWithEmailViewHolder).bind(position)
         } else {
-            val playerWithOutEmailHolder = holder as PlayerWithoutEmailViewHolder
-            if (selectedPosition == position) {
-                playerWithOutEmailHolder.playerCard.setBackgroundColor(Color.YELLOW)
-
-            } else {
-                playerWithOutEmailHolder.playerCard.setBackgroundColor(playerWithOutEmailHolder.originalBackgroundColor)
-            }
-
-            val current = players[position]
-            val color = generator.getColor(current.name)
-            val initial = current.name?.take(1)
-            val icon = builder.build(initial, color)
-            playerWithOutEmailHolder.playerIcon.setImageDrawable(icon)
-            playerWithOutEmailHolder.playerItemViewName.text = current.name
+            (holder as PlayerWithoutEmailViewHolder).bind(position)
         }
 
     }
@@ -191,4 +165,19 @@ class PlayerListAdapter internal constructor(
     }
 
     override fun getItemCount() = players.size
+
+    private fun onClickHandler(position: Int) {
+        val previousSelectedPosition = selectedPosition
+        val shouldStartActionMode: Boolean
+        if (selectedPosition == position) {
+            resetSelectedPosition()
+            shouldStartActionMode = false
+        } else {
+            selectedPosition = position
+            notifyItemChanged(previousSelectedPosition)
+            notifyItemChanged(selectedPosition)
+            shouldStartActionMode = true
+        }
+        mOnClickListener.onListItemClick(position, shouldStartActionMode)
+    }
 }
