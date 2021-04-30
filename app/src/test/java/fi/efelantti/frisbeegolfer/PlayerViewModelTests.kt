@@ -57,9 +57,9 @@ class PlayerViewModelTests {
     fun playerExists() = testDispatcher.runBlockingTest {
         playerViewModel = PlayerViewModel(testScope, repository)
         val player = Player(name = "Tester")
-        coEvery { repository.playerExists(player.id) } returns MutableLiveData(true)
-        playerViewModel.playerExists(player.id)
-        coVerify(exactly = 1) { repository.playerExists(player.id) }
+        coEvery { repository.playerExists("Tester") } returns MutableLiveData(true)
+        playerViewModel.playerExists("Tester")
+        coVerify(exactly = 1) { repository.playerExists("Tester") }
     }
 
 }

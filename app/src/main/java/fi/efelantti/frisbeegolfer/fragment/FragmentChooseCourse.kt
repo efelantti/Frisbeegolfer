@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.CourseListAdapter
@@ -82,9 +83,18 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
 
-        courseViewModel.allCourses.observe(viewLifecycleOwner, { courses ->
-            courses?.let { adapter.setCourses(it) }
+        courseViewModel.allCourses.observe(viewLifecycleOwner, { list ->
+            list?.let { courses ->
+                val sortedCourses = courses.sortedBy { it.course.city }
+                adapter.setCourses(sortedCourses)
+            }
         })
 
         fab = binding.fabChooseCourse

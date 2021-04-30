@@ -2,7 +2,6 @@ package fi.efelantti.frisbeegolfer
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,11 +40,10 @@ class PlayerListAdapter internal constructor(
     inner class PlayerWithEmailViewHolder(binding: RecyclerviewPlayerWithEmailBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        val playerCard: ConstraintLayout = binding.playerItem
-        val originalBackgroundColor: Int = Color.WHITE
-        val playerIcon = binding.playerInitialImage
-        val playerItemViewName: TextView = binding.txtFullName
-        val playerItemViewEmail: TextView = binding.txtEmail
+        private val playerCard: ConstraintLayout = binding.playerItem
+        private val playerIcon = binding.playerInitialImage
+        private val playerItemViewName: TextView = binding.txtFullName
+        private val playerItemViewEmail: TextView = binding.txtEmail
 
         init {
             itemView.setOnClickListener(this)
@@ -60,12 +58,7 @@ class PlayerListAdapter internal constructor(
         }
 
         fun bind(position: Int) {
-            if (selectedPosition == position) {
-                playerCard.setBackgroundColor(Color.YELLOW)
-
-            } else {
-                playerCard.setBackgroundColor(originalBackgroundColor)
-            }
+            playerCard.isActivated = selectedPosition == position
 
             val current = players[position]
             val color = generator.getColor(current.name)
@@ -80,10 +73,9 @@ class PlayerListAdapter internal constructor(
     inner class PlayerWithoutEmailViewHolder(binding: RecyclerviewPlayerWithoutEmailBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
-        val playerCard: ConstraintLayout = binding.playerItem
-        val originalBackgroundColor: Int = Color.WHITE
-        val playerIcon = binding.playerInitialImage
-        val playerItemViewName: TextView = binding.txtFullName
+        private val playerCard: ConstraintLayout = binding.playerItem
+        private val playerIcon = binding.playerInitialImage
+        private val playerItemViewName: TextView = binding.txtFullName
 
         init {
             itemView.setOnClickListener(this)
@@ -98,12 +90,7 @@ class PlayerListAdapter internal constructor(
         }
 
         fun bind(position: Int) {
-            if (selectedPosition == position) {
-                playerCard.setBackgroundColor(Color.YELLOW)
-
-            } else {
-                playerCard.setBackgroundColor(originalBackgroundColor)
-            }
+            playerCard.isActivated = selectedPosition == position
 
             val current = players[position]
             val color = generator.getColor(current.name)
@@ -137,7 +124,6 @@ class PlayerListAdapter internal constructor(
         }
     }
 
-    // TODO - Change setBackgroundColor to Select?
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == Player.PlayerType.PlayerWithEmail.id) {
             (holder as PlayerWithEmailViewHolder).bind(position)

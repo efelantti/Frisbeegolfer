@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
@@ -91,9 +92,18 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
 
-        playerViewModel.allPlayers.observe(viewLifecycleOwner, { courses ->
-            courses?.let { adapter.setPlayers(it) }
+        playerViewModel.allPlayers.observe(viewLifecycleOwner, { list ->
+            list?.let { players ->
+                val sortedPlayers = players.sortedBy { it.name }
+                adapter.setPlayers(sortedPlayers)
+            }
         })
 
         fab = binding.fabChoosePlayers

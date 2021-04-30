@@ -2,80 +2,137 @@ package fi.efelantti.frisbeegolfer
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.amulyakhare.textdrawable.TextDrawable
+import com.amulyakhare.textdrawable.util.ColorGenerator
+import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerWithEmailBinding
+import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerWithoutEmailBinding
 import fi.efelantti.frisbeegolfer.model.Player
 
 
 class PlayerListAdapterMultiSelect internal constructor(
     context: Context,
     onClickListener: ListItemClickListener
-) : RecyclerView.Adapter<PlayerListAdapterMultiSelect.PlayerViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ListItemClickListener {
         fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
     }
 
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val res: Resources = context.resources
-    private var players = emptyList<Player>() // Cached copy of words
+    private var players = emptyList<Player>()
     var selectedIndeces = mutableListOf<Int>()
     private val mOnClickListener: ListItemClickListener = onClickListener
+    private lateinit var builder: TextDrawable.IBuilder
+    private val generator = ColorGenerator.MATERIAL
 
-    inner class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val playerCard: CardView = itemView.findViewById(R.id.playerItem)
-        val originalBackgroundColor: Int = playerCard.cardBackgroundColor.defaultColor
-        val playerItemViewName: TextView = itemView.findViewById(R.id.txtFullName)
-        val playerItemViewEmail: TextView = itemView.findViewById(R.id.txtEmail)
+    override fun getItemViewType(position: Int): Int {
+        return if (players[position].hasEmail()) Player.PlayerType.PlayerWithoutEmail.id
+        else Player.PlayerType.PlayerWithEmail.id
+    }
 
-        init{
+    inner class PlayerWithEmailViewHolder(binding: RecyclerviewPlayerWithEmailBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+
+        private val playerCard: ConstraintLayout = binding.playerItem
+        private val playerIcon = binding.playerInitialImage
+        private val playerItemViewName: TextView = binding.txtFullName
+        private val playerItemViewEmail: TextView = binding.txtEmail
+
+        init {
             itemView.setOnClickListener(this)
+            builder = TextDrawable.builder()
+                .beginConfig()
+                .endConfig()
+                .round()
         }
 
         override fun onClick(v: View?) {
-            val position: Int = bindingAdapterPosition
-            players[position]
-            val shouldStartActionMode: Boolean
-            (if (selectedIndeces.contains(position)) {
-                selectedIndeces.remove(position)
-                notifyItemChanged(position)
-                selectedIndeces.count() != 0
-            } else {
-                selectedIndeces.add(position)
-                notifyItemChanged(position)
-                true
-            }).also { shouldStartActionMode = it }
-            mOnClickListener.onListItemClick(position, shouldStartActionMode)
+            onClickHandler(bindingAdapterPosition)
+        }
+
+        fun bind(position: Int) {
+            val selectedPlayer = players[position]
+            playerCard.isActivated = selectedIndeces.contains(position)
+            val color = generator.getColor(selectedPlayer.name)
+            val initial = selectedPlayer.name?.take(1)
+            val icon = builder.build(initial, color)
+            playerIcon.setImageDrawable(icon)
+            playerItemViewName.text = selectedPlayer.name
+            playerItemViewEmail.text =
+                res.getString(R.string.email_descriptor, selectedPlayer.email)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_player_with_email, parent, false)
-        return PlayerViewHolder(itemView)
+    inner class PlayerWithoutEmailViewHolder(binding: RecyclerviewPlayerWithoutEmailBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+
+        private val playerCard: ConstraintLayout = binding.playerItem
+        private val playerIcon = binding.playerInitialImage
+        private val playerItemViewName: TextView = binding.txtFullName
+
+        init {
+            itemView.setOnClickListener(this)
+            builder = TextDrawable.builder()
+                .beginConfig()
+                .endConfig()
+                .round()
+        }
+
+        override fun onClick(v: View?) {
+            onClickHandler(bindingAdapterPosition)
+        }
+
+        fun bind(position: Int) {
+            val selectedPlayer = players[position]
+            playerCard.isActivated = selectedIndeces.contains(position)
+
+            val color = generator.getColor(selectedPlayer.name)
+            val initial = selectedPlayer.name?.take(1)
+            val icon = builder.build(initial, color)
+            playerIcon.setImageDrawable(icon)
+            playerItemViewName.text = selectedPlayer.name
+        }
     }
 
-    // TODO - Change setBackgroundColor to Select?
-    override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
-        val selectedPlayer = players[position]
-        if (selectedIndeces.contains(position)) {
-            holder.playerCard.setBackgroundColor(Color.YELLOW)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            Player.PlayerType.PlayerWithEmail.id -> {
+                val binding =
+                    RecyclerviewPlayerWithEmailBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                PlayerWithEmailViewHolder(binding)
+            }
+            else -> {
+                val binding =
+                    RecyclerviewPlayerWithoutEmailBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                PlayerWithoutEmailViewHolder(binding)
+            }
+        }
+    }
 
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (getItemViewType(position) == Player.PlayerType.PlayerWithEmail.id) {
+            (holder as PlayerWithEmailViewHolder).bind(position)
         } else {
-            holder.playerCard.setBackgroundColor(holder.originalBackgroundColor)
+            (holder as PlayerWithoutEmailViewHolder).bind(position)
         }
-        holder.playerItemViewName.text = selectedPlayer.name
-        var email = selectedPlayer.email?.trim()
-        if(email.isNullOrBlank()) email = "-"
-        holder.playerItemViewEmail.text = res.getString(R.string.email_descriptor, email)
     }
 
     internal fun getSelectedPlayers(): List<Player> {
-        return selectedIndeces.map{players[it]}
+        return selectedIndeces.map { players[it] }
     }
 
     internal fun setPlayers(players: List<Player>) {
@@ -89,6 +146,21 @@ class PlayerListAdapterMultiSelect internal constructor(
         for (index in previousSelectedIndeces) {
             notifyItemChanged(index)
         }
+    }
+
+    fun onClickHandler(position: Int) {
+        players[position]
+        val shouldStartActionMode: Boolean
+        (if (selectedIndeces.contains(position)) {
+            selectedIndeces.remove(position)
+            notifyItemChanged(position)
+            selectedIndeces.count() != 0
+        } else {
+            selectedIndeces.add(position)
+            notifyItemChanged(position)
+            true
+        }).also { shouldStartActionMode = it }
+        mOnClickListener.onListItemClick(position, shouldStartActionMode)
     }
 
     override fun getItemCount() = players.size

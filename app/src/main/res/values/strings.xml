@@ -71,9 +71,7 @@
     <string name="player_data_not_edited">No value was changed</string>
 
     <!-- Message that is displayed on the appbar when a player is selected from the player listing. -->
-    <string name="player_selected">Player selected</string>
-
-    <!-- Name of the close action in the appbar. -->
+    <string name="player_selected">1</string>
 
     <!-- Name of the save action in the appbar. -->
     <string name="action_save">Save</string>
@@ -94,7 +92,7 @@
     <string name="error_duplicate_course">A course with same details already exists!</string>
 
     <!-- Message that is displayed when a course is selected. -->
-    <string name="course_selected">Course selected</string>
+    <string name="course_selected">1</string>
 
     <!-- String for course name (label + name). -->
     <string name="courseName"><xliff:g id="courseName" example="Laajavuori Frisbeegolf park">%s</xliff:g></string>
@@ -180,7 +178,7 @@
     <string name="no_rounds_available">No rounds have yet been played.</string>
 
     <!-- Text that is displayed on the appbar when a round is selected. -->
-    <string name="round_selected">Round selected</string>
+    <string name="round_selected">1</string>
 
     <!-- String for number of players (label + amount). -->
     <string name="players">Players: <xliff:g id="listOfPlayers" example="Andy, Bert, Clint">%s</xliff:g></string>
@@ -191,10 +189,11 @@
     <string name="notApplicable">N/A</string>
     <string name="error_message_noHoles">Please add at least one hole.</string>
     <string name="contentDescription_player_initial_image">Avatar with the first letter of the player\'s name</string>
+    <string name="contentDescription_course_avatar">Icon for the course displaying the number of holes.</string>
 
     <!-- String that is displayed on the app bar when user has selected at least one player for a round. -->
     <plurals name="numberPlayersSelected">
-        <item quantity="one">%d player selected</item>
-        <item quantity="other">%d players selected</item>
+        <item quantity="one">%d</item>
+        <item quantity="other">%d</item>
     </plurals>
 </resources>

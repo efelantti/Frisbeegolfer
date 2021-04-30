@@ -2,7 +2,6 @@ package fi.efelantti.frisbeegolfer
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +32,6 @@ class RoundListAdapter internal constructor(
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
         val roundCard: CardView = binding.roundCard
-        val originalBackgroundColor: Int = roundCard.cardBackgroundColor.defaultColor
         val roundItemViewStartedOn: TextView = binding.txtStartedOn
         val roundItemViewCourseName: TextView = binding.txtCourseNameRound
         val roundItemViewCity: TextView = binding.txtCityRound
@@ -66,14 +64,8 @@ class RoundListAdapter internal constructor(
         return CourseViewHolder(binding)
     }
 
-    // TODO - Change setBackgroundColor to Select?
     override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
-        if (selectedPosition == position) {
-            holder.roundCard.setBackgroundColor(Color.YELLOW)
-
-        } else {
-            holder.roundCard.setBackgroundColor(holder.originalBackgroundColor)
-        }
+        holder.roundCard.isActivated = selectedPosition == position
 
         val current = rounds[position]
         holder.roundItemViewStartedOn.text =
@@ -104,15 +96,6 @@ class RoundListAdapter internal constructor(
         notifyItemChanged(previousSelectedPosition)
         notifyItemChanged(selectedPosition)
     }
-
-    /*private fun fetchColorOnBackground(): Int {
-        val typedValue = TypedValue()
-        val a: TypedArray =
-            context.obtainStyledAttributes(typedValue.data, intArrayOf(R.attr.colorPrimary))
-        val color = a.getColor(0, 0)
-        a.recycle()
-        return color
-    }*/
 
     override fun getItemCount() = rounds.size
 }

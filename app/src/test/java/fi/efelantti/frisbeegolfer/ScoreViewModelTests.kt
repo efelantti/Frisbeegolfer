@@ -256,8 +256,7 @@ class ScoreViewModelTests {
         assertThat(initialCurrentScore, equalTo(scores.first()))
     }
 
-    // TODO - Recreate test
-    /*  @Test
+    @Test
       fun currentScoreIsInitializedCorrectlyWhenSomeHolesHaveBeenPlayed() {
           scores = listOf(
               ScoreWithPlayerAndHole(
@@ -327,24 +326,26 @@ class ScoreViewModelTests {
                   )
               )
           )
-          roundWithCourseAndScores =
-              RoundWithCourseAndScores(round, scores, courseWithHoles)
+        roundWithCourseAndScores =
+            RoundWithCourseAndScores(round, scores, courseWithHoles)
 
-          repository = mockk()
-          every { repository.getRoundWithRoundId(roundId) } returns MutableLiveData(
-              roundWithCourseAndScores
-          )
+        repository = mockk()
+        every { repository.getRoundWithRoundId(roundId) } returns MutableLiveData(
+            roundWithCourseAndScores
+        )
+        every { repository.getScore(roundId, 0, 0) } returns MutableLiveData(
+            scores[3]
+        )
 
-          scoreViewModel = ScoreViewModel(testScope, repository, roundId, playerIds, holeIds)
+        scoreViewModel = ScoreViewModel(testScope, repository, roundId, playerIds, holeIds)
 
-          val initialCurrentScore = scoreViewModel.currentScore.getValueBlocking()
-              ?: throw InvalidObjectException("Null returned as current score.")
+        val initialCurrentScore = scoreViewModel.currentScore.getValueBlocking()
+            ?: throw InvalidObjectException("Null returned as current score.")
 
-          assertThat(initialCurrentScore, equalTo(scores[3]))
-      }*/
+        assertThat(initialCurrentScore, equalTo(scores[3]))
+    }
 
-    // TODO - Recreate test
-    /*@Test
+    @Test
     fun currentScoreIsInitializedCorrectlyWhenAllHolesAreScored() {
         scores = listOf(
             ScoreWithPlayerAndHole(
@@ -421,16 +422,15 @@ class ScoreViewModelTests {
         every { repository.getRoundWithRoundId(roundId) } returns MutableLiveData(
             roundWithCourseAndScores
         )
-        every { repository.getScore(roundId, 0, 0) } returns MutableLiveData(scores[0])
+        every { repository.getScore(roundId, 0, 0) } returns MutableLiveData(scores.last())
 
         scoreViewModel = ScoreViewModel(testScope, repository, roundId, playerIds, holeIds)
-
 
         val initialCurrentScore = scoreViewModel.currentScore.getValueBlocking()
             ?: throw InvalidObjectException("Null returned as current score.")
 
         assertThat(initialCurrentScore, equalTo(scores.last()))
-    }*/
+    }
 
     @Test
     fun scoresListIsSortedProperlyWhenInitiallyNotInSortedOrder() {

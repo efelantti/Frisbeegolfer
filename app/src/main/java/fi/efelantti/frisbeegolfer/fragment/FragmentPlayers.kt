@@ -29,27 +29,22 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
     private lateinit var fab: FloatingActionButton
 
     private val actionModeCallback = object : ActionMode.Callback {
-        // Called when the action mode is created; startActionMode() was called
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-            // Inflate a menu resource providing context menu items
             val inflater: MenuInflater = mode.menuInflater
             inflater.inflate(R.menu.appbar_actions, menu)
             mode.title = getString(R.string.player_selected)
             return true
         }
 
-        // Called each time the action mode is shown. Always called after onCreateActionMode, but
-        // may be called multiple times if the mode is invalidated.
         override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-            return false // Return false if nothing is done
+            return false
         }
 
-        // Called when the user selects a contextual menu item
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             return when (item.itemId) {
                 R.id.action_edit -> {
                     editSelectedCourse()
-                    mode.finish() // Action picked, so close the CAB
+                    mode.finish()
                     true
                 }
                 else -> false
@@ -67,10 +62,10 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
             findNavController().navigate(action)
         }
 
-        // Called when the user exits the action mode
         override fun onDestroyActionMode(mode: ActionMode) {
             actionMode = null
             adapter.resetSelectedPosition()
+            fab.isEnabled = true
         }
     }
 
@@ -103,11 +98,13 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
             )
         )
 
-        playerViewModel.allPlayers.observe(viewLifecycleOwner, { players ->
-            players?.let { adapter.setPlayers(it) }
+        playerViewModel.allPlayers.observe(viewLifecycleOwner, { list ->
+            list?.let { players ->
+                val sortedPlayers = players.sortedBy { it.name }
+                adapter.setPlayers(sortedPlayers)
+            }
         })
 
-        // TODO - Sometimes FAB is not enabled even though it should be!
         fab = binding.fab
         fab.setOnClickListener {
             showNewPlayerDialog()
@@ -126,12 +123,11 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
     override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
         if (!shouldStartActionMode) {
             actionMode?.finish()
-            fab.isEnabled = false
-        } else {
             fab.isEnabled = true
+        } else {
+            fab.isEnabled = false
             when (actionMode) {
                 null -> {
-                    // Start the CAB using the ActionMode.Callback defined above
                     actionMode = activity?.startActionMode(actionModeCallback)
                 }
             }

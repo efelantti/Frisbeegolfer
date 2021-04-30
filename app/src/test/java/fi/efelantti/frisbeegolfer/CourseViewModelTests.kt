@@ -75,8 +75,8 @@ class CourseViewModelTests {
 
     @Test
     fun courseExists() = testDispatcher.runBlockingTest {
-        coEvery { repository.courseExists(0) } returns MutableLiveData(true)
-        val resultLiveData = courseViewModel.courseExists(0)
-        coVerify(exactly = 1) { repository.courseExists(0) }
+        coEvery { repository.courseExists("", city = "") } returns MutableLiveData(true)
+        val resultLiveData = courseViewModel.courseExists("", "")
+        coVerify(exactly = 1) { repository.courseExists("", city = "") }
     }
 }
