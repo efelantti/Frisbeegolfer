@@ -190,6 +190,7 @@
     <string name="error_message_noHoles">Please add at least one hole.</string>
     <string name="contentDescription_player_initial_image">Avatar with the first letter of the player\'s name</string>
     <string name="contentDescription_course_avatar">Icon for the course displaying the number of holes.</string>
+    <string name="contentDescription_round_avatar">Avatar for round. Contains the first letter of the course name.</string>
 
     <!-- String that is displayed on the app bar when user has selected at least one player for a round. -->
     <plurals name="numberPlayersSelected">
