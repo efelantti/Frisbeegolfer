@@ -5,9 +5,9 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.amulyakhare.textdrawable.TextDrawable
+import com.amulyakhare.textdrawable.util.ColorGenerator
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewRoundBinding
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import java.time.format.DateTimeFormatter
@@ -27,18 +27,26 @@ class RoundListAdapter internal constructor(
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: ListItemClickListener = onClickListener
+    private lateinit var builder: TextDrawable.IBuilder
+    private val generator = ColorGenerator.MATERIAL
 
     inner class CourseViewHolder(binding: RecyclerviewRoundBinding) :
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
-        val roundCard: CardView = binding.roundCard
-        val roundItemViewStartedOn: TextView = binding.txtStartedOn
-        val roundItemViewCourseName: TextView = binding.txtCourseNameRound
-        val roundItemViewCity: TextView = binding.txtCityRound
-        val roundItemViewNumberOfPlayers: TextView = binding.numberOfPlayers
+        val roundCard = binding.roundCard
+        val roundIcon = binding.txtCourseNameAvatar
+        val roundItemViewStartedOnDate = binding.txtStartedOnDate
+        val roundItemViewStartedOnTime = binding.txtStartedOnTime
+        val roundItemViewCourseName = binding.txtCourseNameRound
+        val roundItemViewCity = binding.txtCityRound
+        val roundItemViewPlayers = binding.nameOfPlayers
 
         init {
             itemView.setOnClickListener(this)
+            builder = TextDrawable.builder()
+                .beginConfig()
+                .endConfig()
+                .round()
         }
 
         override fun onClick(v: View?) {
@@ -68,16 +76,19 @@ class RoundListAdapter internal constructor(
         holder.roundCard.isActivated = selectedPosition == position
 
         val current = rounds[position]
-        holder.roundItemViewStartedOn.text =
-            current.round.dateStarted.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-        holder.roundItemViewCourseName.text =
-            res.getString(R.string.city, current.course.course.name)
-        holder.roundItemViewCity.text = res.getString(R.string.city, current.course.course.city)
-        holder.roundItemViewNumberOfPlayers.text =
-            res.getString(
-                R.string.players,
-                current.scores.distinctBy { it.player.name }.map { it.player.name }.joinToString()
-            )
+
+        val color = generator.getColor(current.course.course.name)
+        val initial = current.course.course.name?.take(1)
+        val icon = builder.build(initial, color)
+        holder.roundIcon.setImageDrawable(icon)
+        holder.roundItemViewCourseName.text = current.course.course.name
+        holder.roundItemViewCity.text = current.course.course.city
+        holder.roundItemViewStartedOnDate.text =
+            current.round.dateStarted.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+        holder.roundItemViewStartedOnTime.text =
+            current.round.dateStarted.format(DateTimeFormatter.ofPattern("HH:mm"))
+        holder.roundItemViewPlayers.text =
+            current.scores.distinctBy { it.player.name }.map { it.player.name }.joinToString()
     }
 
     internal fun setRounds(rounds: List<RoundWithCourseAndScores>) {
