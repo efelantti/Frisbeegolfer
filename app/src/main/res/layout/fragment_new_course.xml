@@ -1,211 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.core.widget.NestedScrollView android:id="@+id/new_course_scrollview"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout_new_course"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <Toolbar
-        android:id="@+id/dialog_toolbar_new_course"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout_new_course"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-    </Toolbar>
-    <TextView
-        android:text="@string/new_course_fragment_header_course_data"
-        android:textSize="@dimen/font_size_sub_header"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:orientation="vertical"
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_course_name"
+        <Toolbar
+            android:id="@+id/dialog_toolbar_new_course"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></Toolbar>
+
+        <TextView
+            android:id="@+id/course_section_header"
+            android:text="@string/new_course_fragment_header_course_data"
+            android:textSize="20sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/dialog_toolbar_new_course"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/course_name_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/course_section_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:endIconMode="clear_text"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_course_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:importantForAutofill="no"
+                android:hint="@string/hint_word_course_name"
+                android:inputType="text"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_city_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/course_name_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:endIconMode="clear_text"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:importantForAutofill="no"
+                android:hint="@string/hint_word_city"
+                android:inputType="text"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:id="@+id/course_and_holes_divider"
+            app:layout_constraintTop_toBottomOf="@id/edit_city_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/Divider"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/holes_sub_header"
+            android:text="@string/new_course_fragment_header_holes_data"
+            android:textSize="20sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/course_and_holes_divider" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_number_of_holes_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:importantForAutofill="no"
-            android:fontFamily="sans-serif-light"
-            android:hint="@string/hint_word_course_name"
-            android:inputType="text"
-            android:minHeight="@dimen/min_height"
-            android:textSize="18sp" />
+            app:endIconMode="clear_text"
+            app:errorEnabled="true"
+            app:helperText="@string/edit_number_of_holes_helper_text"
+            app:helperTextEnabled="true"
+            app:layout_constraintEnd_toStartOf="@id/apply_holes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/holes_sub_header">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_number_of_holes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_word_number_of_holes"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:text="@integer/default_amount_of_holes"
+                android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_city"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:importantForAutofill="no"
-            android:fontFamily="sans-serif-light"
-            android:hint="@string/hint_word_city"
-            android:inputType="text"
-            android:minHeight="@dimen/min_height"
-            android:textSize="18sp" />
-    </com.google.android.material.textfield.TextInputLayout>
-    <View
-        style="@style/Divider"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
-    <TextView
-        android:text="@string/new_course_fragment_header_holes_data"
-        android:textSize="@dimen/font_size_sub_header"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <LinearLayout
-        android:weightSum="5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_weight="3"
-        android:layout_width="0dp"
-        android:layout_height="match_parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-             android:id="@+id/edit_number_of_holes"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_marginStart="8dp"
-             android:layout_marginBottom="8dp"
-             android:layout_marginEnd="4dp"
-             android:importantForAutofill="no"
-             android:fontFamily="sans-serif-light"
-             android:hint="@string/hint_word_number_of_holes"
-             android:text="@integer/default_amount_of_holes"
-             android:inputType="number"
-            android:imeOptions="actionDone"
-            android:minHeight="@dimen/min_height"
-             android:textSize="18sp" />
-    </com.google.android.material.textfield.TextInputLayout>
         <Button
             android:id="@+id/apply_holes"
-            android:layout_weight="2"
             android:text="@string/create_holes"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-    <fi.efelantti.frisbeegolfer.EmptyRecyclerView
-        android:layout_marginBottom="8dp"
-        android:id="@+id/recyclerview_holes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/recyclerview_hole" />
-    <!--
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            style="?attr/buttonBarStyle"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            app:layout_constraintStart_toEndOf="@id/edit_number_of_holes_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/edit_number_of_holes_layout"
+            app:layout_constraintBottom_toBottomOf="@id/edit_number_of_holes_layout" />
 
-                <Button
-                    android:id="@+id/activity_new_player_button_save"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="@dimen/big_padding"
-                    android:layout_marginTop="@dimen/big_padding"
-                    android:background="@color/colorPrimary"
-
-                    android:text="@string/button_save" />
-
-        <Button
-            android:id="@+id/activity_new_player_button_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginTop="@dimen/big_padding"
-            android:layout_marginEnd="@dimen/big_padding"
-            style="?android:buttonBarButtonStyle"
-            android:text="@string/button_cancel"/>
-        </LinearLayout>
-
-
-        <EditText
-            android:id="@+id/edit_first_name"
+        <fi.efelantti.frisbeegolfer.EmptyRecyclerView
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:id="@+id/recyclerview_holes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/button_margin_horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="@dimen/button_margin_horizontal"
-            android:autofillHints="AUTOFILL_HINT_NAME"
-            android:fontFamily="sans-serif-light"
-            android:hint="@string/hint_word_first_name"
-            android:inputType="textPersonName"
-            android:minHeight="@dimen/min_height"
-            android:textSize="18sp" />
+            tools:listitem="@layout/recyclerview_hole"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edit_number_of_holes_layout" />
 
-        <EditText
-            android:id="@+id/edit_nickname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/button_margin_horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="@dimen/button_margin_horizontal"
-            android:autofillHints="AUTOFILL_HINT_NAME"
-            android:fontFamily="sans-serif-light"
-            android:hint="@string/hint_word_nickname"
-            android:inputType="textPersonName"
-            android:minHeight="@dimen/min_height"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/edit_last_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/button_margin_horizontal"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="@dimen/button_margin_horizontal"
-            android:autofillHints="AUTOFILL_HINT_NAME"
-            android:fontFamily="sans-serif-light"
-            android:hint="@string/hint_word_lastname"
-            android:inputType="textPersonName"
-            android:minHeight="@dimen/min_height"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/edit_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/button_margin_horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="@dimen/button_margin_horizontal"
-            android:autofillHints="AUTOFILL_HINT_EMAIL_ADDRESS"
-            android:fontFamily="sans-serif-light"
-            android:hint="@string/hint_word_email"
-            android:inputType="textEmailAddress"
-            android:minHeight="@dimen/min_height"
-            android:textSize="18sp" />
-
-    -->
-
-</LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

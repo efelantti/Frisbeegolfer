@@ -15,6 +15,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.databinding.FragmentNewCourseBinding
 import fi.efelantti.frisbeegolfer.model.Course
@@ -31,8 +33,12 @@ class FragmentNewCourse : DialogFragment() {
     private val binding get() = _binding!!
     private val args: FragmentNewCourseArgs by navArgs()
     private var isFinalized = false
-    private lateinit var courseNameView: EditText
-    private lateinit var cityView: EditText
+    private lateinit var courseNameLayout: TextInputLayout
+    private lateinit var courseNameEditText: TextInputEditText
+    private lateinit var cityLayout: TextInputLayout
+    private lateinit var cityEditText: TextInputEditText
+    private lateinit var numberOfHolesLayout: TextInputLayout
+    private lateinit var numberOfHolesView: TextInputEditText
     private lateinit var recyclerView: EmptyRecyclerView
     private lateinit var newHoles: List<Hole>
     private val courseViewModel: CourseViewModel by activityViewModels {
@@ -75,8 +81,12 @@ class FragmentNewCourse : DialogFragment() {
 
         val actionCategory = NewCourseAction.valueOf(args.actionType)
 
-        courseNameView = binding.editCourseName
-        cityView = binding.editCity
+        courseNameLayout = binding.courseNameLayout
+        courseNameEditText = binding.editCourseName
+        cityLayout = binding.editCityLayout
+        cityEditText = binding.editCity
+        numberOfHolesView = binding.editNumberOfHoles
+        numberOfHolesLayout = binding.editNumberOfHolesLayout
 
         val adapter = HoleListAdapter(activity as Context)
         recyclerView = binding.recyclerviewHoles
@@ -87,8 +97,7 @@ class FragmentNewCourse : DialogFragment() {
         lateinit var oldHolePars: List<Int>
         lateinit var oldHoleLengthMeter: List<Int?>
 
-        val applyHolesButton: Button = binding.applyHoles
-        val numberOfHolesView: EditText = binding.editNumberOfHoles
+        val applyHolesButton = binding.applyHoles
 
         val oldCourseId = args.courseId
         lateinit var saveAction: Toolbar.OnMenuItemClickListener
@@ -124,8 +133,8 @@ class FragmentNewCourse : DialogFragment() {
                         oldHolePars = oldCourseData.holes.map { it.par }
                         oldHoleLengthMeter = oldCourseData.holes.map { it.lengthMeters }
                         toolbar.title = getString(R.string.text_activity_new_course_title_edit)
-                        courseNameView.setText(oldCourseData.course.name)
-                        cityView.setText(oldCourseData.course.city)
+                        courseNameEditText.setText(oldCourseData.course.name)
+                        cityEditText.setText(oldCourseData.course.city)
                         oldCourseData.holes.let { adapter.setHoles(it) }
                         saveAction = Toolbar.OnMenuItemClickListener { item ->
                             when (item.itemId) {
@@ -153,7 +162,7 @@ class FragmentNewCourse : DialogFragment() {
         numberOfHolesView.setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
-                    applyHoles(numberOfHolesView, adapter)
+                    applyHoles(numberOfHolesLayout, numberOfHolesView, adapter)
                     false
                 }
                 else -> false
@@ -169,18 +178,23 @@ class FragmentNewCourse : DialogFragment() {
     /*
     Function that should be invoked when user clicks on the "Apply" (holes) button.
     Makes sure that the number of holes to set is valid. Also asks confirmation from the user before removing any holes.
+    TODO - Scroll to first hole when button clicked.
      */
-    private fun applyHoles(numberOfHolesView: EditText, adapter: HoleListAdapter) {
+    private fun applyHoles(
+        numberOfHolesLayout: TextInputLayout,
+        numberOfHolesView: TextInputEditText,
+        adapter: HoleListAdapter
+    ) {
         val numberOfHolesToSet: Int? = numberOfHolesView.text.toString().toIntOrNull()
         val maximumNumberOfHoles: Int = resources.getInteger(R.integer.max_amount_of_holes)
         if (numberOfHolesToSet == null || numberOfHolesToSet <= 0 || numberOfHolesToSet > maximumNumberOfHoles) {
-            numberOfHolesView.error =
+            numberOfHolesLayout.error =
                 getString(R.string.invalid_number_of_holes, maximumNumberOfHoles)
         } else {
+            numberOfHolesLayout.error = null
             val holesBefore = adapter.itemCount
             when {
                 numberOfHolesToSet == holesBefore -> {
-                    // Nothing needs to be done
                 }
                 numberOfHolesToSet > holesBefore -> {
                     // Take existing holes and add new ones after them.
@@ -224,20 +238,26 @@ class FragmentNewCourse : DialogFragment() {
     Parses the data from the UI, validates it and then adds the course to database, checking that it doesn't already exist.
      */
     private fun createNewCourse() {
-        val courseName = courseNameView.text.toString().trim()
-        val city = cityView.text.toString().trim()
+        val courseName = courseNameEditText.text.toString().trim()
+        val city = cityEditText.text.toString().trim()
         val holes = getHoleInformation()
         val isValidCourseName = validateCourseName(courseName)
         val isValidCity = validateCity(city)
         val isValidNumberOfHoles = validateNumberOfHoles(holes)
         if (!isValidCourseName) {
-            setFieldError(courseNameView)
+            setFieldError(courseNameLayout, courseNameEditText)
+        } else {
+            courseNameLayout.error = null
         }
         if (!isValidCity) {
-            setFieldError(cityView)
+            setFieldError(cityLayout, cityEditText)
+        } else {
+            cityLayout.error = null
         }
         if (!isValidNumberOfHoles) {
-            showInvalidNumberOfHolesMessage()
+            showInvalidNumberOfHolesMessage(numberOfHolesLayout)
+        } else {
+            numberOfHolesLayout.error = null
         }
         if (isValidCourseName && isValidCity && isValidNumberOfHoles) {
             courseViewModel.courseExists(courseName, city)
@@ -271,20 +291,26 @@ Parses the data from the UI, validates it and then udpates the course in the dat
         oldHolePars: List<Int>,
         oldHoleLengthMeter: List<Int?>
     ) {
-        val courseName = courseNameView.text.toString().trim()
-        val city = cityView.text.toString().trim()
+        val courseName = courseNameEditText.text.toString().trim()
+        val city = cityEditText.text.toString().trim()
         val holes = getHoleInformation()
         val isValidCourseName = validateCourseName(courseName)
         val isValidCity = validateCity(city)
         val isValidNumberOfHoles = validateNumberOfHoles(holes)
         if (!isValidCourseName) {
-            setFieldError(courseNameView)
+            setFieldError(courseNameLayout, courseNameEditText)
+        } else {
+            courseNameLayout.error = null
         }
         if (!isValidCity) {
-            setFieldError(cityView)
+            setFieldError(cityLayout, cityEditText)
+        } else {
+            cityLayout.error = null
         }
         if (!isValidNumberOfHoles) {
-            showInvalidNumberOfHolesMessage()
+            showInvalidNumberOfHolesMessage(numberOfHolesLayout)
+        } else {
+            numberOfHolesLayout.error = null
         }
         if (isValidCourseName && isValidCity && isValidNumberOfHoles) {
             val courseData = CourseWithHoles(
@@ -381,8 +407,8 @@ Parses the data from the UI, validates it and then udpates the course in the dat
     /*
     Helper function for setting error text to a field. Assumes that field.hint contains name of the data.
      */
-    private fun setFieldError(field: EditText) {
-        field.error = getString(R.string.invalid_field, field.hint)
+    private fun setFieldError(layout: TextInputLayout, field: TextInputEditText) {
+        layout.error = getString(R.string.invalid_field, field.hint)
     }
 
     /*
@@ -406,12 +432,8 @@ Parses the data from the UI, validates it and then udpates the course in the dat
     /*
     Displayed if the number of holes is not valid.
      */
-    private fun showInvalidNumberOfHolesMessage() {
-        Toast.makeText(
-            context,
-            getString(R.string.error_message_noHoles),
-            Toast.LENGTH_SHORT
-        ).show()
+    private fun showInvalidNumberOfHolesMessage(numberOfHolesLayout: TextInputLayout) {
+        numberOfHolesLayout.error = getString(R.string.error_message_noHoles)
     }
 
     /*

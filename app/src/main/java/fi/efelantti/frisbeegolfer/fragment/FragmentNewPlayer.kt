@@ -14,6 +14,8 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.NewPlayerAction
 import fi.efelantti.frisbeegolfer.R
@@ -31,8 +33,10 @@ class FragmentNewPlayer : DialogFragment() {
         PlayerViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
     }
     private val _tag = "FragmentNewPlayer"
-    private lateinit var nameView: EditText
-    private lateinit var emailView: EditText
+    private lateinit var nameLayout: TextInputLayout
+    private lateinit var emailLayout: TextInputLayout
+    private lateinit var nameEditText: TextInputEditText
+    private lateinit var emailEditText: TextInputEditText
     private var isFinalized = false
 
     override fun getTheme(): Int {
@@ -71,8 +75,10 @@ class FragmentNewPlayer : DialogFragment() {
 
         val actionCategory = NewPlayerAction.valueOf(args.actionType)
 
-        nameView = binding.editName
-        emailView = binding.editEmail
+        nameLayout = binding.editNameLayout
+        nameEditText = binding.editName
+        emailLayout = binding.editEmailLayout
+        emailEditText = binding.editEmail
 
         val oldPlayerId = args.playerId
         lateinit var onSaveButtonClick: Toolbar.OnMenuItemClickListener
@@ -97,8 +103,8 @@ class FragmentNewPlayer : DialogFragment() {
                     isFinalized = true
                     requireActivity().invalidateOptionsMenu()
                     toolbar.title = getString(R.string.text_activity_new_player_title_edit)
-                    nameView.setText(player.name)
-                    emailView.setText(player.email)
+                    nameEditText.setText(player.name)
+                    emailEditText.setText(player.email)
                 }
                 onSaveButtonClick = Toolbar.OnMenuItemClickListener { item ->
                     when (item.itemId) {
@@ -122,16 +128,20 @@ class FragmentNewPlayer : DialogFragment() {
     Passed to onClickHandler for save menu item, when creating new player.
     */
     private fun createNewPlayer() {
-        val playerFields: Pair<String, String> = getDataFromFields(nameView, emailView)
+        val playerFields: Pair<String, String> = getDataFromFields(nameEditText, emailEditText)
         val name = playerFields.first
         val email = playerFields.second
         val isValidName = validateName(name)
         val isValidEmail = validateEmail(email)
         if (!isValidName) {
-            setFieldError(nameView)
+            setFieldError(nameLayout, nameEditText)
+        } else {
+            nameLayout.error = null
         }
         if (!isValidEmail) {
-            setFieldError(emailView)
+            setFieldError(emailLayout, emailEditText)
+        } else {
+            emailLayout.error = null
         }
         if (isValidName && isValidEmail) {
             playerViewModel.playerExists(name).observe(viewLifecycleOwner) {
@@ -152,16 +162,16 @@ class FragmentNewPlayer : DialogFragment() {
     }
 
     private fun editPlayer(oldPlayerData: Player) {
-        val playerFields: Pair<String, String> = getDataFromFields(nameView, emailView)
+        val playerFields: Pair<String, String> = getDataFromFields(nameEditText, emailEditText)
         val name = playerFields.first
         val email = playerFields.second
         val isValidName = validateName(name)
         val isValidEmail = validateEmail(email)
         if (!isValidName) {
-            setFieldError(nameView)
+            setFieldError(nameLayout, nameEditText)
         }
         if (!isValidEmail) {
-            setFieldError(emailView)
+            setFieldError(emailLayout, emailEditText)
         }
         if (isValidName && isValidEmail) {
             val playerData = Player(
@@ -195,8 +205,8 @@ Gets the text from the EditTexts, trims them and packs them to a Pair.
     /*
     Sets error message to name field.
      */
-    private fun setFieldError(field: EditText) {
-        field.error = getString(R.string.invalid_field, field.hint)
+    private fun setFieldError(layout: TextInputLayout, field: TextInputEditText) {
+        layout.error = getString(R.string.invalid_field, field.hint)
     }
 
     /*
