@@ -41,8 +41,6 @@
     <!-- Title for the screen that allows to edit a player. -->
     <string name="text_activity_new_player_title_edit">Edit player</string>
 
-    <!-- Label for cancel button. -->
-
     <!-- Label for a positive confirmation button. -->
     <string name="button_yes">Yes</string>
 
@@ -191,7 +189,7 @@
     <string name="contentDescription_player_initial_image">Avatar with the first letter of the player\'s name</string>
     <string name="contentDescription_course_avatar">Icon for the course displaying the number of holes.</string>
     <string name="contentDescription_round_avatar">Avatar for round. Contains the first letter of the course name.</string>
-    <string name="edit_number_of_holes_helper_text">Value range 1-99</string>
+    <string name="edit_number_of_holes_helper_text">Value range: 1–99</string>
 
     <!-- String that is displayed on the app bar when user has selected at least one player for a round. -->
     <plurals name="numberPlayersSelected">

@@ -10,9 +10,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
@@ -33,6 +35,7 @@ class FragmentNewCourse : DialogFragment() {
     private val binding get() = _binding!!
     private val args: FragmentNewCourseArgs by navArgs()
     private var isFinalized = false
+    private lateinit var scrollView: NestedScrollView
     private lateinit var courseNameLayout: TextInputLayout
     private lateinit var courseNameEditText: TextInputEditText
     private lateinit var cityLayout: TextInputLayout
@@ -40,6 +43,7 @@ class FragmentNewCourse : DialogFragment() {
     private lateinit var numberOfHolesLayout: TextInputLayout
     private lateinit var numberOfHolesView: TextInputEditText
     private lateinit var recyclerView: EmptyRecyclerView
+    private lateinit var applyHolesButton: Button
     private lateinit var newHoles: List<Hole>
     private val courseViewModel: CourseViewModel by activityViewModels {
         CourseViewModelFactory((requireContext().applicationContext as FrisbeegolferApplication).repository)
@@ -81,23 +85,29 @@ class FragmentNewCourse : DialogFragment() {
 
         val actionCategory = NewCourseAction.valueOf(args.actionType)
 
+        scrollView = binding.newCourseScrollview
         courseNameLayout = binding.courseNameLayout
         courseNameEditText = binding.editCourseName
         cityLayout = binding.editCityLayout
         cityEditText = binding.editCity
         numberOfHolesView = binding.editNumberOfHoles
         numberOfHolesLayout = binding.editNumberOfHolesLayout
+        applyHolesButton = binding.applyHoles
 
         val adapter = HoleListAdapter(activity as Context)
         recyclerView = binding.recyclerviewHoles
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
 
         lateinit var oldHolePars: List<Int>
         lateinit var oldHoleLengthMeter: List<Int?>
-
-        val applyHolesButton = binding.applyHoles
 
         val oldCourseId = args.courseId
         lateinit var saveAction: Toolbar.OnMenuItemClickListener
@@ -178,7 +188,7 @@ class FragmentNewCourse : DialogFragment() {
     /*
     Function that should be invoked when user clicks on the "Apply" (holes) button.
     Makes sure that the number of holes to set is valid. Also asks confirmation from the user before removing any holes.
-    TODO - Scroll to first hole when button clicked.
+    TODO - Scroll to first hole when button clicked?
      */
     private fun applyHoles(
         numberOfHolesLayout: TextInputLayout,
@@ -210,6 +220,7 @@ class FragmentNewCourse : DialogFragment() {
                     askConfirmationFromUserToRemoveHoles(adapter, holesToSet)
                 }
             }
+            //scrollView.requestChildFocus(recyclerView, recyclerView)
         }
     }
 

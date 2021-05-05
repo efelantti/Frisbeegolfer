@@ -1,98 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--LinearLayout that has 3 constraint layouts?-->
-<androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:gravity="center_vertical"
-    card_view:cardCornerRadius="6dp"
-    card_view:cardElevation="6dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:weightSum="7">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/hole_number_header"
+        android:layout_marginStart="4dp"
+        android:textStyle="bold"
+        android:text="@string/hole_number_header"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="7">
+        android:layout_width="wrap_content"></TextView>
 
-        <TextView
-            android:id="@+id/hole_number_header"
-            android:layout_marginStart="4dp"
-            android:textStyle="bold"
-            android:text="@string/hole_number_header"
-            card_view:layout_constraintTop_toTopOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"></TextView>
+    <TextView
+        android:id="@+id/par_count_header"
+        app:layout_constraintStart_toStartOf="@id/parCount"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textStyle="bold"
+        android:text="@string/par_count_header"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"></TextView>
 
-        <TextView
-            android:id="@+id/par_count_header"
-            card_view:layout_constraintStart_toStartOf="@id/parCount"
-            card_view:layout_constraintTop_toTopOf="parent"
-            android:textStyle="bold"
-            android:text="@string/par_count_header"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
-        </TextView>
+    <TextView
+        android:id="@+id/hole_length_header"
+        app:layout_constraintBottom_toTopOf="@+id/edit_length"
+        app:layout_constraintStart_toStartOf="@id/edit_length"
+        android:textStyle="bold"
+        android:labelFor="@id/edit_length"
+        android:text="@string/hint_word_length"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content">
 
-        <TextView
-            android:id="@+id/hole_length_header"
-            card_view:layout_constraintBottom_toTopOf="@+id/edit_length"
-            card_view:layout_constraintStart_toStartOf="@id/edit_length"
-            android:textStyle="bold"
-            android:labelFor="@id/edit_length"
-            android:text="@string/hint_word_length"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+    </TextView>
 
-        </TextView>
-
-        <TextView
-            android:id="@+id/recyclerView_hole_item_hole_index"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            tools:text="Hole number"
-            card_view:layout_constraintTop_toBottomOf="@+id/hole_number_header"
-            card_view:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/recyclerView_hole_item_hole_index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:text="Hole number"
+        app:layout_constraintTop_toBottomOf="@+id/hole_number_header"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
-        <Button
-            android:id="@+id/decrement_par"
-            android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/ic_minus"
-            card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintStart_toEndOf="@id/recyclerView_hole_item_hole_index"
-            card_view:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/decrement_par"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ic_minus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/recyclerView_hole_item_hole_index"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/parCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            card_view:layout_constraintStart_toEndOf="@id/decrement_par"
-            card_view:layout_constraintTop_toBottomOf="@id/par_count_header"
-            android:gravity="center_horizontal"
-            android:text="@integer/default_par"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/parCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/decrement_par"
+        app:layout_constraintTop_toBottomOf="@id/par_count_header"
+        android:gravity="center_horizontal"
+        android:text="@integer/default_par"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/increment_par"
-            android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/ic_plus"
-            card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintStart_toEndOf="@id/parCount"
-            card_view:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/increment_par"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ic_plus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/parCount"
+        app:layout_constraintTop_toTopOf="parent" />
 
         <!-- TODO: Field moves a bit to the right after 10th hole. -->
         <EditText
@@ -107,10 +97,8 @@
             android:minHeight="@dimen/min_height"
             android:textSize="16sp"
             android:background="@android:color/transparent"
-            card_view:layout_constraintStart_toEndOf="@+id/increment_par"
-            card_view:layout_constraintEnd_toEndOf="@+id/hole_length_header"
-            card_view:layout_constraintTop_toBottomOf="@id/hole_number_header" />
+            app:layout_constraintStart_toEndOf="@+id/increment_par"
+            app:layout_constraintEnd_toEndOf="@+id/hole_length_header"
+            app:layout_constraintTop_toBottomOf="@id/hole_number_header" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.cardview.widget.CardView>
