@@ -143,7 +143,7 @@
     <!-- Label for field "Par". -->
 
     <!-- Header for field "Hole number". -->
-    <string name="hole_number_header">#</string>
+    <string name="hole_number_header">Hole number</string>
 
     <!-- Header for field "Par". -->
     <string name="par_count_header">Par</string>

@@ -1,104 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center"
-    android:orientation="horizontal"
-    android:weightSum="7">
-
-    <TextView
-        android:id="@+id/hole_number_header"
-        android:layout_marginStart="4dp"
-        android:textStyle="bold"
-        android:text="@string/hole_number_header"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"></TextView>
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/par_count_header"
-        app:layout_constraintStart_toStartOf="@id/parCount"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textStyle="bold"
-        android:text="@string/par_count_header"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"></TextView>
+        android:text="@string/par_count_header"
+        android:textSize="12sp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/parCount"
+        app:layout_constraintTop_toTopOf="@id/hole_number_header" />
 
     <TextView
         android:id="@+id/hole_length_header"
-        app:layout_constraintBottom_toTopOf="@+id/edit_length"
-        app:layout_constraintStart_toStartOf="@id/edit_length"
-        android:textStyle="bold"
-        android:labelFor="@id/edit_length"
-        android:text="@string/hint_word_length"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content">
-
-    </TextView>
-
-    <TextView
-        android:id="@+id/recyclerView_hole_item_hole_index"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        tools:text="Hole number"
-        app:layout_constraintTop_toBottomOf="@+id/hole_number_header"
-        app:layout_constraintStart_toStartOf="parent" />
-
+        android:layout_marginEnd="32dp"
+        android:labelFor="@id/edit_length"
+        android:text="@string/hint_word_length"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/hole_number_header" />
 
     <Button
         android:id="@+id/decrement_par"
-        android:layout_width="64dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="@drawable/ic_minus"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/recyclerView_hole_item_hole_index"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@id/parCount"
+        app:layout_constraintTop_toTopOf="@id/recyclerView_hole_item_hole_index" />
 
     <TextView
         android:id="@+id/parCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/decrement_par"
-        app:layout_constraintTop_toBottomOf="@id/par_count_header"
-        android:gravity="center_horizontal"
         android:text="@integer/default_par"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/barrier_length"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toEndOf="@id/barrier_hole_number"
+        app:layout_constraintTop_toTopOf="@id/recyclerView_hole_item_hole_index" />
 
     <Button
         android:id="@+id/increment_par"
-        android:layout_width="64dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_plus"
+        app:layout_constraintStart_toEndOf="@id/parCount"
+        app:layout_constraintTop_toTopOf="@id/recyclerView_hole_item_hole_index" />
+
+    <EditText
+        android:id="@+id/edit_length"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="@id/hole_length_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hole_length_header"
+        tools:text="100" />
+
+    <TextView
+        android:id="@+id/hole_number_header"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/ic_plus"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/parCount"
+        android:text="@string/hole_number_header"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@id/recyclerView_hole_item_hole_index"
         app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- TODO: Field moves a bit to the right after 10th hole. -->
-        <EditText
-            android:id="@+id/edit_length"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:fontFamily="sans-serif-light"
-            android:importantForAutofill="no"
-            android:inputType="number"
-            android:minHeight="@dimen/min_height"
-            android:textSize="16sp"
-            android:background="@android:color/transparent"
-            app:layout_constraintStart_toEndOf="@+id/increment_par"
-            app:layout_constraintEnd_toEndOf="@+id/hole_length_header"
-            app:layout_constraintTop_toBottomOf="@id/hole_number_header" />
+    <TextView
+        android:id="@+id/recyclerView_hole_item_hole_index"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:autoSizeMaxTextSize="100sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:textStyle="bold"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hole_number_header"
+        tools:text="18" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_hole_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="hole_number_header,recyclerView_hole_item_hole_index"
+        tools:layout_editor_absoluteX="411dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_length"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="hole_length_header,edit_length"
+        tools:layout_editor_absoluteX="411dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
