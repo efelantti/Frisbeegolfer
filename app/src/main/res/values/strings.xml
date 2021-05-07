@@ -27,7 +27,7 @@
     <string name="email_descriptor">Email: <xliff:g id="email" example="example@example.com">%s</xliff:g></string>
 
     <!-- Label for name field. -->
-    <string name="hint_word_name">Name</string>
+    <string name="hint_word_name">Name (required)</string>
 
     <!-- Label for email field. -->
     <string name="hint_word_email">Email</string>
@@ -108,10 +108,10 @@
     <string name="text_activity_new_course_title_edit">Edit course</string>
 
     <!-- Label for field "Course name". -->
-    <string name="hint_word_course_name">Course name</string>
+    <string name="hint_word_course_name">Course name (required)</string>
 
     <!-- Label for field "City". -->
-    <string name="hint_word_city">City</string>
+    <string name="hint_word_city">City (required)</string>
 
     <!-- Title for dialog that asks user confirmation to overwrite data. -->
     <string name="dialog_title_overwrite">Overwrite</string>

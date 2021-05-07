@@ -1,6 +1,5 @@
 package fi.efelantti.frisbeegolfer
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewHoleBinding
 import fi.efelantti.frisbeegolfer.model.Hole
 
-class HoleListAdapter internal constructor(
-    context: Context
-) : RecyclerView.Adapter<HoleListAdapter.HoleViewHolder>() {
+class HoleListAdapter internal constructor() :
+    RecyclerView.Adapter<HoleListAdapter.HoleViewHolder>() {
 
     private var holes: List<Hole> = emptyList()
 
@@ -40,11 +38,9 @@ class HoleListAdapter internal constructor(
         }
 
         fun updateViews() {
-            parCountView.text = "" + par
-            if (par == 9) incrementButton.visibility = View.INVISIBLE
-            else incrementButton.visibility = View.VISIBLE
-            if (par == 1) decrementButton.visibility = View.INVISIBLE
-            else decrementButton.visibility = View.VISIBLE
+            parCountView.text = par.toString()
+            incrementButton.isEnabled = par != 9
+            decrementButton.isEnabled = par != 1
         }
     }
 

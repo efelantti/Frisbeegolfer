@@ -1,7 +1,6 @@
 package fi.efelantti.frisbeegolfer.fragment
 
 import android.app.AlertDialog
-import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -94,7 +93,7 @@ class FragmentNewCourse : DialogFragment() {
         numberOfHolesLayout = binding.editNumberOfHolesLayout
         applyHolesButton = binding.applyHoles
 
-        val adapter = HoleListAdapter(activity as Context)
+        val adapter = HoleListAdapter()
         recyclerView = binding.recyclerviewHoles
 
         recyclerView.adapter = adapter
