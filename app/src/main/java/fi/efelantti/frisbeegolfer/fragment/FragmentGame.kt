@@ -12,10 +12,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import fi.efelantti.frisbeegolfer.databinding.FragmentCollectionObjectBinding
 import fi.efelantti.frisbeegolfer.databinding.FragmentGameBinding
 
-class CollectionDemoFragment : Fragment() {
-    // When requested, this adapter returns a DemoObjectFragment,
-    // representing an object in the collection.
-    private lateinit var demoCollectionAdapter: DemoCollectionAdapter
+class FragmentGame : Fragment() {
+    private lateinit var gameFragmentAdapter: GameFragmentAdapter
     private lateinit var viewPager: ViewPager2
     private var _binding: FragmentGameBinding? = null
     private val binding get() = _binding!!
@@ -31,9 +29,12 @@ class CollectionDemoFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        demoCollectionAdapter = DemoCollectionAdapter(this)
+        gameFragmentAdapter = GameFragmentAdapter(this)
         viewPager = binding.pager
-        viewPager.adapter = demoCollectionAdapter
+        gameFragmentAdapter.addFragment(FragmentScore())
+        gameFragmentAdapter.addFragment(FragmentScoreTable())
+
+        viewPager.adapter = gameFragmentAdapter
         val tabLayout: TabLayout = binding.tabLayout
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = "OBJECT ${(position + 1)}"
@@ -46,18 +47,18 @@ class CollectionDemoFragment : Fragment() {
     }
 }
 
-class DemoCollectionAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+class GameFragmentAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
-    override fun getItemCount(): Int = 2
+    private val fragmentList: ArrayList<Fragment> = ArrayList()
+
+    fun addFragment(fragment: Fragment) {
+        fragmentList.add(fragment)
+    }
+
+    override fun getItemCount(): Int = fragmentList.size
 
     override fun createFragment(position: Int): Fragment {
-        // Return a NEW fragment instance in createFragment(int)
-        val fragment = DemoObjectFragment()
-        fragment.arguments = Bundle().apply {
-            // Our object is just an integer :-P
-            putInt(ARG_OBJECT, position + 1)
-        }
-        return fragment
+        return fragmentList[position]
     }
 }
 

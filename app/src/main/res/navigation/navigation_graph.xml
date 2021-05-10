@@ -115,6 +115,6 @@
     </dialog>
     <fragment
         android:id="@+id/collectionDemoFragment"
-        android:name="fi.efelantti.frisbeegolfer.fragment.CollectionDemoFragment"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentGame"
         android:label="CollectionDemoFragment" />
 </navigation>
