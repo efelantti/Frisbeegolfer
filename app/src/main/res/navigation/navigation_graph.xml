@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_fragmentNavigationScreen_to_fragmentPlayers"
             app:destination="@id/fragmentPlayers" />
+        <action
+            android:id="@+id/action_fragmentNavigationScreen_to_collectionDemoFragment"
+            app:destination="@id/collectionDemoFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_choose_a_course"
@@ -110,4 +113,8 @@
             android:name="playerId"
             app:argType="long" />
     </dialog>
+    <fragment
+        android:id="@+id/collectionDemoFragment"
+        android:name="fi.efelantti.frisbeegolfer.fragment.CollectionDemoFragment"
+        android:label="CollectionDemoFragment" />
 </navigation>
