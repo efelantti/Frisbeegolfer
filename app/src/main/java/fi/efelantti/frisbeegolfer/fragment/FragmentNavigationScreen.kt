@@ -17,7 +17,6 @@ class FragmentNavigationScreen : Fragment() {
     private lateinit var buttonContinueRound: Button
     private lateinit var buttonCourses: Button
     private lateinit var buttonPlayers: Button
-    private lateinit var buttonStatistics: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,11 +51,6 @@ class FragmentNavigationScreen : Fragment() {
         buttonPlayers.setOnClickListener {
             navigateToPlayers()
         }
-
-        buttonStatistics = binding.buttonStatistics
-        buttonStatistics.setOnClickListener {
-            testViewPager2()
-        }
     }
 
     private fun navigateToNewRound() {
@@ -80,12 +74,6 @@ class FragmentNavigationScreen : Fragment() {
     private fun navigateToPlayers() {
         val directions =
             FragmentNavigationScreenDirections.actionFragmentNavigationScreenToFragmentPlayers()
-        findNavController().navigate(directions)
-    }
-
-    private fun testViewPager2() {
-        val directions =
-            FragmentNavigationScreenDirections.actionFragmentNavigationScreenToCollectionDemoFragment()
         findNavController().navigate(directions)
     }
 

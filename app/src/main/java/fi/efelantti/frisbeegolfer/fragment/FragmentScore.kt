@@ -7,28 +7,23 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
+import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.FragmentScoreBinding
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
+import java.time.OffsetDateTime
+
 
 class FragmentScore : Fragment() {
 
     private var _binding: FragmentScoreBinding? = null
     private val binding get() = _binding!!
-    private val args: FragmentScoreArgs by navArgs()
-    private val scoreViewModel: ScoreViewModel by viewModels {
-        ScoreViewModelFactory(
-            (requireContext().applicationContext as FrisbeegolferApplication).repository,
-            args.roundId,
-            args.playerIds,
-            args.holeIds
-        )
-    }
+    private lateinit var scoreViewModel: ScoreViewModel
+    private lateinit var scoreViewModelFactory: ScoreViewModelFactory
     private lateinit var testView: TextView
     private lateinit var playerNameView: TextView
     private lateinit var holeNumberView: TextView
@@ -49,6 +44,19 @@ class FragmentScore : Fragment() {
     ): View {
         _binding = FragmentScoreBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
+        val roundId = requireArguments().getSerializable(ROUND_ID) as OffsetDateTime
+        val playerIds = requireArguments().getLongArray(PLAYER_IDS)
+            ?: throw IllegalArgumentException("List of player ids was null.")
+        val holeIds = requireArguments().getLongArray(HOLE_IDS)
+            ?: throw IllegalArgumentException("List of hole ids was null.")
+        scoreViewModelFactory = ScoreViewModelFactory(
+            (requireContext().applicationContext as FrisbeegolferApplication).repository,
+            roundId,
+            playerIds,
+            holeIds
+        )
+        scoreViewModel = ViewModelProvider(this, scoreViewModelFactory)
+            .get(ScoreViewModel::class.java)
         return binding.root
     }
 
@@ -134,5 +142,20 @@ class FragmentScore : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val ROUND_ID = "round_Id"
+        private const val PLAYER_IDS = "player_Ids"
+        private const val HOLE_IDS = "hole_Ids"
+
+        fun newInstance(roundId: OffsetDateTime, playerIds: LongArray, holeIds: LongArray) =
+            FragmentScore().apply {
+                arguments = bundleOf(
+                    ROUND_ID to roundId,
+                    PLAYER_IDS to playerIds,
+                    HOLE_IDS to holeIds
+                )
+            }
     }
 }

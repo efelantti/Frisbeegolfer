@@ -105,7 +105,7 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
         val holeIds = round.course.holes.map { it.holeId }.toLongArray()
         val playerIds = round.scores.distinctBy { it.player.id }.map { it.player.id }.toLongArray()
         val action =
-            FragmentChooseRoundDirections.actionFragmentChooseRoundToFragmentScore(
+            FragmentChooseRoundDirections.actionFragmentChooseRoundToFragmentGame(
                 round.round.dateStarted,
                 holeIds,
                 playerIds

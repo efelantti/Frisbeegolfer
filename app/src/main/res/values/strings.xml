@@ -190,6 +190,8 @@
     <string name="contentDescription_course_avatar">Icon for the course displaying the number of holes.</string>
     <string name="contentDescription_round_avatar">Avatar for round. Contains the first letter of the course name.</string>
     <string name="edit_number_of_holes_helper_text">Value range: 1–99</string>
+    <string name="fragment_score_tab_text">Play</string>
+    <string name="fragment_scorecard_tab_text">Scorecard</string>
 
     <!-- String that is displayed on the app bar when user has selected at least one player for a round. -->
     <plurals name="numberPlayersSelected">

@@ -21,9 +21,6 @@
         <action
             android:id="@+id/action_fragmentNavigationScreen_to_fragmentPlayers"
             app:destination="@id/fragmentPlayers" />
-        <action
-            android:id="@+id/action_fragmentNavigationScreen_to_collectionDemoFragment"
-            app:destination="@id/collectionDemoFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_choose_a_course"
@@ -43,24 +40,9 @@
             android:name="courseId"
             app:argType="long" />
         <action
-            android:id="@+id/action_fragmentChoosePlayers_to_fragmentScore"
-            app:destination="@id/fragmentScore"
+            android:id="@+id/action_fragmentChoosePlayers_to_fragmentGame"
+            app:destination="@id/fragmentGame"
             app:popUpTo="@id/fragmentNavigationScreen" />
-    </fragment>
-    <fragment
-        tools:layout="@layout/fragment_score"
-        android:id="@+id/fragmentScore"
-        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentScore"
-        android:label="@string/score_title">
-        <argument
-            android:name="round_id"
-            app:argType="java.time.OffsetDateTime" />
-        <argument
-            android:name="holeIds"
-            app:argType="long[]" />
-        <argument
-            android:name="playerIds"
-            app:argType="long[]" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_choose_round"
@@ -68,8 +50,8 @@
         android:name="fi.efelantti.frisbeegolfer.fragment.FragmentChooseRound"
         android:label="@string/continue_round_activity_title">
         <action
-            android:id="@+id/action_fragmentChooseRound_to_fragmentScore"
-            app:destination="@id/fragmentScore" />
+            android:id="@+id/action_fragmentChooseRound_to_fragmentGame"
+            app:destination="@id/fragmentGame" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_courses"
@@ -114,7 +96,17 @@
             app:argType="long" />
     </dialog>
     <fragment
-        android:id="@+id/collectionDemoFragment"
+        android:id="@+id/fragmentGame"
         android:name="fi.efelantti.frisbeegolfer.fragment.FragmentGame"
-        android:label="CollectionDemoFragment" />
+        android:label="FragmentGame">
+        <argument
+            android:name="round_id"
+            app:argType="java.time.OffsetDateTime" />
+        <argument
+            android:name="holeIds"
+            app:argType="long[]" />
+        <argument
+            android:name="playerIds"
+            app:argType="long[]" />
+    </fragment>
 </navigation>
