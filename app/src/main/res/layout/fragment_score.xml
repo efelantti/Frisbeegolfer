@@ -1,193 +1,163 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context=".activity.MainActivity">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="RoundID: "
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/fragment_score_test_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Test"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Player: "
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/fragment_score_test_currentPlayer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Player"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hole number: "
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/fragment_score_test_currentHole"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hole #"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Par: "
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/fragment_score_test_currentHolePar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Par"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Best: "
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/fragment_score_test_currentHoleBest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Best"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Average: "
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/fragment_score_test_currentHoleAverage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Average"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Latest: "
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/fragment_score_test_currentHoleLatest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Latest"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.FragmentGame">
 
     <Button
-        android:id="@+id/fragment_score_test_button_next_player"
+        android:id="@+id/fragment_score_previousHole"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:textSize="20sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHole"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="Next player"
-        tools:ignore="HardcodedText" />
+        tools:text="1" />
 
     <Button
-        android:id="@+id/fragment_score_test_button_next_hole"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:textSize="26sp"
+        android:id="@+id/fragment_score_currentHole"
+        app:layout_constraintTop_toTopOf="@id/fragment_score_previousHole"
+        app:layout_constraintStart_toEndOf="@id/fragment_score_previousHole"
+        app:layout_constraintEnd_toEndOf="@id/fragment_score_nextHole"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="Next hole"
-        tools:ignore="HardcodedText" />
+        tools:text="2" />
 
-    <LinearLayout
+    <Button
+        android:id="@+id/fragment_score_nextHole"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:textSize="20sp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintTop_toTopOf="@id/fragment_score_previousHole"
+        app:layout_constraintStart_toEndOf="@id/fragment_score_currentHole"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="3" />
+
+    <Button
+        android:id="@+id/fragment_score_button_previous_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/fragment_score_currentPlayer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/fragment_score_currentPlayer"
+        tools:text="<-" />
+
+    <TextView
+        android:id="@+id/fragment_score_currentPlayer"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/fragment_score_currentHole"
+        app:layout_constraintStart_toStartOf="@id/fragment_score_button_previous_player"
+        app:layout_constraintEnd_toEndOf="@id/fragment_score_button_next_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Player Name" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toBottomOf="@id/fragment_score_currentPlayer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <Button
+        android:id="@+id/fragment_score_button_next_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintTop_toTopOf="@id/fragment_score_currentPlayer"
+        app:layout_constraintStart_toEndOf="@id/fragment_score_currentPlayer"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="->" />
+
+    <TextView
+        android:id="@+id/fragment_score_currentHolePar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        tools:text="Par: 3" />
 
-        <Button
-            android:id="@+id/fragment_score_test_button_increment_index"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="Next"
-            tools:ignore="ButtonStyle,HardcodedText" />
-
-        <Button
-            android:id="@+id/fragment_score_test_button_decrement_index"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="Previous"
-            tools:ignore="ButtonStyle,HardcodedText" />
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/fragment_score_currentHoleBest"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:text="Best: 2" />
 
-        <EditText
-            android:id="@+id/fragment_score_test_set_score_edit_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            tools:ignore="Autofill,LabelFor" />
+    <TextView
+        android:id="@+id/fragment_score_currentHoleAverage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Average: 3.4" />
 
-        <Button
-            android:id="@+id/fragment_score_test_set_score_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="Set score"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-</LinearLayout>
+    <TextView
+        android:id="@+id/fragment_score_currentHoleLatest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Latest: 3" />
+
+    <Button
+        android:id="@+id/fragment_score_button_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/fragment_score_button_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/fragment_score_button_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/fragment_score_button_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/fragment_score_button_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/fragment_score_button_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/fragment_score_button_ob"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/fragment_score_button_more"
+        app:layout_constraintTop_toTopOf="@id/fragment_score_button_dnf"
+        tools:text="OB" />
+
+    <Button
+        android:id="@+id/fragment_score_button_more"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/fragment_score_button_ob"
+        app:layout_constraintEnd_toStartOf="@id/fragment_score_button_dnf"
+        app:layout_constraintTop_toTopOf="@id/fragment_score_button_dnf"
+        tools:text="more" />
+
+    <Button
+        android:id="@+id/fragment_score_button_dnf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fragment_score_button_more"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="DNF" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
