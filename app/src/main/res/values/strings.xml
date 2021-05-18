@@ -192,6 +192,8 @@
     <string name="edit_number_of_holes_helper_text">Value range: 1–99</string>
     <string name="fragment_score_tab_text">Play</string>
     <string name="fragment_scorecard_tab_text">Scorecard</string>
+    <string name="button_previous_player_text">Player</string>
+    <string name="button_next_player_text">Player</string>
 
     <!-- String that is displayed on the app bar when user has selected at least one player for a round. -->
     <plurals name="numberPlayersSelected">
