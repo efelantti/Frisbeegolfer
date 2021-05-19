@@ -194,6 +194,11 @@
     <string name="fragment_scorecard_tab_text">Scorecard</string>
     <string name="button_previous_player_text">Player</string>
     <string name="button_next_player_text">Player</string>
+    <string name="plus_minus_label">Result</string>
+    <string name="par_label">Par</string>
+    <string name="best_label">Best</string>
+    <string name="average_label">Average</string>
+    <string name="latest_label">Latest</string>
 
     <!-- String that is displayed on the app bar when user has selected at least one player for a round. -->
     <plurals name="numberPlayersSelected">
