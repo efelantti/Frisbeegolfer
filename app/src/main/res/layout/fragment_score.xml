@@ -150,6 +150,7 @@
         android:id="@+id/fragment_score_currentHoleBest_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="@string/best_label"
         app:layout_constraintBottom_toTopOf="@id/fragment_score_button_1"
         app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHoleAverage_label"
@@ -207,20 +208,19 @@
         app:layout_constraintStart_toEndOf="@id/fragment_score_currentHoleLatest_label"
         tools:text="3" />
 
-    <Button
+    <include
+        layout="@layout/button_score_result"
         android:id="@+id/fragment_score_button_1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@style/ThrowResultButton"
         app:layout_constraintStart_toStartOf="@id/v_guideline_5"
         app:layout_constraintEnd_toStartOf="@id/v_guideline_35"
         app:layout_constraintTop_toTopOf="@id/h_guideline_50"
         app:layout_constraintBottom_toBottomOf="@id/h_guideline_65"
-        tools:text="1" />
+        tools:text="@string/button_throw_result_sample_1" />
 
     <Button
         android:id="@+id/fragment_score_button_2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@style/ThrowResultButton"
         app:layout_constraintStart_toStartOf="@id/v_guideline_35"
         app:layout_constraintEnd_toStartOf="@id/v_guideline_65"
         app:layout_constraintTop_toTopOf="@id/h_guideline_50"
@@ -229,8 +229,7 @@
 
     <Button
         android:id="@+id/fragment_score_button_3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@style/ThrowResultButton"
         app:layout_constraintStart_toStartOf="@id/v_guideline_65"
         app:layout_constraintEnd_toStartOf="@id/v_guideline_95"
         app:layout_constraintTop_toTopOf="@id/h_guideline_50"
@@ -239,8 +238,7 @@
 
     <Button
         android:id="@+id/fragment_score_button_4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@style/ThrowResultButton"
         app:layout_constraintStart_toStartOf="@id/v_guideline_5"
         app:layout_constraintEnd_toStartOf="@id/v_guideline_35"
         app:layout_constraintTop_toTopOf="@id/h_guideline_65"
@@ -249,8 +247,7 @@
 
     <Button
         android:id="@+id/fragment_score_button_5"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@style/ThrowResultButton"
         app:layout_constraintStart_toStartOf="@id/v_guideline_35"
         app:layout_constraintEnd_toStartOf="@id/v_guideline_65"
         app:layout_constraintTop_toTopOf="@id/h_guideline_65"
@@ -259,8 +256,7 @@
 
     <Button
         android:id="@+id/fragment_score_button_6"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@style/ThrowResultButton"
         app:layout_constraintStart_toStartOf="@id/v_guideline_65"
         app:layout_constraintEnd_toStartOf="@id/v_guideline_95"
         app:layout_constraintTop_toTopOf="@id/h_guideline_65"
@@ -269,8 +265,7 @@
 
     <Button
         android:id="@+id/fragment_score_button_ob"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@style/ThrowResultButton"
         app:layout_constraintStart_toStartOf="@id/v_guideline_5"
         app:layout_constraintEnd_toStartOf="@id/v_guideline_35"
         app:layout_constraintTop_toTopOf="@id/h_guideline_80"
@@ -279,8 +274,7 @@
 
     <Button
         android:id="@+id/fragment_score_button_more"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@style/ThrowResultButton"
         app:layout_constraintStart_toStartOf="@id/v_guideline_35"
         app:layout_constraintEnd_toStartOf="@id/v_guideline_65"
         app:layout_constraintTop_toTopOf="@id/h_guideline_80"
@@ -289,8 +283,7 @@
 
     <Button
         android:id="@+id/fragment_score_button_dnf"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@style/ThrowResultButton"
         app:layout_constraintStart_toStartOf="@id/v_guideline_65"
         app:layout_constraintEnd_toStartOf="@id/v_guideline_95"
         app:layout_constraintTop_toTopOf="@id/h_guideline_80"
