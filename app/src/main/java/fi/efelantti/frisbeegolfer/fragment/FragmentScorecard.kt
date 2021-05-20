@@ -48,7 +48,7 @@ class FragmentScorecard : Fragment() {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-        binding.scorecardText.text = "Score card"
+        //binding.scorecardText.text = "Score card"
     }
 
     override fun onDestroyView() {

@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.amulyakhare.textdrawable.TextDrawable
+import com.amulyakhare.textdrawable.util.ColorGenerator
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.FragmentScoreBinding
@@ -24,19 +23,8 @@ class FragmentScore : Fragment() {
     private val binding get() = _binding!!
     private lateinit var scoreViewModel: ScoreViewModel
     private lateinit var scoreViewModelFactory: ScoreViewModelFactory
-    private lateinit var testView: TextView
-    private lateinit var playerNameView: TextView
-    private lateinit var holeNumberView: TextView
-    private lateinit var holeParView: TextView
-    private lateinit var holeBestView: TextView
-    private lateinit var holeAverageView: TextView
-    private lateinit var holeLatestView: TextView
-    private lateinit var nextPlayerButton: Button
-    private lateinit var nextHoleButton: Button
-    private lateinit var incrementIndexButton: Button
-    private lateinit var decrementIndexButton: Button
-    private lateinit var setScoreEditText: EditText
-    private lateinit var setScoreButton: Button
+    private lateinit var builder: TextDrawable.IBuilder
+    private val generator = ColorGenerator.MATERIAL
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,77 +54,69 @@ class FragmentScore : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        testView = binding.fragmentScoreTestTextView
-        playerNameView = binding.fragmentScoreTestCurrentPlayer
-        holeNumberView = binding.fragmentScoreTestCurrentHole
-        holeParView = binding.fragmentScoreTestCurrentHolePar
-        holeBestView = binding.fragmentScoreTestCurrentHoleBest
-        holeAverageView = binding.fragmentScoreTestCurrentHoleAverage
-        holeLatestView = binding.fragmentScoreTestCurrentHoleLatest
-        nextPlayerButton = binding.fragmentScoreTestButtonNextPlayer
-        nextHoleButton = binding.fragmentScoreTestButtonNextHole
-        incrementIndexButton = binding.fragmentScoreTestButtonIncrementIndex
-        decrementIndexButton = binding.fragmentScoreTestButtonDecrementIndex
-        setScoreEditText = binding.fragmentScoreTestSetScoreEditText
-        setScoreButton = binding.fragmentScoreTestSetScoreButton
+        builder = TextDrawable.builder()
+            .beginConfig()
+            .endConfig()
+            .round()
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
-            testView.text = currentRound.round.dateStarted.toString()
             if (currentRound.scores.count() > 0) scoreViewModel.initializeScore(currentRound.scores)
         }
 
+        // TODO - Show skeleton view before data has been loaded.
         scoreViewModel.currentScore.observe(viewLifecycleOwner) {
             it?.let { currentScore ->
-                nextPlayerButton.isEnabled = true
-                nextHoleButton.isEnabled = true
-                incrementIndexButton.isEnabled = true
-                decrementIndexButton.isEnabled = true
-                setScoreButton.isEnabled = true
+                binding.fragmentScoreCurrentPlayer.text = currentScore.player.name
 
-                playerNameView.text = currentScore.player.name
-                holeNumberView.text = currentScore.hole.holeNumber.toString()
-                holeParView.text = currentScore.hole.par.toString()
-                setScoreEditText.setText("3")
+                val color = generator.getColor(currentScore.player.name)
+                val initial = currentScore.player.name?.take(1)
+                val icon = builder.build(initial, color)
+                binding.fragmentScoreCurrentPlayerAvatar.setImageDrawable(icon)
+
+                binding.fragmentScoreCurrentHole.text = currentScore.hole.holeNumber.toString()
+                binding.fragmentScoreCurrentHolePar.text = currentScore.hole.par.toString()
 
                 scoreViewModel.getHoleStatistics(currentScore.player.id, currentScore.hole.holeId)
                     .observe(viewLifecycleOwner) { it2 ->
                         it2?.let { holeStatistics ->
-                            if (holeStatistics.bestResult == null) holeBestView.text =
+                            if (holeStatistics.bestResult == null) binding.fragmentScoreCurrentHoleBest.text =
                                 getString(R.string.notApplicable)
-                            else holeBestView.text = holeStatistics.bestResult.toString()
-                            if (holeStatistics.avgResult == null) holeAverageView.text =
+                            else binding.fragmentScoreCurrentHoleBest.text =
+                                holeStatistics.bestResult.toString()
+                            if (holeStatistics.avgResult == null) binding.fragmentScoreCurrentHoleAverage.text =
                                 getString(R.string.notApplicable)
-                            else holeAverageView.text = holeStatistics.avgResult.toString()
-                            if (holeStatistics.latestResult == null) holeLatestView.text =
+                            else binding.fragmentScoreCurrentHoleAverage.text =
+                                holeStatistics.avgResult.toString()
+                            if (holeStatistics.latestResult == null) binding.fragmentScoreCurrentHoleLatest.text =
                                 getString(R.string.notApplicable)
-                            else holeLatestView.text = holeStatistics.latestResult.toString()
+                            else binding.fragmentScoreCurrentHoleLatest.text =
+                                holeStatistics.latestResult.toString()
                         }
                     }
 
-                setScoreButton.setOnClickListener {
+                /*setScoreButton.setOnClickListener {
                     val scoreToSet = setScoreEditText.text.toString().toInt()
                     scoreViewModel.setResult(currentScore.score, scoreToSet)
                     scoreViewModel.nextScore()
-                }
+                }*/
             }
         }
 
-        incrementIndexButton.setOnClickListener {
-            scoreViewModel.nextScore()
-        }
-
-        decrementIndexButton.setOnClickListener {
-            scoreViewModel.previousScore()
-        }
-
-        nextPlayerButton.setOnClickListener {
+        binding.fragmentScoreButtonNextPlayer.setOnClickListener {
             scoreViewModel.nextPlayer()
         }
 
-        nextHoleButton.setOnClickListener {
+        binding.fragmentScoreButtonPreviousPlayer.setOnClickListener {
+            scoreViewModel.previousPlayer()
+        }
+
+        binding.fragmentScoreNextHole.setOnClickListener {
             scoreViewModel.nextHole()
         }
 
+        binding.fragmentScorePreviousHole.setOnClickListener {
+            scoreViewModel.previousHole()
+        }
     }
 
     override fun onDestroyView() {

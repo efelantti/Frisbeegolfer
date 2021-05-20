@@ -199,8 +199,9 @@
     <string name="best_label">Best</string>
     <string name="average_label">Average</string>
     <string name="latest_label">Latest</string>
-    <string name="button_throw_result_text"><big><xliff:g id="result" example="3">%d</xliff:g></big>\n<small><xliff:g id="scoring_term" example="Par">%s</xliff:g></small></string>
-    <string name="button_throw_result_sample_1"><big>1</big><br /><small>Par</small></string>
+    <string name="button_ob_text">OB</string>
+    <string name="button_more_text">More</string>
+    <string name="button_dnf_text">DNF</string>
     <!-- String that is displayed on the app bar when user has selected at least one player for a round. -->
     <plurals name="numberPlayersSelected">
         <item quantity="one">%d</item>
