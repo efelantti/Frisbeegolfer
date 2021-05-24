@@ -14,6 +14,7 @@ import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.FragmentScoreBinding
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
+import fi.efelantti.frisbeegolfer.viewmodel.ScoringTerm
 import java.time.OffsetDateTime
 
 
@@ -94,6 +95,8 @@ class FragmentScore : Fragment() {
                         }
                     }
 
+                setScoringTermForButtons(currentScore.hole.par)
+
                 /*setScoreButton.setOnClickListener {
                     val scoreToSet = setScoreEditText.text.toString().toInt()
                     scoreViewModel.setResult(currentScore.score, scoreToSet)
@@ -117,6 +120,21 @@ class FragmentScore : Fragment() {
         binding.fragmentScorePreviousHole.setOnClickListener {
             scoreViewModel.previousHole()
         }
+    }
+
+    private fun setScoringTermForButtons(par: Int) {
+        val scoringTermToResIdMap = mapOf(
+            ScoringTerm.Condor to R.string.scoring_term_condor,
+            ScoringTerm.Albatross to R.string.scoring_term_albatross,
+            ScoringTerm.Eagle to R.string.scoring_term_eagle,
+            ScoringTerm.Birdie to R.string.scoring_term_birdie,
+            ScoringTerm.Par to R.string.scoring_term_Par,
+            ScoringTerm.Bogey to R.string.scoring_term_bogey,
+            ScoringTerm.DoubleBogey to R.string.scoring_term_double_bogey,
+            ScoringTerm.TripleBogey to R.string.scoring_term_triple_bogey
+        )
+        binding.fragmentScoreButton1.scoringTerm.text = getString(R.string.scoring_term_ace)
+
     }
 
     override fun onDestroyView() {

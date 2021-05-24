@@ -207,4 +207,13 @@
         <item quantity="one">%d</item>
         <item quantity="other">%d</item>
     </plurals>
+    <string name="scoring_term_ace">Ace</string>
+    <string name="scoring_term_condor">Condor</string>
+    <string name="scoring_term_albatross">Albatross</string>
+    <string name="scoring_term_eagle">Eagle</string>
+    <string name="scoring_term_birdie">Birdie</string>
+    <string name="scoring_term_Par">Par</string>
+    <string name="scoring_term_bogey">Bogey</string>
+    <string name="scoring_term_double_bogey">Double Bogey</string>
+    <string name="scoring_term_triple_bogey">Triple Bogey</string>
 </resources>

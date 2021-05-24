@@ -133,6 +133,37 @@ class ScoreViewModel(
         score.result = resultToSet
         update(score)
     }
+
+    /*
+    Returns the scoring term for the hole.
+     */
+    fun getScoringTerm(result: Int, par: Int): ScoringTerm {
+        if (result == 1) return ScoringTerm.Ace
+        return when (par - result) {
+            -4 -> ScoringTerm.Condor
+            -3 -> ScoringTerm.Albatross
+            -2 -> ScoringTerm.Eagle
+            -1 -> ScoringTerm.Birdie
+            0 -> ScoringTerm.Par
+            1 -> ScoringTerm.Bogey
+            2 -> ScoringTerm.DoubleBogey
+            3 -> ScoringTerm.TripleBogey
+            else -> ScoringTerm.NoName
+        }
+    }
+}
+
+enum class ScoringTerm() {
+    NoName,
+    Ace,
+    Condor,
+    Albatross,
+    Eagle,
+    Birdie,
+    Par,
+    Bogey,
+    DoubleBogey,
+    TripleBogey
 }
 
 @Suppress("UNCHECKED_CAST")
