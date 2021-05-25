@@ -139,7 +139,7 @@ class ScoreViewModel(
      */
     fun getScoringTerm(result: Int, par: Int): ScoringTerm {
         if (result == 1) return ScoringTerm.Ace
-        return when (par - result) {
+        return when (result - par) {
             -4 -> ScoringTerm.Condor
             -3 -> ScoringTerm.Albatross
             -2 -> ScoringTerm.Eagle

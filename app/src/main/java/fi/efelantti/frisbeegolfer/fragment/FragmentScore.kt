@@ -122,8 +122,20 @@ class FragmentScore : Fragment() {
         }
     }
 
+    /*
+    Function that sets the scoring term texts for all scoring buttons.
+     */
     private fun setScoringTermForButtons(par: Int) {
+        val scoreButtons = listOf(
+            binding.fragmentScoreButton1,
+            binding.fragmentScoreButton2,
+            binding.fragmentScoreButton3,
+            binding.fragmentScoreButton4,
+            binding.fragmentScoreButton5,
+            binding.fragmentScoreButton6
+        )
         val scoringTermToResIdMap = mapOf(
+            ScoringTerm.Ace to R.string.scoring_term_ace,
             ScoringTerm.Condor to R.string.scoring_term_condor,
             ScoringTerm.Albatross to R.string.scoring_term_albatross,
             ScoringTerm.Eagle to R.string.scoring_term_eagle,
@@ -131,10 +143,18 @@ class FragmentScore : Fragment() {
             ScoringTerm.Par to R.string.scoring_term_Par,
             ScoringTerm.Bogey to R.string.scoring_term_bogey,
             ScoringTerm.DoubleBogey to R.string.scoring_term_double_bogey,
-            ScoringTerm.TripleBogey to R.string.scoring_term_triple_bogey
+            ScoringTerm.TripleBogey to R.string.scoring_term_triple_bogey,
+            ScoringTerm.NoName to R.string.scoring_term_noname
         )
-        binding.fragmentScoreButton1.scoringTerm.text = getString(R.string.scoring_term_ace)
 
+        scoreButtons.forEachIndexed { index, buttonScoreResultBinding ->
+            val result = index + 1
+            val scoringTerm = scoreViewModel.getScoringTerm(result, par)
+            val scoringTermTextResId = scoringTermToResIdMap[scoringTerm]
+                ?: throw IndexOutOfBoundsException("Invalid key $scoringTerm.")
+            val scoringTermText = getString(scoringTermTextResId)
+            buttonScoreResultBinding.scoringTerm.text = scoringTermText
+        }
     }
 
     override fun onDestroyView() {

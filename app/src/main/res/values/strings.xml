@@ -216,4 +216,5 @@
     <string name="scoring_term_bogey">Bogey</string>
     <string name="scoring_term_double_bogey">Double Bogey</string>
     <string name="scoring_term_triple_bogey">Triple Bogey</string>
+    <string name="scoring_term_noname" />
 </resources>
