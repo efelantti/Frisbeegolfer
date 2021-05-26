@@ -132,7 +132,10 @@ class FragmentScore : Fragment() {
             binding.fragmentScoreButton3,
             binding.fragmentScoreButton4,
             binding.fragmentScoreButton5,
-            binding.fragmentScoreButton6
+            binding.fragmentScoreButton6,
+            binding.fragmentScoreButton7,
+            binding.fragmentScoreButton8,
+            binding.fragmentScoreButton9
         )
         val scoringTermToResIdMap = mapOf(
             ScoringTerm.Ace to R.string.scoring_term_ace,
@@ -149,7 +152,7 @@ class FragmentScore : Fragment() {
 
         scoreButtons.forEachIndexed { index, buttonScoreResultBinding ->
             val result = index + 1
-            val scoringTerm = scoreViewModel.getScoringTerm(result, par)
+            val scoringTerm = ScoreViewModel.getScoringTerm(result, par)
             val scoringTermTextResId = scoringTermToResIdMap[scoringTerm]
                 ?: throw IndexOutOfBoundsException("Invalid key $scoringTerm.")
             val scoringTermText = getString(scoringTermTextResId)

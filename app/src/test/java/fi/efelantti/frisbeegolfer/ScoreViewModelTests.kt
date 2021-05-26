@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import fi.efelantti.frisbeegolfer.model.*
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.ScoringTerm
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -525,5 +526,25 @@ class ScoreViewModelTests {
         assertThat(holeStatistics.latestResult, equalTo(desiredHoleStatistics.latestResult))
         assertThat(holeStatistics.bestResult, equalTo(desiredHoleStatistics.bestResult))
         assertThat(holeStatistics.avgResult, equalTo(desiredHoleStatistics.avgResult))
+    }
+
+    @Test
+    fun getScoringTerm() {
+        assertThat(ScoreViewModel.getScoringTerm(1, 3), equalTo(ScoringTerm.Ace))
+        assertThat(ScoreViewModel.getScoringTerm(1, 5), equalTo(ScoringTerm.Ace))
+        assertThat(ScoreViewModel.getScoringTerm(2, 3), equalTo(ScoringTerm.Birdie))
+        assertThat(ScoreViewModel.getScoringTerm(2, 4), equalTo(ScoringTerm.Eagle))
+        assertThat(ScoreViewModel.getScoringTerm(2, 5), equalTo(ScoringTerm.Albatross))
+        assertThat(ScoreViewModel.getScoringTerm(4, 3), equalTo(ScoringTerm.Bogey))
+        assertThat(ScoreViewModel.getScoringTerm(3, 2), equalTo(ScoringTerm.Bogey))
+        assertThat(ScoreViewModel.getScoringTerm(5, 3), equalTo(ScoringTerm.DoubleBogey))
+        assertThat(ScoreViewModel.getScoringTerm(6, 4), equalTo(ScoringTerm.DoubleBogey))
+        assertThat(ScoreViewModel.getScoringTerm(6, 3), equalTo(ScoringTerm.TripleBogey))
+        assertThat(ScoreViewModel.getScoringTerm(7, 4), equalTo(ScoringTerm.TripleBogey))
+        assertThat(ScoreViewModel.getScoringTerm(0, 4), equalTo(ScoringTerm.NoName))
+        assertThat(ScoreViewModel.getScoringTerm(-5, 3), equalTo(ScoringTerm.NoName))
+        assertThat(ScoreViewModel.getScoringTerm(7, 3), equalTo(ScoringTerm.NoName))
+        assertThat(ScoreViewModel.getScoringTerm(8, 4), equalTo(ScoringTerm.NoName))
+        assertThat(ScoreViewModel.getScoringTerm(10, 3), equalTo(ScoringTerm.NoName))
     }
 }

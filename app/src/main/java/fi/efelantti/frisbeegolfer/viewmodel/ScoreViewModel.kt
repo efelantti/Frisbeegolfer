@@ -134,21 +134,25 @@ class ScoreViewModel(
         update(score)
     }
 
-    /*
-    Returns the scoring term for the hole.
-     */
-    fun getScoringTerm(result: Int, par: Int): ScoringTerm {
-        if (result == 1) return ScoringTerm.Ace
-        return when (result - par) {
-            -4 -> ScoringTerm.Condor
-            -3 -> ScoringTerm.Albatross
-            -2 -> ScoringTerm.Eagle
-            -1 -> ScoringTerm.Birdie
-            0 -> ScoringTerm.Par
-            1 -> ScoringTerm.Bogey
-            2 -> ScoringTerm.DoubleBogey
-            3 -> ScoringTerm.TripleBogey
-            else -> ScoringTerm.NoName
+    companion object {
+
+        /*
+        Returns the scoring term for the hole.
+        */
+        fun getScoringTerm(result: Int, par: Int): ScoringTerm {
+            if (result <= 0) return ScoringTerm.NoName
+            if (result == 1) return ScoringTerm.Ace
+            return when (result - par) {
+                -4 -> ScoringTerm.Condor
+                -3 -> ScoringTerm.Albatross
+                -2 -> ScoringTerm.Eagle
+                -1 -> ScoringTerm.Birdie
+                0 -> ScoringTerm.Par
+                1 -> ScoringTerm.Bogey
+                2 -> ScoringTerm.DoubleBogey
+                3 -> ScoringTerm.TripleBogey
+                else -> ScoringTerm.NoName
+            }
         }
     }
 }
