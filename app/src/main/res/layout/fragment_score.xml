@@ -39,7 +39,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/par_label"
-            app:layout_constraintStart_toStartOf="@id/fragment_score_currentPlayer_avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHolePar"
             app:layout_constraintTop_toBottomOf="@id/fragment_score_currentHole" />
 
         <TextView
@@ -50,6 +52,7 @@
             android:textSize="30sp"
             app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentHolePar_label"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHolePar_label"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="3" />
 
         <Button
@@ -92,23 +95,12 @@
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:maxLines="1"
-            android:textSize="16sp"
+            android:textSize="26sp"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_next_player"
             app:layout_constraintHorizontal_weight="2"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_previous_player"
             app:layout_constraintTop_toBottomOf="@id/fragment_score_currentHolePar"
             tools:text="@tools:sample/full_names" />
-
-        <ImageView
-            android:id="@+id/fragment_score_currentPlayer_avatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="8dp"
-            android:contentDescription="@string/contentDescription_player_initial_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_score_currentPlayer"
-            tools:src="@tools:sample/avatars" />
 
         <Button
             android:id="@+id/fragment_score_button_next_player"
@@ -130,41 +122,29 @@
             app:layout_constraintTop_toTopOf="@id/fragment_score_currentPlayer" />
 
         <TextView
-            android:id="@+id/fragment_score_plus_minus_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/plus_minus_label"
-            app:layout_constraintBottom_toTopOf="@id/fragment_score_currentHoleBest_label"
-            app:layout_constraintEnd_toStartOf="@id/fragment_score_plus_minus"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_score_currentPlayer_avatar"
-            app:layout_constraintVertical_chainStyle="spread_inside" />
-
-        <TextView
             android:id="@+id/fragment_score_plus_minus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:textSize="30sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_plus_minus_label"
+            android:textSize="26sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/fragment_score_plus_minus_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_score_currentPlayer"
             tools:text="+4" />
 
         <TextView
             android:id="@+id/fragment_score_currentHoleBest_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
             android:text="@string/best_label"
             app:layout_constraintBottom_toTopOf="@id/h_guideline_50"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHoleAverage_label"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="@id/fragment_score_button_1"
-            app:layout_constraintTop_toBottomOf="@id/fragment_score_plus_minus_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_score_plus_minus"
             app:layout_constraintVertical_bias="1" />
 
         <TextView
@@ -172,7 +152,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:textSize="30sp"
+            android:textSize="26sp"
             app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentHoleBest_label"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHoleBest_label"
             tools:text="3" />
@@ -191,7 +171,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:textSize="30sp"
+            android:textSize="26sp"
             app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentHoleAverage_label"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHoleAverage_label"
             tools:text="3.4" />
@@ -210,9 +190,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:textSize="30sp"
+            android:layout_marginEnd="8dp"
+            android:textSize="26sp"
             app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentHoleLatest_label"
-            app:layout_constraintEnd_toEndOf="@id/fragment_score_button_3"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHoleLatest_label"
             tools:text="3" />
 
@@ -222,7 +203,7 @@
             layout="@layout/button_score_result"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toTopOf="@id/fragment_score_button_4"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_2"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -237,7 +218,7 @@
             layout="@layout/button_score_result"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toTopOf="@id/fragment_score_button_5"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_3"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_1"
@@ -251,7 +232,7 @@
             layout="@layout/button_score_result"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toTopOf="@id/fragment_score_button_6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_2"
@@ -265,7 +246,7 @@
             layout="@layout/button_score_result"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toTopOf="@id/fragment_score_button_7"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_5"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -279,7 +260,7 @@
             layout="@layout/button_score_result"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toTopOf="@id/fragment_score_button_8"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_6"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_4"
@@ -292,7 +273,7 @@
             layout="@layout/button_score_result"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toTopOf="@id/fragment_score_button_9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_5"
@@ -305,7 +286,7 @@
             layout="@layout/button_score_result"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toTopOf="@id/fragment_score_button_ob"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_8"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -319,12 +300,12 @@
             layout="@layout/button_score_result"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toTopOf="@id/fragment_score_button_more"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_9"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_7"
             app:layout_constraintTop_toBottomOf="@id/fragment_score_button_5"
-            app:score="@{&quot;5&quot;}" />
+            app:score="@{&quot;8&quot;}" />
 
         <include
             android:id="@+id/fragment_score_button_9"
@@ -332,12 +313,12 @@
             layout="@layout/button_score_result"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toTopOf="@id/fragment_score_button_dnf"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_8"
             app:layout_constraintTop_toBottomOf="@id/fragment_score_button_6"
-            bind:score="@{&quot;6&quot;}" />
+            bind:score="@{&quot;9&quot;}" />
 
         <include
             android:id="@+id/fragment_score_button_ob"
@@ -345,7 +326,7 @@
             layout="@layout/button_score_text_only"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_more"
@@ -361,7 +342,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_dnf"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_ob"
@@ -375,7 +356,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintDimensionRatio="@string/score_button_dimension_ratio"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/fragment_score_button_9"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_more"

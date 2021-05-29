@@ -53,10 +53,12 @@
         android:textSize="14sp"
         android:ellipsize="end"
         android:maxLines="1"
+        android:layout_marginBottom="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/txtCourseNameRound"
         app:layout_constraintTop_toBottomOf="@id/txtCityRound"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:text="@tools:sample/lorem" />
 
     <TextView

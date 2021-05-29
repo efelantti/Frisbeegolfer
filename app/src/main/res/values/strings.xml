@@ -194,7 +194,7 @@
     <string name="fragment_scorecard_tab_text">Scorecard</string>
     <string name="button_previous_player_text">Player</string>
     <string name="button_next_player_text">Player</string>
-    <string name="plus_minus_label">Result</string>
+    <string name="plus_minus_label">±</string>
     <string name="par_label">Par</string>
     <string name="best_label">Best</string>
     <string name="average_label">Average</string>

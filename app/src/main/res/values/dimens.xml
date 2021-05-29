@@ -5,4 +5,5 @@
     <dimen name="button_height">64dp</dimen>
     <dimen name="min_height">48dp</dimen>
     <dimen name="font_size_sub_header">16sp</dimen>
+    <string name="score_button_dimension_ratio">5:3</string>
     </resources>

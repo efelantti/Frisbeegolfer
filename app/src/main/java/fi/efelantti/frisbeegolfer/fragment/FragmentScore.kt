@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.amulyakhare.textdrawable.TextDrawable
-import com.amulyakhare.textdrawable.util.ColorGenerator
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.FragmentScoreBinding
@@ -16,6 +14,7 @@ import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 import fi.efelantti.frisbeegolfer.viewmodel.ScoringTerm
 import java.time.OffsetDateTime
+import kotlin.properties.Delegates
 
 
 class FragmentScore : Fragment() {
@@ -24,8 +23,7 @@ class FragmentScore : Fragment() {
     private val binding get() = _binding!!
     private lateinit var scoreViewModel: ScoreViewModel
     private lateinit var scoreViewModelFactory: ScoreViewModelFactory
-    private lateinit var builder: TextDrawable.IBuilder
-    private val generator = ColorGenerator.MATERIAL
+    private var numberOfHoles by Delegates.notNull<Int>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +44,7 @@ class FragmentScore : Fragment() {
         )
         scoreViewModel = ViewModelProvider(this, scoreViewModelFactory)
             .get(ScoreViewModel::class.java)
+        numberOfHoles = holeIds.count()
         return binding.root
     }
 
@@ -54,11 +53,6 @@ class FragmentScore : Fragment() {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-
-        builder = TextDrawable.builder()
-            .beginConfig()
-            .endConfig()
-            .round()
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
             if (currentRound.scores.count() > 0) scoreViewModel.initializeScore(currentRound.scores)
@@ -69,12 +63,16 @@ class FragmentScore : Fragment() {
             it?.let { currentScore ->
                 binding.fragmentScoreCurrentPlayer.text = currentScore.player.name
 
-                val color = generator.getColor(currentScore.player.name)
-                val initial = currentScore.player.name?.take(1)
-                val icon = builder.build(initial, color)
-                binding.fragmentScoreCurrentPlayerAvatar.setImageDrawable(icon)
+                val holeNumber = currentScore.hole.holeNumber
+                val previousHoleNumber = if (holeNumber >= 2) holeNumber - 1 else numberOfHoles
+                val nextHoleNumber = if (holeNumber < numberOfHoles) holeNumber + 1 else 1
 
-                binding.fragmentScoreCurrentHole.text = currentScore.hole.holeNumber.toString()
+                binding.fragmentScoreCurrentHole.text = holeNumber.toString()
+                // These are not required if there is only one hole.
+                if (numberOfHoles >= 1) {
+                    binding.fragmentScorePreviousHole.text = previousHoleNumber.toString()
+                    binding.fragmentScoreNextHole.text = nextHoleNumber.toString()
+                }
                 binding.fragmentScoreCurrentHolePar.text = currentScore.hole.par.toString()
 
                 scoreViewModel.getHoleStatistics(currentScore.player.id, currentScore.hole.holeId)
