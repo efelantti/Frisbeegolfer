@@ -8,6 +8,14 @@
         android:layout_height="match_parent"
         tools:context=".fragment.FragmentGame">
 
+        <include
+            android:id="@+id/placeholder_tabs"
+            android:visibility="gone"
+            tools:visibility="visible"
+            layout="@layout/fragment_game"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <Button
             android:id="@+id/fragment_score_previousHole"
             style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -19,7 +27,7 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHole"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/placeholder_tabs"
             tools:text="1" />
 
         <Button
@@ -85,7 +93,7 @@
             app:layout_constraintEnd_toStartOf="@id/fragment_score_currentPlayer"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/fragment_score_currentPlayer" />
+            app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentPlayer" />
 
         <TextView
             android:id="@+id/fragment_score_currentPlayer"
@@ -93,9 +101,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:ellipsize="end"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:maxLines="1"
             android:textSize="26sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeMaxTextSize="26sp"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_next_player"
             app:layout_constraintHorizontal_weight="2"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_previous_player"
@@ -119,7 +130,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentPlayer"
-            app:layout_constraintTop_toTopOf="@id/fragment_score_currentPlayer" />
+            app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentPlayer" />
 
         <TextView
             android:id="@+id/fragment_score_plus_minus"
@@ -130,6 +141,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fragment_score_currentPlayer"
+            app:layout_constraintBottom_toTopOf="@id/fragment_score_currentHoleAverage_label"
+            app:layout_constraintVertical_bias="0.2"
             tools:text="+4" />
 
         <TextView
