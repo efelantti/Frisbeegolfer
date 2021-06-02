@@ -128,7 +128,10 @@ class ScoreViewModel(
     /*
     Sets the result of the current score. Calls repository.update as well.
      */
-    fun setResult(score: Score, resultToSet: Int) {
+    fun setResult(resultToSet: Int) {
+        val scoreWithPLayerAndHole = currentScore.value
+            ?: throw IllegalStateException("Value inside current score live data was null.")
+        val score = scoreWithPLayerAndHole.score
         score.result = resultToSet
         update(score)
     }

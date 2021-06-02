@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.FragmentScoreBinding
+import fi.efelantti.frisbeegolfer.observeOnce
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 import fi.efelantti.frisbeegolfer.viewmodel.ScoringTerm
@@ -54,7 +55,7 @@ class FragmentScore : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
+        scoreViewModel.currentRound.observeOnce(viewLifecycleOwner) { currentRound ->
             if (currentRound.scores.count() > 0) scoreViewModel.initializeScore(currentRound.scores)
         }
 
@@ -94,12 +95,7 @@ class FragmentScore : Fragment() {
                     }
 
                 setScoringTermForButtons(currentScore.hole.par)
-
-                /*setScoreButton.setOnClickListener {
-                    val scoreToSet = setScoreEditText.text.toString().toInt()
-                    scoreViewModel.setResult(currentScore.score, scoreToSet)
-                    scoreViewModel.nextScore()
-                }*/
+                controlScoreButtonActivationState(currentScore.score.result)
             }
         }
 
@@ -117,6 +113,63 @@ class FragmentScore : Fragment() {
 
         binding.fragmentScorePreviousHole.setOnClickListener {
             scoreViewModel.previousHole()
+        }
+
+        setScoreButtonClickListeners()
+    }
+
+    private fun controlScoreButtonActivationState(result: Int?) {
+        val scoreButtons = listOf(
+            binding.fragmentScoreButton1,
+            binding.fragmentScoreButton2,
+            binding.fragmentScoreButton3,
+            binding.fragmentScoreButton4,
+            binding.fragmentScoreButton5,
+            binding.fragmentScoreButton6,
+            binding.fragmentScoreButton7,
+            binding.fragmentScoreButton8,
+            binding.fragmentScoreButton9
+        )
+        scoreButtons.forEach { it.button.isActivated = false }
+        binding.fragmentScoreButtonMore.button.isActivated = false
+
+        val resultToScoringButtonMap = mapOf(
+            1 to binding.fragmentScoreButton1,
+            2 to binding.fragmentScoreButton2,
+            3 to binding.fragmentScoreButton3,
+            4 to binding.fragmentScoreButton4,
+            5 to binding.fragmentScoreButton5,
+            6 to binding.fragmentScoreButton6,
+            7 to binding.fragmentScoreButton7,
+            8 to binding.fragmentScoreButton8,
+            9 to binding.fragmentScoreButton9
+        )
+        result?.let { resultInt ->
+            if (resultInt > 0) {
+                if (resultInt > 9) binding.fragmentScoreButtonMore.button.isActivated = true
+                else resultToScoringButtonMap[resultInt]?.button?.isActivated = true
+            }
+        }
+    }
+
+    private fun setScoreButtonClickListeners() {
+        val scoreButtons = listOf(
+            binding.fragmentScoreButton1,
+            binding.fragmentScoreButton2,
+            binding.fragmentScoreButton3,
+            binding.fragmentScoreButton4,
+            binding.fragmentScoreButton5,
+            binding.fragmentScoreButton6,
+            binding.fragmentScoreButton7,
+            binding.fragmentScoreButton8,
+            binding.fragmentScoreButton9
+        )
+        scoreButtons.forEachIndexed { index, buttonScoreResultBinding ->
+            buttonScoreResultBinding.button.setOnClickListener() {
+                it.isActivated = true
+                scoreViewModel.setResult(index + 1)
+                scoreViewModel.nextScore()
+            }
         }
     }
 
