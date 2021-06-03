@@ -13,8 +13,7 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:foreground="?attr/selectableItemBackground"
-        android:background="@drawable/activated_button_selector"
+        android:background="@drawable/score_button"
         android:clickable="true">
 
         <TextView

@@ -166,7 +166,6 @@ class FragmentScore : Fragment() {
         )
         scoreButtons.forEachIndexed { index, buttonScoreResultBinding ->
             buttonScoreResultBinding.button.setOnClickListener() {
-                it.isActivated = true
                 scoreViewModel.setResult(index + 1)
                 scoreViewModel.nextScore()
             }

@@ -6,4 +6,6 @@
     <color name="colorPrimaryDark">#6200EE</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="recyclerview_item_background">#03DAC5</color>
+    <color name="score_button_background_activated">#03DAC5</color>
+    <color name="score_button_border_color">#808080</color>
 </resources>

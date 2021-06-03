@@ -149,16 +149,15 @@
             android:id="@+id/fragment_score_currentHoleBest_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/best_label"
             app:layout_constraintBottom_toTopOf="@id/h_guideline_50"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHoleAverage_label"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_score_plus_minus"
-            app:layout_constraintVertical_bias="1" />
+            app:layout_constraintTop_toBottomOf="@id/fragment_score_plus_minus" />
 
         <TextView
             android:id="@+id/fragment_score_currentHoleBest"
@@ -377,12 +376,17 @@
             bind:text="@{@string/button_dnf_text}"
             tools:text="DNF" />
 
+        <View
+            style="@style/Divider.Horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/h_guideline_50" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/h_guideline_50"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.50" />
+            app:layout_constraintGuide_percent="0.45" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
