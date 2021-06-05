@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 //TODO - Consider export schema
 @Database(
     entities = [Player::class, Course::class, Hole::class, Round::class, Score::class],
-    version = 15,
+    version = 16,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -46,7 +46,7 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                     FrisbeegolferRoomDatabase::class.java,
                     "frisbeegolfer_database"
                 ).addCallback(FrisbeegolferDatabaseCallback(scope))
-                    .fallbackToDestructiveMigrationFrom(14).build()
+                    .fallbackToDestructiveMigrationFrom(15).build()
                 INSTANCE = instance
                 return instance
             }

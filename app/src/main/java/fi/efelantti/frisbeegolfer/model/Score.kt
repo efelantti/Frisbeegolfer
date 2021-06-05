@@ -41,7 +41,8 @@ class Score(
     var playerId: Long = 0,
     @ColumnInfo(index = true)
     var holeId: Long = 0,
-    var result: Int? = null
+    var result: Int? = null,
+    var isOutOfBounds: Boolean = false
 ) : Parcelable {
     override fun equals(other: Any?): Boolean = (other is Score)
             && id == other.id
