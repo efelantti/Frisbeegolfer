@@ -217,4 +217,8 @@
     <string name="scoring_term_double_bogey">Double Bogey</string>
     <string name="scoring_term_triple_bogey">Triple Bogey</string>
     <string name="scoring_term_noname" />
+    <string name="score_amount">Score</string>
+    <string name="set_score_helper_text">Value must be at least 1</string>
+    <string name="set_score">Ok</string>
+    <string name="cancel">Cancel</string>
 </resources>

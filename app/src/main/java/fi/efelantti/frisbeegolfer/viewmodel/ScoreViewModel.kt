@@ -133,6 +133,7 @@ class ScoreViewModel(
             ?: throw IllegalStateException("Value inside current score live data was null.")
         val score = scoreWithPLayerAndHole.score
         score.result = resultToSet
+        score.didNotFinish = false
         update(score)
     }
 
@@ -144,6 +145,18 @@ class ScoreViewModel(
             ?: throw IllegalStateException("Value inside current score live data was null.")
         val score = scoreWithPLayerAndHole.score
         score.isOutOfBounds = !score.isOutOfBounds
+        update(score)
+    }
+
+    /*
+    Toggles OB and updates the score.
+     */
+    fun toggleDnf() {
+        val scoreWithPLayerAndHole = currentScore.value
+            ?: throw IllegalStateException("Value inside current score live data was null.")
+        val score = scoreWithPLayerAndHole.score
+        score.didNotFinish = !score.didNotFinish
+        if (score.didNotFinish) score.result = null
         update(score)
     }
 

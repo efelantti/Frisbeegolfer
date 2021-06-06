@@ -98,6 +98,7 @@ class FragmentScore : Fragment() {
                 controlScoreButtonActivationState(currentScore.score.result)
 
                 binding.fragmentScoreButtonOb.button.isActivated = currentScore.score.isOutOfBounds
+                binding.fragmentScoreButtonDnf.button.isActivated = currentScore.score.didNotFinish
             }
         }
 
@@ -119,6 +120,11 @@ class FragmentScore : Fragment() {
 
         binding.fragmentScoreButtonOb.button.setOnClickListener {
             scoreViewModel.toggleOb()
+        }
+
+        binding.fragmentScoreButtonDnf.button.setOnClickListener {
+            scoreViewModel.toggleDnf()
+            scoreViewModel.nextScore()
         }
 
         setScoreButtonClickListeners()
