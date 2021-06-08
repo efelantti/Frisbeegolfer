@@ -18,7 +18,7 @@ import java.time.OffsetDateTime
 import kotlin.properties.Delegates
 
 
-class FragmentScore : Fragment() {
+class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
 
     private var _binding: FragmentScoreBinding? = null
     private val binding get() = _binding!!
@@ -125,6 +125,12 @@ class FragmentScore : Fragment() {
         binding.fragmentScoreButtonDnf.button.setOnClickListener {
             scoreViewModel.toggleDnf()
             scoreViewModel.nextScore()
+        }
+
+        binding.fragmentScoreButtonMore.button.setOnClickListener {
+            DialogScoreAmount(this).show(
+                childFragmentManager, DialogScoreAmount.TAG
+            )
         }
 
         setScoreButtonClickListeners()
@@ -240,5 +246,10 @@ class FragmentScore : Fragment() {
                     HOLE_IDS to holeIds
                 )
             }
+    }
+
+    override fun selectedScoreAmount(score: Int) {
+        scoreViewModel.setResult(score)
+        scoreViewModel.nextScore()
     }
 }
