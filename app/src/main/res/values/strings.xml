@@ -219,7 +219,8 @@
     <string name="scoring_term_noname" />
     <string name="score_amount">Score</string>
     <string name="set_score_helper_text">Value must be at least 1</string>
-    <string name="set_score">Ok</string>
+    <string name="set_score">OK</string>
     <string name="cancel">Cancel</string>
     <string name="dialog_score_amount_title">Set score</string>
+    <string name="dialog_score_amount_error" formatted="true">Only values in the range 1-<xliff:g id="maximumNumberOfThrows" example="100">%d</xliff:g> are valid.</string>
 </resources>

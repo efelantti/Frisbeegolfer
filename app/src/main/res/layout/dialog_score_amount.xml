@@ -32,7 +32,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+<!--    <Button
         android:id="@+id/button_cancel"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:text="@string/cancel"
@@ -52,6 +52,6 @@
         android:text="@string/set_score"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/button_cancel"
-        app:layout_constraintTop_toBottomOf="@id/score_amount_layout" />
+        app:layout_constraintTop_toBottomOf="@id/score_amount_layout" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
