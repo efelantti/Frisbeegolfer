@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
+import fi.efelantti.frisbeegolfer.TableViewAdapter
 import fi.efelantti.frisbeegolfer.databinding.FragmentScorecardBinding
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 import java.time.OffsetDateTime
+import java.util.*
 
 
 class FragmentScorecard : Fragment() {
@@ -20,6 +23,15 @@ class FragmentScorecard : Fragment() {
     private val binding get() = _binding!!
     private lateinit var scoreViewModel: ScoreViewModel
     private lateinit var scoreViewModelFactory: ScoreViewModelFactory
+
+    // src Wikipedia
+    private val movieList = ArrayList<Int>().apply {
+        add(1)
+        add(2)
+        add(3)
+        add(4)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +61,9 @@ class FragmentScorecard : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
         //binding.scorecardText.text = "Score card"
+
+        binding.recyclerViewMovieList.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewMovieList.adapter = TableViewAdapter(movieList)
     }
 
     override fun onDestroyView() {
