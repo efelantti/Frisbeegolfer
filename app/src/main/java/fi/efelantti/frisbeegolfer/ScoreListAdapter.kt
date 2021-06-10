@@ -7,12 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import fi.efelantti.frisbeegolfer.databinding.TableListItemBinding
 
 // https://github.com/monsterbrain/RecyclerviewTableViewAndroid
-class TableViewAdapter(private val scoreList: List<Int>) :
+class TableViewAdapter(private val scoreList: List<String>) :
     RecyclerView.Adapter<TableViewAdapter.RowViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowViewHolder {
         val binding = TableListItemBinding.inflate(LayoutInflater.from(parent.context))
         return RowViewHolder(binding)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (scoreList[position].toIntOrNull() == null) CellType.Header.id
+        else CellType.Data.id
     }
 
     private fun setHeaderBg(view: View) {
@@ -25,40 +30,28 @@ class TableViewAdapter(private val scoreList: List<Int>) :
 
     override fun onBindViewHolder(holder: RowViewHolder, position: Int) {
         val rowPos = holder.bindingAdapterPosition
-        if (rowPos == 0) {
+        if (getItemViewType(position) == CellType.Header.id) {
             // Header Cells. Main Headings appear here
 
-            setHeaderBg(holder.binding.txtRank)
-            setHeaderBg(holder.binding.txtMovieName)
-            setHeaderBg(holder.binding.txtYear)
-            setHeaderBg(holder.binding.txtCost)
-
-            holder.binding.txtRank.text = "Rank"
-            holder.binding.txtMovieName.text = "Name"
-            holder.binding.txtYear.text = "Year"
-            holder.binding.txtCost.text = "Budget (in Millions)"
+            setHeaderBg(holder.binding.cellData)
 
         } else {
             val modal = scoreList[rowPos - 1]
 
-
-            setContentBg(holder.binding.txtRank)
-            setContentBg(holder.binding.txtMovieName)
-            setContentBg(holder.binding.txtYear)
-            setContentBg(holder.binding.txtCost)
-
-            holder.binding.txtRank.text = "Rank $rowPos"
-            holder.binding.txtMovieName.text = "Movie name $rowPos"
-            holder.binding.txtYear.text = "Year $rowPos"
-            holder.binding.txtCost.text = "Cost $rowPos"
-
+            setContentBg(holder.binding.cellData)
         }
+        holder.binding.cellData.text = scoreList[position]
     }
 
     override fun getItemCount(): Int {
-        return scoreList.size + 1 // one more to add header row
+        return scoreList.size
     }
 
     inner class RowViewHolder(val binding: TableListItemBinding) :
         RecyclerView.ViewHolder(binding.root)
+}
+
+enum class CellType(val id: Int) {
+    Header(id = 0),
+    Data(id = 1)
 }

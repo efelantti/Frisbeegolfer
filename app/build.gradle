@@ -101,4 +101,7 @@ dependencies {
 
     // For rounded initial icon
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+
+    // For score card data table
+    implementation 'com.github.salehyarahmadi:DataTable:v1.0.1'
 }
