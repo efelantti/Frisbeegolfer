@@ -8,4 +8,7 @@
     <color name="recyclerview_item_background">#03DAC5</color>
     <color name="score_button_background_activated">#03DAC5</color>
     <color name="score_button_border_color">#808080</color>
+    <color name="cell_background_color">#ffffff</color>
+    <color name="header_line_color">#0a0a0a</color>
+    <color name="table_view_default_text_color">#0a0a0a</color>
 </resources>

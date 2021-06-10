@@ -8,15 +8,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
-import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.FragmentScorecardBinding
-import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
-import ir.androidexception.datatable.model.DataTableHeader
-import ir.androidexception.datatable.model.DataTableRow
 import java.time.OffsetDateTime
-import java.util.*
 
 
 class FragmentScorecard : Fragment() {
@@ -57,40 +52,8 @@ class FragmentScorecard : Fragment() {
         //binding.scorecardText.text = "Score card"
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
-            if (currentRound.scores.count() > 0)
-                displayScoreCard(currentRound.scores)
+            //if (currentRound.scores.count() > 0) TODO()
         }
-    }
-
-    private fun displayScoreCard(scores: List<ScoreWithPlayerAndHole>) {
-        val players = scores.distinctBy { it.player }.map { it.player }.sortedBy { it.name }
-        val holes = scores.distinctBy { it.hole }.map { it.hole }.sortedBy { it.holeNumber }
-        val dataTable = binding.dataTable
-
-        val header = DataTableHeader.Builder()
-        header.item(getString(R.string.score_card_hole_number), 1)
-        players.forEach { player ->
-            header.item(player.name, 2)
-        }
-
-        val rows = ArrayList<DataTableRow>()
-        // define 200 fake rows for table
-
-        holes.forEach { hole ->
-            val row = DataTableRow.Builder()
-            row.value(hole.holeNumber.toString())
-            players.forEach { player ->
-                row.value("3")
-            }
-            rows.add(row.build())
-        }
-
-        //dataTable.typeface = typeface
-        dataTable.header = header.build()
-        dataTable.rows = rows
-        dataTable.headerTextSize = 14.0f
-        dataTable.rowTextSize = 14.0f
-        dataTable.inflate(requireContext())
     }
 
     override fun onDestroyView() {

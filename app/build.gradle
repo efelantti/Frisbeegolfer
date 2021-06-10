@@ -103,5 +103,5 @@ dependencies {
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
     // For score card data table
-    implementation 'com.github.salehyarahmadi:DataTable:v1.0.1'
+    implementation 'com.evrencoskun.library:tableview:0.8.9.4'
 }
