@@ -46,7 +46,7 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                     FrisbeegolferRoomDatabase::class.java,
                     "frisbeegolfer_database"
                 ).addCallback(FrisbeegolferDatabaseCallback(scope))
-                    .fallbackToDestructiveMigrationFrom(16).build()
+                    .fallbackToDestructiveMigrationFrom(15, 16).build()
                 INSTANCE = instance
                 return instance
             }

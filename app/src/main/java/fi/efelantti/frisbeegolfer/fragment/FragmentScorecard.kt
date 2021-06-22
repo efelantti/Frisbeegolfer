@@ -9,6 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.databinding.FragmentScorecardBinding
+import fi.efelantti.frisbeegolfer.tableview.TableViewAdapter
+import fi.efelantti.frisbeegolfer.tableview.model.Cell
+import fi.efelantti.frisbeegolfer.tableview.model.ColumnHeader
+import fi.efelantti.frisbeegolfer.tableview.model.RowHeader
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 import java.time.OffsetDateTime
@@ -49,10 +53,41 @@ class FragmentScorecard : Fragment() {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-        //binding.scorecardText.text = "Score card"
+
+        val tableView = binding.contentContainer
+        val adapter = TableViewAdapter()
+        tableView.setAdapter(adapter)
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
-            //if (currentRound.scores.count() > 0) TODO()
+            if (currentRound.scores.count() > 0) {
+                val playerList =
+                    currentRound.scores.distinctBy { it.player.id }.sortedBy { it.player.name }
+                        .map { it.player }
+                val mColumnHeaderList = playerList.map { ColumnHeader(it.name) }
+
+                val holeNumberList = currentRound.scores.distinctBy { it.hole.holeNumber }
+                    .sortedBy { it.hole.holeNumber }.map { it.hole }
+                val mRowHeaderList = holeNumberList.map { RowHeader(it.holeNumber.toString()) }
+
+                val mCellList = mutableListOf<List<Cell>>()
+                for (hole in holeNumberList) {
+                    val listToAdd = mutableListOf<Cell>()
+                    for (player in playerList) {
+                        val score =
+                            currentRound.scores.filter { it.hole == hole && it.player == player }
+                                .single()
+                        val cell = Cell(score.score.result.toString())
+                        listToAdd.add(cell)
+                    }
+                    mCellList.add(listToAdd)
+                }
+                /*val mCellList = listOf(
+                    listOf(Cell("3"),Cell("3")),
+                    listOf(Cell("3"),Cell("4")),
+                    listOf(Cell("4"),Cell("3"))
+                )*/
+                adapter.setAllItems(mColumnHeaderList, mRowHeaderList, mCellList)
+            }
         }
     }
 
