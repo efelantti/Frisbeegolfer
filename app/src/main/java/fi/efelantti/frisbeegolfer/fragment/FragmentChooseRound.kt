@@ -17,6 +17,7 @@ import fi.efelantti.frisbeegolfer.databinding.FragmentChooseRoundBinding
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 
+// TODO - Allow to delete round
 class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
 
     private var _binding: FragmentChooseRoundBinding? = null
