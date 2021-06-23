@@ -11,6 +11,7 @@ import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.FragmentScoreBinding
 import fi.efelantti.frisbeegolfer.observeOnce
+import fi.efelantti.frisbeegolfer.toPrettyString
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 import fi.efelantti.frisbeegolfer.viewmodel.ScoringTerm
@@ -56,7 +57,13 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
         super.onViewCreated(view, savedInstanceState)
 
         scoreViewModel.currentRound.observeOnce(viewLifecycleOwner) { currentRound ->
-            if (currentRound.scores.count() > 0) scoreViewModel.initializeScore(currentRound.scores)
+            if (currentRound.scores.count() > 0) {
+                scoreViewModel.initializeScore(currentRound.scores)
+            }
+        }
+
+        scoreViewModel.currentRound.observe(viewLifecycleOwner) {
+            // Observing just to make LiveData to update.
         }
 
         // TODO - Show skeleton view before data has been loaded.
@@ -83,16 +90,21 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
                                 getString(R.string.notApplicable)
                             else binding.fragmentScoreCurrentHoleBest.text =
                                 holeStatistics.bestResult.toString()
-                            if (holeStatistics.avgResult == null) binding.fragmentScoreCurrentHoleAverage.text =
+                            val avgResult = holeStatistics.avgResult
+                            if (avgResult == null) binding.fragmentScoreCurrentHoleAverage.text =
                                 getString(R.string.notApplicable)
                             else binding.fragmentScoreCurrentHoleAverage.text =
-                                holeStatistics.avgResult.toString()
+                                avgResult.toPrettyString()
                             if (holeStatistics.latestResult == null) binding.fragmentScoreCurrentHoleLatest.text =
                                 getString(R.string.notApplicable)
                             else binding.fragmentScoreCurrentHoleLatest.text =
                                 holeStatistics.latestResult.toString()
                         }
                     }
+
+
+
+                binding.fragmentScorePlusMinus.text = scoreViewModel.plusMinus(currentScore.player)
 
                 setScoringTermForButtons(currentScore.hole.par)
                 controlScoreButtonActivationState(currentScore.score.result)

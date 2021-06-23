@@ -5,10 +5,7 @@ import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.RefreshableLiveData
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.getViewModelScope
-import fi.efelantti.frisbeegolfer.model.HoleStatistics
-import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
-import fi.efelantti.frisbeegolfer.model.Score
-import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
+import fi.efelantti.frisbeegolfer.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
@@ -23,7 +20,7 @@ class ScoreViewModel(
     ViewModel() {
 
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
-    val currentRound: LiveData<RoundWithCourseAndScores> = RefreshableLiveData {
+    val currentRound: RefreshableLiveData<RoundWithCourseAndScores> = RefreshableLiveData {
         repository.getRoundWithRoundId(roundId)
     }
 
@@ -158,6 +155,21 @@ class ScoreViewModel(
         score.didNotFinish = !score.didNotFinish
         if (score.didNotFinish) score.result = null
         update(score)
+    }
+
+    fun plusMinus(player: Player): String {
+        currentRound.refresh()
+        val round = currentRound.value
+            ?: throw IllegalStateException("Value inside current round live data was null.")
+        val scores = round.scores.filter { it.player == player }
+        var totalResult = 0
+        scores.forEach { score ->
+            val result = score.score.result
+            val par = score.hole.par
+            if (result != null) totalResult += result - par
+        }
+        return if (totalResult > 0) "+$totalResult"
+        else totalResult.toString()
     }
 
     companion object {
