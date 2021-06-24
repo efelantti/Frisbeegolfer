@@ -63,7 +63,12 @@ class FragmentScorecard : Fragment() {
                 val playerList =
                     currentRound.scores.distinctBy { it.player.id }.sortedBy { it.player.name }
                         .map { it.player }
-                val mColumnHeaderList = playerList.map { ColumnHeader(it.name) }
+                val mColumnHeaderList = playerList.map {
+                    ColumnHeader(
+                        it.name,
+                        scoreViewModel.plusMinus(it, currentRound.scores)
+                    )
+                }
 
                 val holeNumberList = currentRound.scores.distinctBy { it.hole.holeNumber }
                     .sortedBy { it.hole.holeNumber }.map { it.hole }
@@ -74,18 +79,16 @@ class FragmentScorecard : Fragment() {
                     val listToAdd = mutableListOf<Cell>()
                     for (player in playerList) {
                         val score =
-                            currentRound.scores.filter { it.hole == hole && it.player == player }
-                                .single()
-                        val cell = Cell(score.score.result.toString())
+                            currentRound.scores.single { it.hole == hole && it.player == player }
+                        val cell = Cell(
+                            score.score.result.toString(),
+                            scoreViewModel.plusMinus(player, currentRound.scores, hole.holeNumber)
+                        )
                         listToAdd.add(cell)
                     }
                     mCellList.add(listToAdd)
                 }
-                /*val mCellList = listOf(
-                    listOf(Cell("3"),Cell("3")),
-                    listOf(Cell("3"),Cell("4")),
-                    listOf(Cell("4"),Cell("3"))
-                )*/
+
                 adapter.setAllItems(mColumnHeaderList, mRowHeaderList, mCellList)
             }
         }

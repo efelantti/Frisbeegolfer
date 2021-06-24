@@ -1,5 +1,6 @@
 package fi.efelantti.frisbeegolfer.tableview.model
 
-open class Cell(
-    val data: String?
+class Cell(
+    val result: String?,
+    val plusMinusCumulative: String?
 )

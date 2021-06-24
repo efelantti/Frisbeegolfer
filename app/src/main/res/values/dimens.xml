@@ -8,7 +8,9 @@
     <string name="score_button_dimension_ratio">5:3</string>
     <dimen name="cell_height">40dp</dimen>
     <dimen name="text_size">16sp</dimen>
+    <dimen name="text_size_column_header_player_name">16sp</dimen>
+    <dimen name="text_size_column_header_result">16sp</dimen>
     <!-- Overriding the default values of the tableView -->
     <dimen name="default_row_header_width">55dp</dimen>
-    <dimen name="default_column_header_height">40dp</dimen>
+    <dimen name="default_column_header_height">50dp</dimen>
 </resources>

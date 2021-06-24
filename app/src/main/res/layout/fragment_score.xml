@@ -128,6 +128,7 @@
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentPlayer"
             app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentPlayer" />
 
+
         <TextView
             android:id="@+id/fragment_score_plus_minus"
             android:layout_width="wrap_content"
@@ -142,6 +143,7 @@
             app:layout_constraintBottom_toTopOf="@id/fragment_score_currentHoleBest_label"
             tools:text="+4" />
 
+        <!-- TODO - Linear layout containing the label and item? -->
         <TextView
             android:id="@+id/fragment_score_currentHoleBest_label"
             android:layout_width="wrap_content"

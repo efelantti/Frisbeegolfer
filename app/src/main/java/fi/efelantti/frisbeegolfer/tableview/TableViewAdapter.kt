@@ -43,8 +43,8 @@ class TableViewAdapter :
 
         val viewHolder =
             holder as MyCellViewHolder
-        if (cell.data.isNullOrBlank() || cell.data == "null") viewHolder.cellTextView.text = ""
-        else viewHolder.cellTextView.text = cell.data.toString()
+        if (cell.result.isNullOrBlank() || cell.result == "null") viewHolder.cellTextView.text = ""
+        else viewHolder.cellTextView.text = cell.result.toString()
 
         viewHolder.cellContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
         viewHolder.cellTextView.requestLayout()
@@ -54,7 +54,8 @@ class TableViewAdapter :
         AbstractViewHolder(itemView) {
         val columnHeaderContainer: LinearLayout =
             itemView.findViewById(R.id.column_header_container)
-        val cellTextView: TextView = itemView.findViewById(R.id.column_header_textView)
+        val cellPlayerName: TextView = itemView.findViewById(R.id.column_header_player_name)
+        val cellResult: TextView = itemView.findViewById(R.id.column_header_result)
         //val lineDivider: View = itemView.findViewById(R.id.vLine)
 
     }
@@ -80,13 +81,12 @@ class TableViewAdapter :
 
         val columnHeaderViewHolder =
             holder as MyColumnHeaderViewHolder
-        columnHeaderViewHolder.cellTextView.text = columnHeader.data.toString()
-
-
+        columnHeaderViewHolder.cellPlayerName.text = columnHeader.playerName.toString()
+        columnHeaderViewHolder.cellResult.text = columnHeader.resultPlusMinus.toString()
 
         columnHeaderViewHolder.columnHeaderContainer.layoutParams.width =
             LinearLayout.LayoutParams.WRAP_CONTENT
-        columnHeaderViewHolder.cellTextView.requestLayout()
+        columnHeaderViewHolder.cellPlayerName.requestLayout()
     }
 
     class MyRowHeaderViewHolder(itemView: View) :
@@ -118,7 +118,7 @@ class TableViewAdapter :
             holder as MyRowHeaderViewHolder
 
 
-        rowHeaderViewHolder.cellTextView.text = rowHeader.data.toString()
+        rowHeaderViewHolder.cellTextView.text = rowHeader.holeNumber.toString()
     }
 
     override fun onCreateCornerView(parent: ViewGroup): View {

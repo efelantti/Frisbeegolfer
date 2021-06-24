@@ -12,7 +12,7 @@ class Player(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
     var name: String? = "",
-    val email: String? = ""
+    var email: String? = ""
 ) : Parcelable {
     override fun equals(other: Any?): Boolean = (other is Player)
             && id == other.id
