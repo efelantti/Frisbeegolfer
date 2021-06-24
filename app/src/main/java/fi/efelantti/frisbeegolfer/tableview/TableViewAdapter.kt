@@ -46,8 +46,6 @@ class TableViewAdapter :
         if (cell.data.isNullOrBlank() || cell.data == "null") viewHolder.cellTextView.text = ""
         else viewHolder.cellTextView.text = cell.data.toString()
 
-
-
         viewHolder.cellContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
         viewHolder.cellTextView.requestLayout()
     }

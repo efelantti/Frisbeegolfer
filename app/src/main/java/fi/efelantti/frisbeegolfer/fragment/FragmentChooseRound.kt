@@ -18,6 +18,7 @@ import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 
 // TODO - Allow to delete round
+// TODO - Show player results in parenthesis after player's name
 class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
 
     private var _binding: FragmentChooseRoundBinding? = null
