@@ -1,11 +1,16 @@
 package fi.efelantti.frisbeegolfer.tableview
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.amulyakhare.textdrawable.TextDrawable
+import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.evrencoskun.tableview.adapter.AbstractTableAdapter
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder
 import fi.efelantti.frisbeegolfer.R
@@ -13,14 +18,21 @@ import fi.efelantti.frisbeegolfer.tableview.model.Cell
 import fi.efelantti.frisbeegolfer.tableview.model.ColumnHeader
 import fi.efelantti.frisbeegolfer.tableview.model.RowHeader
 
-class TableViewAdapter :
+class TableViewAdapter() :
     AbstractTableAdapter<ColumnHeader, RowHeader, Cell>() {
 
     class MyCellViewHolder(itemView: View) :
         AbstractViewHolder(itemView) {
-        val cellContainer: LinearLayout = itemView.findViewById(R.id.cell_container)
-        val cellTextView: TextView = itemView.findViewById(R.id.cell_data)
-
+        var builder: TextDrawable.IBuilder = TextDrawable.builder()
+            .beginConfig()
+            .bold()
+            .endConfig()
+            .round()
+        val generator: ColorGenerator = ColorGenerator.MATERIAL
+        val cellContainer: ConstraintLayout = itemView.findViewById(R.id.cell_container)
+        val resultImageView: ImageView = itemView.findViewById(R.id.result)
+        val plusMinusCumulativeTextView: TextView =
+            itemView.findViewById(R.id.plus_minus_cumulative)
     }
 
     override fun onCreateCellViewHolder(
@@ -43,11 +55,17 @@ class TableViewAdapter :
 
         val viewHolder =
             holder as MyCellViewHolder
-        if (cell.result.isNullOrBlank() || cell.result == "null") viewHolder.cellTextView.text = ""
-        else viewHolder.cellTextView.text = cell.result.toString()
+        if (cell.result.isNullOrBlank() || cell.result == "null") {
+            viewHolder.plusMinusCumulativeTextView.text = ""
+        } else {
+            val icon = viewHolder.builder.build(cell.result, cell.resultColor ?: Color.GRAY)
+            viewHolder.resultImageView.setImageDrawable(icon)
+            viewHolder.plusMinusCumulativeTextView.text = cell.plusMinusCumulative.toString()
+        }
 
-        viewHolder.cellContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-        viewHolder.cellTextView.requestLayout()
+        //viewHolder.cellContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+        viewHolder.resultImageView.requestLayout()
+        viewHolder.plusMinusCumulativeTextView.requestLayout()
     }
 
     class MyColumnHeaderViewHolder(itemView: View) :

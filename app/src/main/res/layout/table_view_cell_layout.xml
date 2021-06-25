@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/cell_container"
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/cell_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:minWidth="@dimen/cell_min_width"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/cell_height"
-    android:background="@color/cell_background_color"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:background="@color/cell_background_color">
+
+    <ImageView
+        android:id="@+id/result"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="@string/contentDescription_result"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/cell_data"
-        android:layout_width="match_parent"
+        android:id="@+id/plus_minus_cumulative"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="2dp"
-        android:layout_marginStart="2dp"
-        android:gravity="center"
+        android:gravity="center_vertical"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
         android:maxLines="1"
         android:textColor="@color/table_view_default_text_color"
         android:textSize="@dimen/text_size"
-        tools:text="Cell Data" />
-</LinearLayout>
+        app:layout_constraintStart_toEndOf="@id/result"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="+2" />
+</androidx.constraintlayout.widget.ConstraintLayout>

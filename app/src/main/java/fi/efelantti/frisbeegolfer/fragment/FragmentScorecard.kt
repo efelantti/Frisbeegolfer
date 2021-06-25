@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
+import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.FragmentScorecardBinding
 import fi.efelantti.frisbeegolfer.tableview.TableViewAdapter
 import fi.efelantti.frisbeegolfer.tableview.model.Cell
@@ -80,8 +82,11 @@ class FragmentScorecard : Fragment() {
                     for (player in playerList) {
                         val score =
                             currentRound.scores.single { it.hole == hole && it.player == player }
+                        val colorInt = getColorByResult(score.score.result, score.hole.par)
+                        val color = ContextCompat.getColor(requireContext(), colorInt)
                         val cell = Cell(
                             score.score.result.toString(),
+                            color,
                             scoreViewModel.plusMinus(player, currentRound.scores, hole.holeNumber)
                         )
                         listToAdd.add(cell)
@@ -92,6 +97,25 @@ class FragmentScorecard : Fragment() {
                 adapter.setAllItems(mColumnHeaderList, mRowHeaderList, mCellList)
             }
         }
+    }
+
+    private fun getColorByResult(result: Int?, par: Int): Int {
+        if (result == null) return R.color.result_other
+        else if (result == 1) return R.color.result_ace
+        val plusMinus = result - par
+        when (plusMinus) {
+            -4 -> return R.color.result_condor
+            -3 -> return R.color.result_albatross
+            -2 -> return R.color.result_eagle
+            -1 -> return R.color.result_birdie
+            0 -> return R.color.result_par
+            1 -> return R.color.result_bogey
+            2 -> return R.color.result_double_bogey
+            3 -> return R.color.result_triple_bogey
+        }
+        if (plusMinus < -4) return R.color.result_albatross
+        return if (plusMinus > 3) R.color.result_triple_bogey
+        else R.color.result_other
     }
 
     override fun onDestroyView() {
