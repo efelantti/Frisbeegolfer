@@ -10,7 +10,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.amulyakhare.textdrawable.TextDrawable
-import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.evrencoskun.tableview.adapter.AbstractTableAdapter
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder
 import fi.efelantti.frisbeegolfer.R
@@ -28,7 +27,6 @@ class TableViewAdapter() :
             .bold()
             .endConfig()
             .round()
-        val generator: ColorGenerator = ColorGenerator.MATERIAL
         val cellContainer: ConstraintLayout = itemView.findViewById(R.id.cell_container)
         val resultImageView: ImageView = itemView.findViewById(R.id.result)
         val plusMinusCumulativeTextView: TextView =
@@ -57,15 +55,17 @@ class TableViewAdapter() :
             holder as MyCellViewHolder
         if (cell.result.isNullOrBlank() || cell.result == "null") {
             viewHolder.plusMinusCumulativeTextView.text = ""
+            viewHolder.resultImageView.visibility = View.GONE
         } else {
+            viewHolder.resultImageView.visibility = View.VISIBLE
             val icon = viewHolder.builder.build(cell.result, cell.resultColor ?: Color.GRAY)
             viewHolder.resultImageView.setImageDrawable(icon)
             viewHolder.plusMinusCumulativeTextView.text = cell.plusMinusCumulative.toString()
         }
 
         //viewHolder.cellContainer.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-        viewHolder.resultImageView.requestLayout()
-        viewHolder.plusMinusCumulativeTextView.requestLayout()
+        //viewHolder.resultImageView.requestLayout()
+        //viewHolder.plusMinusCumulativeTextView.requestLayout()
     }
 
     class MyColumnHeaderViewHolder(itemView: View) :
@@ -111,6 +111,8 @@ class TableViewAdapter() :
         AbstractViewHolder(itemView) {
         val parentView: RelativeLayout = itemView.findViewById(R.id.row_root)
         val cellTextView: TextView = itemView.findViewById(R.id.row_header_textView)
+        val cellTextViewParCount: TextView =
+            itemView.findViewById(R.id.row_header_textView_par_count)
         //val lineDivider: View = itemView.findViewById(R.id.vLine)
     }
 
@@ -135,8 +137,8 @@ class TableViewAdapter() :
         val rowHeaderViewHolder =
             holder as MyRowHeaderViewHolder
 
-
-        rowHeaderViewHolder.cellTextView.text = rowHeader.holeNumber.toString()
+        rowHeaderViewHolder.cellTextView.text = rowHeader.holeNumber
+        rowHeaderViewHolder.cellTextViewParCount.text = rowHeader.parCount
     }
 
     override fun onCreateCornerView(parent: ViewGroup): View {

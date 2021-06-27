@@ -74,14 +74,19 @@ class FragmentScorecard : Fragment() {
 
                 val holeNumberList = currentRound.scores.distinctBy { it.hole.holeNumber }
                     .sortedBy { it.hole.holeNumber }.map { it.hole }
-                val mRowHeaderList = holeNumberList.map { RowHeader(it.holeNumber.toString()) }
+                val mRowHeaderList = holeNumberList.map {
+                    RowHeader(
+                        it.holeNumber.toString(),
+                        getString(R.string.scorecard_row_header_par_count, it.par)
+                    )
+                }
 
                 val mCellList = mutableListOf<List<Cell>>()
                 for (hole in holeNumberList) {
                     val listToAdd = mutableListOf<Cell>()
                     for (player in playerList) {
                         val score =
-                            currentRound.scores.single { it.hole == hole && it.player == player }
+                            currentRound.scores.single { it.hole.holeId == hole.holeId && it.player.id == player.id }
                         val colorInt = getColorByResult(score.score.result, score.hole.par)
                         val color = ContextCompat.getColor(requireContext(), colorInt)
                         val cell = Cell(

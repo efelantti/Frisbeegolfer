@@ -102,8 +102,6 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
                         }
                     }
 
-
-
                 binding.fragmentScorePlusMinus.text = scoreViewModel.plusMinus(currentScore.player)
 
                 setScoringTermForButtons(currentScore.hole.par)

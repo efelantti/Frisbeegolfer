@@ -23,6 +23,16 @@
             android:textSize="@dimen/text_size"
             android:textStyle="bold"
             tools:text="Row Data" />
+
+        <TextView
+            android:id="@+id/row_header_textView_par_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/table_view_default_text_color"
+            android:textSize="@dimen/text_size_par_count"
+            tools:text="Par 3" />
     </LinearLayout>
 
     <View

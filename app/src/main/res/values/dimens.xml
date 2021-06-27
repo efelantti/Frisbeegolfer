@@ -8,10 +8,13 @@
     <string name="score_button_dimension_ratio">5:3</string>
     <dimen name="cell_height">40dp</dimen>
     <dimen name="text_size">16sp</dimen>
+    <dimen name="text_size_par_count">12sp</dimen>
     <dimen name="text_size_column_header_player_name">16sp</dimen>
     <dimen name="text_size_column_header_result">16sp</dimen>
     <!-- Overriding the default values of the tableView -->
     <dimen name="default_row_header_width">55dp</dimen>
     <dimen name="default_column_header_height">50dp</dimen>
     <dimen name="cell_min_width">110dp</dimen>
+    <!-- Set different max in order to allow for different size columns. NOTE: scrolling seems to affect the size. -->
+    <dimen name="cell_max_width">110dp</dimen>
 </resources>

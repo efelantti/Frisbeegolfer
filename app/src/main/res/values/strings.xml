@@ -226,4 +226,5 @@
     <string name="score_card_hole_number">#</string>
     <string name="scorecard_corner_text">Hole</string>
     <string name="contentDescription_result">Result</string>
+    <string name="scorecard_row_header_par_count">Par <xliff:g id="parCount" example="3">%d</xliff:g></string>
 </resources>
