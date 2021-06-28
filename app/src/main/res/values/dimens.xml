@@ -6,7 +6,7 @@
     <dimen name="min_height">48dp</dimen>
     <dimen name="font_size_sub_header">16sp</dimen>
     <string name="score_button_dimension_ratio">5:3</string>
-    <dimen name="cell_height">40dp</dimen>
+    <dimen name="cell_height">45dp</dimen>
     <dimen name="text_size">16sp</dimen>
     <dimen name="text_size_par_count">12sp</dimen>
     <dimen name="text_size_column_header_player_name">16sp</dimen>

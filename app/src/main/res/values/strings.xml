@@ -227,4 +227,10 @@
     <string name="scorecard_corner_text">Hole</string>
     <string name="contentDescription_result">Result</string>
     <string name="scorecard_row_header_par_count">Par <xliff:g id="parCount" example="3">%d</xliff:g></string>
+    <string name="action_delete">Delete</string>
+    <string name="delete_confirmation">Are you sure you want to delete this <xliff:g id="objectToDeleteType" example="course">%s</xliff:g>? Please note that the deletion cannot be undone.</string>
+    <string name="delete_confirmation_title">Confirm delete</string>
+    <string name="player_type">player</string>
+    <string name="course_type">course</string>
+    <string name="round_type">round</string>
 </resources>

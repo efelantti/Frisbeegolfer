@@ -45,6 +45,8 @@ interface IRepository {
     fun getPlayerById(id: Long): LiveData<Player>
     fun playerExists(name: String): LiveData<Boolean>
     fun courseExists(name: String, city: String): LiveData<Boolean>
+    suspend fun delete(playerToDelete: Player)
+    suspend fun delete(course: CourseWithHoles)
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -79,13 +81,21 @@ class Repository(// Room executes all queries on a separate thread.
         roundDao.update(score)
     }
 
+    override suspend fun delete(playerToDelete: Player) {
+        playerDao.delete(playerToDelete)
+    }
+
     override suspend fun delete(hole: Hole) {
         courseDao.delete(hole)
     }
 
+    // TODO - Check if should be CourseWithHoles.
+    override suspend fun delete(course: CourseWithHoles) {
+        courseDao.delete(course.course)
+    }
+
     override suspend fun delete(round: RoundWithCourseAndScores) {
-        for(score: ScoreWithPlayerAndHole in round.scores)
-        {
+        for (score: ScoreWithPlayerAndHole in round.scores) {
             roundDao.delete(score.score)
         }
         roundDao.delete(round.round)

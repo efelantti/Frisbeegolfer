@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.databinding.FragmentCoursesBinding
+import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
-class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
+class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener,
+    DialogConfirmDelete.OnConfirmationSelected {
 
     private var _binding: FragmentCoursesBinding? = null
     private val binding get() = _binding!!
@@ -53,6 +55,13 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
                     mode.finish() // Action picked, so close the CAB
                     true
                 }
+                R.id.action_delete -> {
+                    val course = adapter.getSelectedCourse()
+                        ?: throw java.lang.IllegalArgumentException("No player was selected.")
+                    deleteCourse(course)
+                    mode.finish()
+                    true
+                }
                 else -> false
             }
         }
@@ -74,6 +83,12 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
             fab.isEnabled = true
             adapter.resetSelectedPosition()
         }
+    }
+
+    private fun deleteCourse(course: CourseWithHoles) {
+        DialogConfirmDelete(this, course, getString(R.string.course_type)).show(
+            childFragmentManager, DialogScoreAmount.TAG
+        )
     }
 
     override fun onCreateView(
@@ -146,5 +161,9 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun returnUserConfirmation(objectToDelete: Any) {
+        courseViewModel.delete(objectToDelete as CourseWithHoles)
     }
 }

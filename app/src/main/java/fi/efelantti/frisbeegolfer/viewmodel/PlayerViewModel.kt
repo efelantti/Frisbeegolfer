@@ -40,6 +40,10 @@ class PlayerViewModel(
     fun playerExists(name: String): LiveData<Boolean> {
         return repository.playerExists(name)
     }
+
+    fun delete(playerToDelete: Player) = coroutineScope.launch {
+        repository.delete(playerToDelete)
+    }
 }
 
 @Suppress("UNCHECKED_CAST")

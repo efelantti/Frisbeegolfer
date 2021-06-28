@@ -44,6 +44,10 @@ class CourseViewModel(
     fun courseExists(name: String, city: String): LiveData<Boolean> {
         return repository.courseExists(name, city)
     }
+
+    fun delete(course: CourseWithHoles) = coroutineScope.launch {
+        repository.delete(course)
+    }
 }
 
 @Suppress("UNCHECKED_CAST")

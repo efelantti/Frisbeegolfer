@@ -11,11 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.databinding.FragmentPlayersBinding
+import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
-
-class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
+// TODO - When all players are removed, round is not deleted.
+class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener,
+    DialogConfirmDelete.OnConfirmationSelected {
 
     private var _binding: FragmentPlayersBinding? = null
     private val binding get() = _binding!!
@@ -47,6 +49,13 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
                     mode.finish()
                     true
                 }
+                R.id.action_delete -> {
+                    val player = adapter.getSelectedPlayer()
+                        ?: throw java.lang.IllegalArgumentException("No player was selected.")
+                    deletePlayer(player)
+                    mode.finish()
+                    true
+                }
                 else -> false
             }
         }
@@ -67,6 +76,12 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
             adapter.resetSelectedPosition()
             fab.isEnabled = true
         }
+    }
+
+    private fun deletePlayer(player: Player) {
+        DialogConfirmDelete(this, player, getString(R.string.player_type)).show(
+            childFragmentManager, DialogScoreAmount.TAG
+        )
     }
 
     override fun onCreateView(
@@ -137,5 +152,9 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun returnUserConfirmation(playerToDelete: Any) {
+        playerViewModel.delete(playerToDelete as Player)
     }
 }

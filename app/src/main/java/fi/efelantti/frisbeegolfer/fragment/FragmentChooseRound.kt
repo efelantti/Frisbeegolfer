@@ -14,12 +14,13 @@ import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.RoundListAdapter
 import fi.efelantti.frisbeegolfer.databinding.FragmentChooseRoundBinding
+import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 
-// TODO - Allow to delete round
 // TODO - Show player results in parenthesis after player's name
-class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
+class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener,
+    DialogConfirmDelete.OnConfirmationSelected {
 
     private var _binding: FragmentChooseRoundBinding? = null
     private val binding get() = _binding!!
@@ -55,6 +56,13 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
                     mode.finish() // Action picked, so close the CAB
                     true
                 }
+                R.id.action_delete -> {
+                    val round = adapter.getSelectedRound()
+                        ?: throw java.lang.IllegalArgumentException("No round was selected.")
+                    deleteRound(round)
+                    mode.finish()
+                    true
+                }
                 else -> false
             }
         }
@@ -64,6 +72,12 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
             actionMode = null
             adapter.resetSelectedPosition()
         }
+    }
+
+    private fun deleteRound(round: RoundWithCourseAndScores) {
+        DialogConfirmDelete(this, round, getString(R.string.round_type)).show(
+            childFragmentManager, DialogScoreAmount.TAG
+        )
     }
 
     override fun onCreateView(
@@ -131,5 +145,9 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun returnUserConfirmation(objectToDelete: Any) {
+        roundViewModel.delete(objectToDelete as RoundWithCourseAndScores)
     }
 }

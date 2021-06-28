@@ -51,10 +51,6 @@ class DialogScoreAmount(private val onScoreAmountSelectedListener: OnScoreAmount
         }
     }
 
-    private fun performOkButtonAction() {
-        // Do your stuff here
-    }
-
     private fun parseScoreAmount(scoreAmountString: String): Int {
         if (scoreAmountString.isBlank()) throw IllegalArgumentException("Can't get integer from empty string.")
         return scoreAmountString.toInt()
