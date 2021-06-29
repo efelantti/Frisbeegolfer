@@ -15,7 +15,6 @@ import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
-// TODO - When all players are removed, round is not deleted.
 class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener,
     DialogConfirmDelete.OnConfirmationSelected {
 

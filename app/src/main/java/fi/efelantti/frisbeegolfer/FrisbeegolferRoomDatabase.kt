@@ -64,6 +64,7 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
 
         override fun onOpen(db: SupportSQLiteDatabase) {
             super.onOpen(db)
+            db.execSQL("CREATE TRIGGER delete_childless_rounds AFTER DELETE ON Score WHEN (SELECT COUNT(*) FROM Score WHERE parentRoundId = OLD.parentRoundId) = 0 BEGIN DELETE FROM Round WHERE dateStarted = OLD.parentRoundId; END;")
             INSTANCE?.let {
                 scope.launch {
                     //populateDatabase(database.roundDao())

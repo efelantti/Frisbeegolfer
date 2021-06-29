@@ -26,7 +26,7 @@ class FragmentScorecard : Fragment() {
     private val binding get() = _binding!!
     private lateinit var scoreViewModel: ScoreViewModel
     private lateinit var scoreViewModelFactory: ScoreViewModelFactory
-
+    private var expectedScoresCount = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +39,7 @@ class FragmentScorecard : Fragment() {
             ?: throw IllegalArgumentException("List of player ids was null.")
         val holeIds = requireArguments().getLongArray(HOLE_IDS)
             ?: throw IllegalArgumentException("List of hole ids was null.")
+        expectedScoresCount = playerIds.count() * holeIds.count()
         scoreViewModelFactory = ScoreViewModelFactory(
             (requireContext().applicationContext as FrisbeegolferApplication).repository,
             roundId,
@@ -61,7 +62,7 @@ class FragmentScorecard : Fragment() {
         tableView.setAdapter(adapter)
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
-            if (currentRound.scores.count() > 0) {
+            if (currentRound.scores.count() == expectedScoresCount) {
                 val playerList =
                     currentRound.scores.distinctBy { it.player.id }.sortedBy { it.player.name }
                         .map { it.player }
