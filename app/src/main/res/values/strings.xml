@@ -233,4 +233,8 @@
     <string name="player_type">player</string>
     <string name="course_type">course</string>
     <string name="round_type">round</string>
+    <string name="fragment_rounds_menu_label">Rounds</string>
+    <string name="fragment_courses_menu_label">Courses</string>
+    <string name="fragment_players_menu_label">Players</string>
+    <string name="fragment_statistics_menu_label">Statistics</string>
 </resources>

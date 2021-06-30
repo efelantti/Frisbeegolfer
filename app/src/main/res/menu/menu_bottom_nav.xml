@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/fragmentChooseRound"
+        android:icon="@drawable/ic_baseline_menu_book_24"
+        android:title="@string/fragment_rounds_menu_label" />
+    <item
+        android:id="@+id/fragmentCourses"
+        android:icon="@drawable/ic_baseline_landscape_24"
+        android:title="@string/fragment_courses_menu_label" />
+    <item
+        android:id="@+id/fragmentPlayers"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="@string/fragment_players_menu_label" />
+    <item
+        android:id="@+id/fragmentStatistics"
+        android:icon="@drawable/ic_baseline_bar_chart_24"
+        android:title="@string/fragment_statistics_menu_label" />
+
+</menu>
