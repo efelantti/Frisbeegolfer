@@ -2,26 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/fragmentNavigationScreen">
+    app:startDestination="@id/fragmentChooseRound">
 
-    <fragment
-        tools:layout="@layout/fragment_navigation_screen"
-        android:id="@+id/fragmentNavigationScreen"
-        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentNavigationScreen"
-        android:label="@string/app_name">
-        <action
-            android:id="@+id/action_fragmentNavigationScreen_to_fragmentChooseCourse"
-            app:destination="@id/fragmentChooseCourse" />
-        <action
-            android:id="@+id/action_fragmentNavigationScreen_to_fragmentChooseRound"
-            app:destination="@id/fragmentChooseRound" />
-        <action
-            android:id="@+id/action_fragmentNavigationScreen_to_fragmentCourses"
-            app:destination="@id/fragmentCourses" />
-        <action
-            android:id="@+id/action_fragmentNavigationScreen_to_fragmentPlayers"
-            app:destination="@id/fragmentPlayers" />
-    </fragment>
     <fragment
         tools:layout="@layout/fragment_choose_a_course"
         android:id="@+id/fragmentChooseCourse"
@@ -42,16 +24,19 @@
         <action
             android:id="@+id/action_fragmentChoosePlayers_to_fragmentGame"
             app:destination="@id/fragmentGame"
-            app:popUpTo="@id/fragmentNavigationScreen" />
+            app:popUpTo="@id/fragmentChooseRound" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_choose_round"
+        tools:layout="@layout/fragment_rounds"
         android:id="@+id/fragmentChooseRound"
-        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentChooseRound"
-        android:label="@string/continue_round_activity_title">
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentRounds"
+        android:label="@string/rounds_fragment_title">
         <action
             android:id="@+id/action_fragmentChooseRound_to_fragmentGame"
             app:destination="@id/fragmentGame" />
+        <action
+            android:id="@+id/action_fragmentChooseRound_to_fragmentChooseCourse"
+            app:destination="@id/fragmentChooseCourse" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_courses"

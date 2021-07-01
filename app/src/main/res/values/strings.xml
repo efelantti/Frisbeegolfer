@@ -173,7 +173,7 @@
     <string name="button_continue_round_text">Continue round</string>
 
     <!-- Text for continue round activity, when there are no rounds available in the database. -->
-    <string name="no_rounds_available">No rounds have yet been played.</string>
+    <string name="no_rounds_available">Rounds would be listed here - but no rounds have yet been played. To start a round, click on the plus sign in the bottom right corner.</string>
 
     <!-- Text that is displayed on the appbar when a round is selected. -->
     <string name="round_selected">1</string>
@@ -182,7 +182,7 @@
     <string name="players">Players: <xliff:g id="listOfPlayers" example="Andy, Bert, Clint">%s</xliff:g></string>
 
     <!-- Title for activity Continue round. -->
-    <string name="continue_round_activity_title">Select a round to continue</string>
+    <string name="rounds_fragment_title">Rounds</string>
     <string name="score_title">Score</string>
     <string name="notApplicable">N/A</string>
     <string name="error_message_noHoles">Please add at least one hole.</string>
@@ -237,4 +237,5 @@
     <string name="fragment_courses_menu_label">Courses</string>
     <string name="fragment_players_menu_label">Players</string>
     <string name="fragment_statistics_menu_label">Statistics</string>
+    <string name="fab_description_start_round">Add round</string>
 </resources>

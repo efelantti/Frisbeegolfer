@@ -13,16 +13,16 @@ import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.RoundListAdapter
-import fi.efelantti.frisbeegolfer.databinding.FragmentChooseRoundBinding
+import fi.efelantti.frisbeegolfer.databinding.FragmentRoundsBinding
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 
 // TODO - Show player results in parenthesis after player's name
-class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener,
+class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
     DialogConfirmDelete.OnConfirmationSelected {
 
-    private var _binding: FragmentChooseRoundBinding? = null
+    private var _binding: FragmentRoundsBinding? = null
     private val binding get() = _binding!!
     private val roundViewModel: RoundViewModel by activityViewModels {
         RoundViewModelFactory((requireActivity().applicationContext as FrisbeegolferApplication).repository)
@@ -71,6 +71,7 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener,
         override fun onDestroyActionMode(mode: ActionMode) {
             actionMode = null
             adapter.resetSelectedPosition()
+            binding.fabStartRound.isEnabled = true
         }
     }
 
@@ -84,7 +85,7 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentChooseRoundBinding.inflate(inflater, container, false)
+        _binding = FragmentRoundsBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
     }
@@ -112,6 +113,10 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener,
         roundViewModel.allRounds.observe(viewLifecycleOwner, { round ->
             round?.let { adapter.setRounds(it) }
         })
+
+        binding.fabStartRound.setOnClickListener {
+            navigateToNewRound()
+        }
     }
 
     private fun chooseSelectedRound() {
@@ -121,7 +126,7 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener,
         val holeIds = round.course.holes.map { it.holeId }.toLongArray()
         val playerIds = round.scores.distinctBy { it.player.id }.map { it.player.id }.toLongArray()
         val action =
-            FragmentChooseRoundDirections.actionFragmentChooseRoundToFragmentGame(
+            FragmentRoundsDirections.actionFragmentChooseRoundToFragmentGame(
                 round.round.dateStarted,
                 holeIds,
                 playerIds
@@ -132,7 +137,9 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener,
     override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
         if (!shouldStartActionMode) {
             actionMode?.finish()
+            binding.fabStartRound.isEnabled = true
         } else {
+            binding.fabStartRound.isEnabled = false
             when (actionMode) {
                 null -> {
                     // Start the CAB using the ActionMode.Callback defined above
@@ -142,9 +149,20 @@ class FragmentChooseRound : Fragment(), RoundListAdapter.ListItemClickListener,
         }
     }
 
+    private fun navigateToNewRound() {
+        val directions =
+            FragmentRoundsDirections.actionFragmentChooseRoundToFragmentChooseCourse()
+        findNavController().navigate(directions)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+        actionMode?.finish()
     }
 
     override fun returnUserConfirmation(objectToDelete: Any) {

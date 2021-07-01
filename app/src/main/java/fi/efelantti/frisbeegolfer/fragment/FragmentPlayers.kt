@@ -153,6 +153,11 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener,
         _binding = null
     }
 
+    override fun onPause() {
+        super.onPause()
+        actionMode?.finish()
+    }
+
     override fun returnUserConfirmation(playerToDelete: Any) {
         playerViewModel.delete(playerToDelete as Player)
     }

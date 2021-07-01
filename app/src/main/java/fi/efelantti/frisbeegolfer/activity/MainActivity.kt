@@ -1,6 +1,7 @@
 package fi.efelantti.frisbeegolfer.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -26,9 +27,27 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_content) as NavHostFragment
         val navController = navHostFragment.navController
-        appBarConfiguration = AppBarConfiguration(navController.graph)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.fragmentChooseRound,
+                R.id.fragmentCourses,
+                R.id.fragmentPlayers
+            )
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.bottomNav.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.fragmentChooseCourse) {
+                binding.bottomNav.visibility = View.GONE
+            } else if (destination.id == R.id.fragmentChoosePlayers) {
+                binding.bottomNav.visibility = View.GONE
+            } else if (destination.id == R.id.fragmentGame) {
+                binding.bottomNav.visibility = View.GONE
+            } else {
+                binding.bottomNav.visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -163,6 +163,11 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener,
         _binding = null
     }
 
+    override fun onPause() {
+        super.onPause()
+        actionMode?.finish()
+    }
+
     override fun returnUserConfirmation(objectToDelete: Any) {
         courseViewModel.delete(objectToDelete as CourseWithHoles)
     }
