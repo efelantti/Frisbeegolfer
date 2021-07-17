@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.activity.MainActivity
 import fi.efelantti.frisbeegolfer.databinding.FragmentScorecardBinding
 import fi.efelantti.frisbeegolfer.tableview.TableViewAdapter
 import fi.efelantti.frisbeegolfer.tableview.model.Cell
@@ -64,8 +63,8 @@ class FragmentScorecard : Fragment() {
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
             if (currentRound.scores.count() == expectedScoresCount) {
-                (requireActivity() as MainActivity).supportActionBar?.title =
-                    currentRound.course.course.name
+/*                (requireActivity() as MainActivity).supportActionBar?.title =
+                    currentRound.course.course.name*/
                 val playerList =
                     currentRound.scores.distinctBy { it.player.id }.sortedBy { it.player.name }
                         .map { it.player }

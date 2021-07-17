@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.activity.MainActivity
 import fi.efelantti.frisbeegolfer.databinding.FragmentScoreBinding
 import fi.efelantti.frisbeegolfer.observeOnce
 import fi.efelantti.frisbeegolfer.toPrettyString
@@ -60,8 +59,8 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
         scoreViewModel.currentRound.observeOnce(viewLifecycleOwner) { currentRound ->
             if (currentRound.scores.count() > 0) {
                 scoreViewModel.initializeScore(currentRound.scores)
-                (requireActivity() as MainActivity).supportActionBar?.title =
-                    currentRound.course.course.name
+/*                (requireActivity() as MainActivity).supportActionBar?.title =
+                    currentRound.course.course.name*/
             }
         }
 

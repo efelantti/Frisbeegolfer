@@ -22,6 +22,10 @@ class RoundViewModel(
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
     val allRounds: LiveData<List<RoundWithCourseAndScores>> = repository.allRounds
 
+    fun getRoundWithRoundId(roundId: OffsetDateTime): LiveData<RoundWithCourseAndScores> {
+        return repository.getRoundWithRoundId(roundId)
+    }
+
     fun delete(round: RoundWithCourseAndScores) = coroutineScope.launch {
         repository.delete(round)
     }

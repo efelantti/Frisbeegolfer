@@ -5,13 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.activity.MainActivity
 import fi.efelantti.frisbeegolfer.databinding.FragmentGameBinding
+import fi.efelantti.frisbeegolfer.observeOnce
+import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.time.OffsetDateTime
 
 class FragmentGame : Fragment() {
@@ -19,6 +25,9 @@ class FragmentGame : Fragment() {
     private lateinit var viewPager: ViewPager2
     private val args: FragmentGameArgs by navArgs()
     private var _binding: FragmentGameBinding? = null
+    private val roundViewModel: RoundViewModel by activityViewModels {
+        RoundViewModelFactory((requireActivity().applicationContext as FrisbeegolferApplication).repository)
+    }
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -32,6 +41,10 @@ class FragmentGame : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        roundViewModel.getRoundWithRoundId(args.roundId).observeOnce(viewLifecycleOwner) { round ->
+            (requireActivity() as MainActivity).supportActionBar?.title = round.course.course.name
+        }
+
         gameFragmentAdapter = GameFragmentAdapter(
             this,
             roundId = args.roundId,
