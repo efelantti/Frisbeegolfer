@@ -82,8 +82,7 @@
     </dialog>
     <fragment
         android:id="@+id/fragmentGame"
-        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentGame"
-        android:label="FragmentGame">
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentGame">
         <argument
             android:name="round_id"
             app:argType="java.time.OffsetDateTime" />
@@ -93,5 +92,9 @@
         <argument
             android:name="playerIds"
             app:argType="long[]" />
+        <argument
+            android:name="shouldOpenScorecard"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 </navigation>

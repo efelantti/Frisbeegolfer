@@ -44,8 +44,13 @@ class FragmentGame : Fragment() {
         val tabLayout: TabLayout = binding.tabLayout
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
-                0 -> tab.text = getString(R.string.fragment_score_tab_text)
-                1 -> tab.text = getString(R.string.fragment_scorecard_tab_text)
+                0 -> {
+                    tab.text = getString(R.string.fragment_score_tab_text)
+                }
+                1 -> {
+                    if (args.shouldOpenScorecard) viewPager.setCurrentItem(1, false)
+                    tab.text = getString(R.string.fragment_scorecard_tab_text)
+                }
                 else -> throw IndexOutOfBoundsException("No title found for index ($position).")
             }
         }.attach()

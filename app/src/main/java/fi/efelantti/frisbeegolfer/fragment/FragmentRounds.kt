@@ -129,7 +129,8 @@ class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
             FragmentRoundsDirections.actionFragmentChooseRoundToFragmentGame(
                 round.round.dateStarted,
                 holeIds,
-                playerIds
+                playerIds,
+                true
             )
         findNavController().navigate(action)
     }
