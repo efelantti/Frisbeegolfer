@@ -172,32 +172,36 @@ class ScoreViewModel(
         else totalResult.toString()
     }
 
-    fun plusMinus(player: Player, scores: List<ScoreWithPlayerAndHole>): String {
-        val scoresForPlayer = scores.filter { it.player == player }
-        var totalResult = 0
-        scoresForPlayer.forEach { score ->
-            val result = score.score.result
-            val par = score.hole.par
-            if (result != null) totalResult += result - par
-        }
-        return if (totalResult > 0) "+$totalResult"
-        else totalResult.toString()
-    }
-
-    fun plusMinus(player: Player, scores: List<ScoreWithPlayerAndHole>, holeNumber: Int): String? {
-        val scoresForPlayer =
-            scores.filter { it.player == player && it.hole.holeNumber <= holeNumber }
-        var totalResult = 0
-        scoresForPlayer.forEach { score ->
-            val result = score.score.result
-            val par = score.hole.par
-            if (result != null) totalResult += result - par
-        }
-        return if (totalResult > 0) "+$totalResult"
-        else totalResult.toString()
-    }
-
     companion object {
+
+        fun plusMinus(player: Player, scores: List<ScoreWithPlayerAndHole>): String {
+            val scoresForPlayer = scores.filter { it.player == player }
+            var totalResult = 0
+            scoresForPlayer.forEach { score ->
+                val result = score.score.result
+                val par = score.hole.par
+                if (result != null) totalResult += result - par
+            }
+            return if (totalResult > 0) "+$totalResult"
+            else totalResult.toString()
+        }
+
+        fun plusMinus(
+            player: Player,
+            scores: List<ScoreWithPlayerAndHole>,
+            holeNumber: Int
+        ): String? {
+            val scoresForPlayer =
+                scores.filter { it.player == player && it.hole.holeNumber <= holeNumber }
+            var totalResult = 0
+            scoresForPlayer.forEach { score ->
+                val result = score.score.result
+                val par = score.hole.par
+                if (result != null) totalResult += result - par
+            }
+            return if (totalResult > 0) "+$totalResult"
+            else totalResult.toString()
+        }
 
         /*
         Returns the scoring term for the hole.

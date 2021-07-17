@@ -18,7 +18,7 @@ import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 
-// TODO - Show player results in parenthesis after player's name
+// TODO - Allow to filter rounds (for example, by player or course)
 class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
     DialogConfirmDelete.OnConfirmationSelected {
 

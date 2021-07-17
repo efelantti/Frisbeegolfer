@@ -63,15 +63,13 @@ class FragmentScorecard : Fragment() {
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
             if (currentRound.scores.count() == expectedScoresCount) {
-/*                (requireActivity() as MainActivity).supportActionBar?.title =
-                    currentRound.course.course.name*/
                 val playerList =
                     currentRound.scores.distinctBy { it.player.id }.sortedBy { it.player.name }
                         .map { it.player }
                 val mColumnHeaderList = playerList.map {
                     ColumnHeader(
                         it.name,
-                        scoreViewModel.plusMinus(it, currentRound.scores)
+                        ScoreViewModel.plusMinus(it, currentRound.scores)
                     )
                 }
 
@@ -95,7 +93,7 @@ class FragmentScorecard : Fragment() {
                         val cell = Cell(
                             score.score.result.toString(),
                             color,
-                            scoreViewModel.plusMinus(player, currentRound.scores, hole.holeNumber)
+                            ScoreViewModel.plusMinus(player, currentRound.scores, hole.holeNumber)
                         )
                         listToAdd.add(cell)
                     }

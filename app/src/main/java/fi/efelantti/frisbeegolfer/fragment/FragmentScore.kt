@@ -59,8 +59,6 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
         scoreViewModel.currentRound.observeOnce(viewLifecycleOwner) { currentRound ->
             if (currentRound.scores.count() > 0) {
                 scoreViewModel.initializeScore(currentRound.scores)
-/*                (requireActivity() as MainActivity).supportActionBar?.title =
-                    currentRound.course.course.name*/
             }
         }
 

@@ -10,6 +10,7 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewRoundBinding
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
+import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import java.time.format.DateTimeFormatter
 
 
@@ -76,6 +77,7 @@ class RoundListAdapter internal constructor(
         holder.roundCard.isActivated = selectedPosition == position
 
         val current = rounds[position]
+        val scores = current.scores
 
         val color = generator.getColor(current.course.course.name)
         val initial = current.course.course.name?.take(1)
@@ -88,7 +90,9 @@ class RoundListAdapter internal constructor(
         holder.roundItemViewStartedOnTime.text =
             current.round.dateStarted.format(DateTimeFormatter.ofPattern("HH:mm"))
         holder.roundItemViewPlayers.text =
-            current.scores.distinctBy { it.player.name }.map { it.player.name }.joinToString()
+            scores.distinctBy { it.player.id }.sortedByDescending { it.player.name }
+                .map { "${it.player.name} (${ScoreViewModel.plusMinus(it.player, scores)})" }
+                .joinToString()
     }
 
     internal fun setRounds(rounds: List<RoundWithCourseAndScores>) {

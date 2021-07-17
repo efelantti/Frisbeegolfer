@@ -16,7 +16,6 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/contentDescription_course_avatar"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />

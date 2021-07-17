@@ -21,14 +21,13 @@
 
     <TextView
         android:id="@+id/txtCourseNameRound"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textSize="20sp"
         android:ellipsize="end"
         android:maxLines="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@id/txtStartedOnDate"
         app:layout_constraintStart_toEndOf="@id/txtCourseNameAvatar"
         app:layout_constraintTop_toTopOf="@id/txtCourseNameAvatar"
         tools:text="@tools:sample/cities" />
@@ -52,7 +51,7 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="3"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
