@@ -1,0 +1,8 @@
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_backup"
+        android:title="@string/action_backup"
+        android:icon="@drawable/ic_baseline_backup_24"
+        app:showAsAction="never" />
+</menu>

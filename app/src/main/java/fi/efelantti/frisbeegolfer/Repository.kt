@@ -89,7 +89,7 @@ class Repository(// Room executes all queries on a separate thread.
         courseDao.delete(hole)
     }
 
-    // TODO - Check if should be CourseWithHoles.
+    // Holes are deleted because of foreign key.
     override suspend fun delete(course: CourseWithHoles) {
         courseDao.delete(course.course)
     }

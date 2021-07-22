@@ -32,6 +32,8 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: FrisbeegolferRoomDatabase? = null
 
+        const val databaseName = "frisbeegolfer_database"
+
         fun getDatabase(
             context: Context,
             scope: CoroutineScope
@@ -44,7 +46,7 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     FrisbeegolferRoomDatabase::class.java,
-                    "frisbeegolfer_database"
+                    databaseName
                 ).addCallback(FrisbeegolferDatabaseCallback(scope))
                     .fallbackToDestructiveMigrationFrom(15, 16).build()
                 INSTANCE = instance

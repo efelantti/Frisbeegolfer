@@ -238,4 +238,6 @@
     <string name="fragment_players_menu_label">Players</string>
     <string name="fragment_statistics_menu_label">Statistics</string>
     <string name="fab_description_start_round">Add round</string>
+    <string name="action_backup">Backup database</string>
+    <string name="chooser_title">Backup</string>
 </resources>

@@ -187,7 +187,6 @@ class FragmentNewCourse : DialogFragment() {
     /*
     Function that should be invoked when user clicks on the "Apply" (holes) button.
     Makes sure that the number of holes to set is valid. Also asks confirmation from the user before removing any holes.
-    TODO - Scroll to first hole when button clicked?
      */
     private fun applyHoles(
         numberOfHolesLayout: TextInputLayout,
