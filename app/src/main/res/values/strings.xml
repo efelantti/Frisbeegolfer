@@ -240,4 +240,5 @@
     <string name="fab_description_start_round">Add round</string>
     <string name="action_backup">Backup database</string>
     <string name="chooser_title">Backup</string>
+    <string name="export_database_share">Share database to another app</string>
 </resources>

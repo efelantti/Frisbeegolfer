@@ -1,18 +1,15 @@
 package fi.efelantti.frisbeegolfer.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider.getUriForFile
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -82,11 +79,6 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNav.visibility = View.VISIBLE
             }
         }
-
-        requestCreateDocumentLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                onActivityResult(result)
-            }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -96,56 +88,40 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startExportProcess() {
-        val currentDate = SimpleDateFormat("MMddyy", Locale.getDefault())
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
-        intent.type = "application/zip"
-        intent.putExtra(
-            Intent.EXTRA_TITLE,
+        val currentDate = SimpleDateFormat("ddMMyy", Locale.getDefault())
+        val dbPath = getDatabasePath(FrisbeegolferRoomDatabase.databaseName)
+        val shmPath = getDatabasePath(FrisbeegolferRoomDatabase.databaseName + "-shm")
+        val walPath = getDatabasePath(FrisbeegolferRoomDatabase.databaseName + "-wal")
+        val dbFiles = listOf(dbPath, shmPath, walPath)
+
+        val zipPathDir = File(filesDir, "exported_databases")
+        if (!zipPathDir.exists()) {
+            zipPathDir.mkdir()
+        }
+        val zippedDatabase = File(
+            zipPathDir,
             "backup_${currentDate.format(Date())}_" + FrisbeegolferRoomDatabase.databaseName + ".zip"
         )
-        requestCreateDocumentLauncher.launch(intent)
-    }
+        zip(zippedDatabase, dbFiles)
+        val contentUri: Uri = getUriForFile(
+            this,
+            "fi.efelantti.frisbeegolfer.fileprovider",
+            zippedDatabase
+        )
 
-    private fun onActivityResult(result: ActivityResult) {
-        if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            if (intent != null) {
-                val userChosenUri: Uri? = intent.data
-                if (userChosenUri != null) {
-                    val dbPath = getDatabasePath(FrisbeegolferRoomDatabase.databaseName)
-                    val shmPath = getDatabasePath(FrisbeegolferRoomDatabase.databaseName + "-shm")
-                    val walPath = getDatabasePath(FrisbeegolferRoomDatabase.databaseName + "-wal")
-                    val dbFiles = listOf(dbPath, shmPath, walPath)
-                    zip(this, userChosenUri, dbFiles)
-                }
-            }
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, contentUri)
+            type = "application/zip"
         }
-    }
-
-    private fun exportDatabaseFile(context: Context, toFile: String) {
-
-        try {
-            Log.i("Export location", toFile)
-            val dbPath = context.getDatabasePath(FrisbeegolferRoomDatabase.databaseName).path
-            val shmPath =
-                context.getDatabasePath(FrisbeegolferRoomDatabase.databaseName + "-shm").path
-            val walPath =
-                context.getDatabasePath(FrisbeegolferRoomDatabase.databaseName + "-wal").path
-            copyDataFromOneToAnother(
-                dbPath,
-                toFile
+        shareIntent.data = contentUri
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivity(
+            Intent.createChooser(
+                shareIntent,
+                resources.getText(R.string.export_database_share)
             )
-            copyDataFromOneToAnother(
-                shmPath,
-                "$toFile-shm"
-            )
-            copyDataFromOneToAnother(
-                walPath,
-                "$toFile-wal"
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        )
     }
 
     fun importDatabaseFile(context: Context) {
