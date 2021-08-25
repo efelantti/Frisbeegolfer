@@ -1,15 +1,18 @@
 package fi.efelantti.frisbeegolfer
 
 import androidx.lifecycle.LiveData
+import androidx.sqlite.db.SimpleSQLiteQuery
 import fi.efelantti.frisbeegolfer.dao.CourseDao
 import fi.efelantti.frisbeegolfer.dao.PlayerDao
 import fi.efelantti.frisbeegolfer.dao.RoundDao
 import fi.efelantti.frisbeegolfer.model.*
 import java.time.OffsetDateTime
 
+
 interface IRepository {
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
+    val database: FrisbeegolferRoomDatabase
     val playerDao: PlayerDao
     val courseDao: CourseDao
     val roundDao: RoundDao
@@ -47,13 +50,17 @@ interface IRepository {
     fun courseExists(name: String, city: String): LiveData<Boolean>
     suspend fun delete(playerToDelete: Player)
     suspend fun delete(course: CourseWithHoles)
+
+    fun checkpoint()
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
 class Repository(// Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    override val playerDao: PlayerDao, override val courseDao: CourseDao,
+    override val database: FrisbeegolferRoomDatabase,
+    override val playerDao: PlayerDao,
+    override val courseDao: CourseDao,
     override val roundDao: RoundDao
 ) : IRepository {
 
@@ -146,5 +153,13 @@ class Repository(// Room executes all queries on a separate thread.
 
     override fun courseExists(name: String, city: String): LiveData<Boolean> {
         return courseDao.courseExists(name, city)
+    }
+
+    /* Android database has three files under /data/data/com.package.app/databases/
+    ** test.db, test.db-shm, test.db-wal - those extra files have recent commits.
+    ** To merge data from other shm and wal files to db, run following method - useful before taking backup.
+    */
+    override fun checkpoint() {
+        database.databaseWriteExecutor.execute { roundDao.checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)")) }
     }
 }

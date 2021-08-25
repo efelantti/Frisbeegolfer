@@ -107,4 +107,5 @@ dependencies {
 
     // For score card data table
     //implementation 'com.github.ISchwarz23:SortableTableView:2.8.1'
+
 }

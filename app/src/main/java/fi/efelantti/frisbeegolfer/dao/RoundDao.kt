@@ -2,8 +2,10 @@ package fi.efelantti.frisbeegolfer.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import fi.efelantti.frisbeegolfer.model.*
 import java.time.OffsetDateTime
+
 
 @Dao
 interface RoundDao {
@@ -49,4 +51,7 @@ interface RoundDao {
         playerId: Long,
         holeId: Long
     ): LiveData<ScoreWithPlayerAndHole>
+
+    @RawQuery
+    fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery?): Int
 }

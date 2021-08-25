@@ -17,13 +17,25 @@ object ServiceLocator {
         }
     }
 
+    fun provideDatabase(context: Context): FrisbeegolferRoomDatabase {
+        return FrisbeegolferRoomDatabase.getDatabase(
+            context,
+            CoroutineScope(EmptyCoroutineContext)
+        )
+    }
+
     private fun createRepository(context: Context): Repository {
         database = FrisbeegolferRoomDatabase.getDatabase(
             context,
             CoroutineScope(EmptyCoroutineContext)
         )
         val newRepo =
-            Repository(database!!.playerDao(), database!!.courseDao(), database!!.roundDao())
+            Repository(
+                database!!,
+                database!!.playerDao(),
+                database!!.courseDao(),
+                database!!.roundDao()
+            )
         repository = newRepo
         return newRepo
     }

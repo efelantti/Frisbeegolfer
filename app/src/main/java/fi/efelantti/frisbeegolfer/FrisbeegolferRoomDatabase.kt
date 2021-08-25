@@ -12,6 +12,13 @@ import fi.efelantti.frisbeegolfer.dao.RoundDao
 import fi.efelantti.frisbeegolfer.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import zip
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
 
 //TODO - Consider export schema
 @Database(
@@ -21,6 +28,9 @@ import kotlinx.coroutines.launch
 )
 @TypeConverters(Converters::class)
 abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
+
+    private val numberOfThreads = 1
+    val databaseWriteExecutor: ExecutorService = Executors.newFixedThreadPool(numberOfThreads)
 
     abstract fun playerDao(): PlayerDao
     abstract fun courseDao(): CourseDao
@@ -47,7 +57,8 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     FrisbeegolferRoomDatabase::class.java,
                     databaseName
-                ).addCallback(FrisbeegolferDatabaseCallback(scope))
+                )
+                    .addCallback(FrisbeegolferDatabaseCallback(scope))
                     .fallbackToDestructiveMigrationFrom(15, 16).build()
                 INSTANCE = instance
                 return instance
@@ -58,6 +69,25 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
     override fun close() {
         super.close()
         INSTANCE = null
+    }
+
+    fun createDatabaseZip(context: Context): File {
+        val currentDate = SimpleDateFormat("ddMMyy", Locale.getDefault())
+        val dbPath = context.getDatabasePath(databaseName)
+        val shmPath = context.getDatabasePath("$databaseName-shm")
+        val walPath = context.getDatabasePath("$databaseName-wal")
+        val dbFiles = listOf(dbPath, shmPath, walPath)
+
+        val zipPathDir = File(context.filesDir, "exported_databases")
+        if (!zipPathDir.exists()) {
+            zipPathDir.mkdir()
+        }
+        val zippedDatabase = File(
+            zipPathDir,
+            "${currentDate.format(Date())}_" + databaseName + ".zip"
+        )
+        zip(zippedDatabase, dbFiles)
+        return zippedDatabase
     }
 
     private class FrisbeegolferDatabaseCallback(

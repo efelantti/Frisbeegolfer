@@ -73,6 +73,10 @@ class RoundViewModel(
             }
         }
     }
+
+    fun checkPoint() {
+        repository.checkpoint()
+    }
 }
 
 
