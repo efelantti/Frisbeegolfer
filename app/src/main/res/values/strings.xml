@@ -241,4 +241,6 @@
     <string name="action_backup">Backup database</string>
     <string name="chooser_title">Backup</string>
     <string name="export_database_share">Share database to another app</string>
+    <string name="action_export_database">Export data</string>
+    <string name="action_import_database">Import data</string>
 </resources>

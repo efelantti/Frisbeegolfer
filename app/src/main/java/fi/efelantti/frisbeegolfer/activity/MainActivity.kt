@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider.getUriForFile
@@ -31,7 +30,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainWithNavigationBinding
-    private lateinit var requestCreateDocumentLauncher: ActivityResultLauncher<Intent>
     private val roundViewModel: RoundViewModel by viewModels {
         RoundViewModelFactory((applicationContext as FrisbeegolferApplication).repository)
     }
@@ -45,8 +43,12 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle presses on the action bar items
         return when (item.itemId) {
-            R.id.action_backup -> {
+            R.id.action_export_data -> {
                 exportDatabaseAsZip()
+                true
+            }
+            R.id.action_import_data -> {
+                importZippedDatabase()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -120,6 +122,10 @@ class MainActivity : AppCompatActivity() {
                 resources.getText(R.string.export_database_share)
             )
         )
+    }
+
+    private fun importZippedDatabase() {
+
     }
 
     fun importDatabaseFile(context: Context) {

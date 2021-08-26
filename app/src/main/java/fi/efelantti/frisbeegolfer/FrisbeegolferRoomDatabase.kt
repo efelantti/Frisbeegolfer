@@ -19,7 +19,6 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-
 //TODO - Consider export schema
 @Database(
     entities = [Player::class, Course::class, Hole::class, Round::class, Score::class],
@@ -82,6 +81,11 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         if (!zipPathDir.exists()) {
             zipPathDir.mkdir()
         }
+        // Remove obsolete backups.
+        for (file: File in zipPathDir.listFiles()) {
+            file.delete()
+        }
+
         val zippedDatabase = File(
             zipPathDir,
             "${currentDate.format(Date())}_" + databaseName + ".zip"
