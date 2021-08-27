@@ -80,4 +80,11 @@ class DatabaseTests {
         assertThat(dbFiles.size, equalTo(1))
         assertThat(shFiles.size, equalTo(1))
     }
+
+    @Test
+    @Throws(Exception::class)
+    fun importDatabaseRuns() = runBlocking {
+        val zippedFile = db.createDatabaseZip(instrumentationContext)
+        db.importDatabaseZip(instrumentationContext, zippedFile)
+    }
 }

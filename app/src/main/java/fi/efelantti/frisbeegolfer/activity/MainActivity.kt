@@ -1,6 +1,5 @@
 package fi.efelantti.frisbeegolfer.activity
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,13 +16,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
-import fi.efelantti.frisbeegolfer.FrisbeegolferRoomDatabase
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.ActivityMainWithNavigationBinding
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
-import java.io.File
-import java.io.FileOutputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -125,42 +121,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun importZippedDatabase() {
-
-    }
-
-    fun importDatabaseFile(context: Context) {
-        try {
-            copyDataFromOneToAnother(
-                getExternalFilesDir(null)?.path + "/Download/" + "backup_" + FrisbeegolferRoomDatabase.databaseName,
-                context.getDatabasePath(
-                    FrisbeegolferRoomDatabase.databaseName
-                ).path
-            )
-            copyDataFromOneToAnother(
-                getExternalFilesDir(null)?.path + "/Download/" + "backup_" + FrisbeegolferRoomDatabase.databaseName + "-shm",
-                context.getDatabasePath(
-                    FrisbeegolferRoomDatabase.databaseName + "-shm"
-                ).path
-            )
-            copyDataFromOneToAnother(
-                getExternalFilesDir(null)?.path + "/Download/" + "backup_" + FrisbeegolferRoomDatabase.databaseName + "-wal",
-                context.getDatabasePath(
-                    FrisbeegolferRoomDatabase.databaseName + "-wal"
-                ).path
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun copyDataFromOneToAnother(fromPath: String, toPath: String) {
-        val inStream = File(fromPath).inputStream()
-        val outStream = FileOutputStream(toPath)
-
-        inStream.use { input ->
-            outStream.use { output ->
-                input.copyTo(output)
-            }
-        }
+        // TODO - Get the zip file via intent from user
+        // (applicationContext as FrisbeegolferApplication).database.importDatabaseZip(this, zippedDatabase)
     }
 }

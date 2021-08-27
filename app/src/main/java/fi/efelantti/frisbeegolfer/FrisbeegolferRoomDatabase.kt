@@ -12,8 +12,11 @@ import fi.efelantti.frisbeegolfer.dao.RoundDao
 import fi.efelantti.frisbeegolfer.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import unzip
 import zip
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -92,6 +95,56 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         )
         zip(zippedDatabase, dbFiles)
         return zippedDatabase
+    }
+
+    fun importDatabaseZip(context: Context, zippedDatabase: File) {
+        if (!zippedDatabase.exists()) throw FileNotFoundException("Database file does not exist.")
+        if (zippedDatabase.extension != "zip") throw IllegalArgumentException("Database file is not a .zip file.")
+        val tempDir = File(context.filesDir, "database_files_to_import")
+        if (!tempDir.exists()) {
+            tempDir.mkdir()
+        }
+        // Remove previous import files.
+        for (file: File in tempDir.listFiles()) {
+            file.delete()
+        }
+        unzip(zippedDatabase, tempDir)
+        if (tempDir.listFiles().size != 3) throw IllegalArgumentException("Imported database zip did not contain 3 files.")
+        val dbFile = tempDir.listFiles { file ->
+            file.name == databaseName
+        }
+        val walFile = tempDir.listFiles { file ->
+            file.name == "$databaseName-wal"
+        }
+        val shmFile = tempDir.listFiles { file ->
+            file.name == "$databaseName-shm"
+        }
+        if (dbFile.size != 1) throw IllegalArgumentException("Imported database zip did not contain the database file.")
+        if (walFile.size != 1) throw IllegalArgumentException("Imported database zip did not contain the database-wal file.")
+        if (shmFile.size != 1) throw IllegalArgumentException("Imported database zip did not contain the database-shm file.")
+
+        // TODO - Should db be closed at this point?
+        // TODO - Take a snapshot of the database before overwriting.
+        // TODO - Autorestore to previous version if something goes wrong in this process.
+        val databaseFolder = context.getDatabasePath(databaseName).parentFile
+
+        for (file: File in tempDir.listFiles()) {
+            val toFile = File(tempDir, file.name)
+            copyDataFromOneToAnother(file.canonicalPath, toFile.canonicalPath)
+        }
+
+        // TODO - Verify db integrity
+    }
+
+    private fun copyDataFromOneToAnother(fromPath: String, toPath: String) {
+        val inStream = File(fromPath).inputStream()
+        val outStream = FileOutputStream(toPath)
+
+        inStream.use { input ->
+            outStream.use { output ->
+                input.copyTo(output)
+            }
+        }
     }
 
     private class FrisbeegolferDatabaseCallback(
