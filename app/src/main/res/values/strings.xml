@@ -243,4 +243,6 @@
     <string name="export_database_share">Share database to another app</string>
     <string name="action_export_database">Export data</string>
     <string name="action_import_database">Import data</string>
+    <string name="import_database">Import database from another app.</string>
+    <string name="no_import_file_received">No file was chosen.</string>
 </resources>

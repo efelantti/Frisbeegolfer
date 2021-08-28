@@ -124,8 +124,8 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         if (shmFile.size != 1) throw IllegalArgumentException("Imported database zip did not contain the database-shm file.")
 
         // TODO - Should db be closed at this point?
-        // TODO - Take a snapshot of the database before overwriting.
-        // TODO - Autorestore to previous version if something goes wrong in this process.
+        // TODO - Take a snapshot of the database before overwriting?
+        // TODO - Autorestore to previous version if something goes wrong in this process?
         val databaseFolder = context.getDatabasePath(databaseName).parentFile
 
         for (file: File in tempDir.listFiles()) {
@@ -133,7 +133,7 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
             copyDataFromOneToAnother(file.canonicalPath, toFile.canonicalPath)
         }
 
-        // TODO - Verify db integrity
+        // TODO - Verify db integrity?
     }
 
     private fun copyDataFromOneToAnother(fromPath: String, toPath: String) {

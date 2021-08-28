@@ -1,11 +1,15 @@
 package fi.efelantti.frisbeegolfer.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider.getUriForFile
@@ -29,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private val roundViewModel: RoundViewModel by viewModels {
         RoundViewModelFactory((applicationContext as FrisbeegolferApplication).repository)
     }
+    private lateinit var getZipFileLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -56,6 +61,28 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainWithNavigationBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        getZipFileLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    if (data == null) Toast.makeText(
+                        this,
+                        R.string.no_import_file_received,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    data?.data.also { uri ->
+                        if (uri == null) Toast.makeText(
+                            this,
+                            R.string.no_import_file_received,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        else {
+                            importZippedDatabase(uri)
+                        }
+                    }
+                }
+            }
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_content) as NavHostFragment
@@ -121,7 +148,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun importZippedDatabase() {
-        // TODO - Get the zip file via intent from user
+        val openIntent: Intent = Intent().apply {
+            action = Intent.ACTION_OPEN_DOCUMENT
+            putExtra(Intent.EXTRA_TITLE, R.string.import_database)
+            type = "application/zip"
+        }
+
+        getZipFileLauncher.launch(
+            Intent.createChooser(
+                openIntent,
+                resources.getText(R.string.export_database_share)
+            )
+        )
+    }
+
+    private fun importZippedDatabase(uri: Uri) {
         // (applicationContext as FrisbeegolferApplication).database.importDatabaseZip(this, zippedDatabase)
     }
 }
