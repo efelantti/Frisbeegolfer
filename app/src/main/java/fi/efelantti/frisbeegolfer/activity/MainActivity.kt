@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -24,6 +25,7 @@ import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.ActivityMainWithNavigationBinding
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
+import java.io.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         RoundViewModelFactory((applicationContext as FrisbeegolferApplication).repository)
     }
     private lateinit var getZipFileLauncher: ActivityResultLauncher<Intent>
+    private val downloadedDatabaseFilesToImportFolderName = "downloaded_database_files_to_import"
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -78,7 +81,14 @@ class MainActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                         else {
-                            importZippedDatabase(uri)
+                            val dbDownloadFile = getDbDownloadFile()
+                            Log.i(
+                                "IMPORT DB",
+                                "Starting to download database to import from ${uri.path} to ${dbDownloadFile.path}."
+                            )
+                            downloadFile(uri, dbDownloadFile)
+                            Log.i("IMPORT DB", "Database downloaded.")
+                            importZippedDatabase(dbDownloadFile)
                         }
                     }
                 }
@@ -115,41 +125,95 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Function for getting the folder where the imported database is saved before importing. Note
+     * that this is File is reused for each imported database.
+     * @return A file object where the imported database should be saved.
+     */
+    private fun getDbDownloadFile(): File {
+        val downloadedDbDir = File(filesDir, downloadedDatabaseFilesToImportFolderName)
+        if (!downloadedDbDir.exists()) {
+            downloadedDbDir.mkdir()
+        }
+        return File(downloadedDbDir, "database_to_import.zip")
+    }
+
+    /**
+     * Downloads a file from fromUri to toFile.
+     *
+     * @param fromUri Uri from where the data should be saved
+     * @param toFile File where the data should be saved to
+     * @throws IOException In case can't read from [fromUri]
+     */
+    private fun downloadFile(fromUri: Uri, toFile: File) {
+        val inStream: InputStream =
+            contentResolver.openInputStream(fromUri)
+                ?: throw IOException("Couldn't read from ${fromUri.path}.")
+        val outStream: OutputStream = FileOutputStream(toFile)
+        val buf = ByteArray(1024)
+        var len: Int
+        while (inStream.read(buf).also {
+                len = it
+            } > 0) {
+            outStream.write(buf, 0, len)
+        }
+        outStream.close()
+        inStream.close()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.main_content)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
 
+    /**
+    Function for exporting the database as a .zip package, which the user can save wherever
+    they choose with the ACTION_SEND intent.
+     */
     private fun exportDatabaseAsZip() {
-        roundViewModel.checkPoint()
-        val zippedDatabase =
-            (applicationContext as FrisbeegolferApplication).database.createDatabaseZip(this)
-        val contentUri: Uri = getUriForFile(
-            this,
-            "fi.efelantti.frisbeegolfer.fileprovider",
-            zippedDatabase
-        )
-
-        val shareIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_STREAM, contentUri)
-            putExtra(Intent.EXTRA_TITLE, R.string.export_database_share)
-            type = "application/zip"
-        }
-        shareIntent.data = contentUri
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        startActivity(
-            Intent.createChooser(
-                shareIntent,
-                resources.getText(R.string.export_database_share)
+        try {
+            roundViewModel.checkPoint()
+            val zippedDatabase =
+                (applicationContext as FrisbeegolferApplication).database.createDatabaseZip(this)
+            val contentUri: Uri = getUriForFile(
+                this,
+                "fi.efelantti.frisbeegolfer.fileprovider",
+                zippedDatabase
             )
-        )
+
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_STREAM, contentUri)
+                putExtra(Intent.EXTRA_TITLE, R.string.export_database_share)
+                type = "application/zip"
+            }
+            shareIntent.data = contentUri
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(
+                Intent.createChooser(
+                    shareIntent,
+                    resources.getText(R.string.export_database_share)
+                )
+            )
+        } catch (exception: Exception) {
+            Toast.makeText(
+                this,
+                resources.getText(R.string.error_exporting_database),
+                Toast.LENGTH_SHORT
+            ).show()
+            Log.e("EXPORT DB", "Error while exporting database: ${exception.message}")
+        }
     }
 
+    // TODO Notify user to export database before importing !!! Also verify that user wants to import. (WARN about possible data loss).
+    /**
+    Start the importing process by asking user the database file they want to import.
+     */
     private fun importZippedDatabase() {
         val openIntent: Intent = Intent().apply {
             action = Intent.ACTION_OPEN_DOCUMENT
+            addCategory(Intent.CATEGORY_OPENABLE)
             putExtra(Intent.EXTRA_TITLE, R.string.import_database)
             type = "application/zip"
         }
@@ -162,7 +226,43 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun importZippedDatabase(uri: Uri) {
-        // (applicationContext as FrisbeegolferApplication).database.importDatabaseZip(this, zippedDatabase)
+    /**
+    Function for restarting app.
+
+    This is required after importing database, because the import is
+    performed by copying another database FILE in place of current database file. Restarting app
+    forces Room to reload the database from file.
+     */
+    private fun restartApp() {
+        val refresh = Intent(applicationContext, MainActivity::class.java)
+        refresh.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(refresh)
+        Runtime.getRuntime().exit(0)
+    }
+
+    // TODO - Restore emergency backup if app breaks after restart.
+    /**
+     *Invoke import function and restart app.
+     *@param zippedDatabase The database that should be imported. Expected a .zip file.
+     */
+    private fun importZippedDatabase(zippedDatabase: File) {
+        Log.i("IMPORT DB", "Starting to import database.")
+        val db = (applicationContext as FrisbeegolferApplication).database
+        try {
+            db.importDatabaseZip(
+                this,
+                zippedDatabase
+            )
+            Log.i("IMPORT DB", "Database imported -> restarting app.")
+            restartApp()
+        } catch (exception: Exception) {
+            Toast.makeText(
+                this,
+                resources.getText(R.string.error_importing_database),
+                Toast.LENGTH_SHORT
+            ).show()
+            Log.e("IMPORT DB", "Error while importing database: ${exception.message}")
+            db.restoreFromEmergencyBackup(this)
+        }
     }
 }

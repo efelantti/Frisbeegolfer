@@ -245,4 +245,6 @@
     <string name="action_import_database">Import data</string>
     <string name="import_database">Import database from another app.</string>
     <string name="no_import_file_received">No file was chosen.</string>
+    <string name="error_importing_database">Error importing database.</string>
+    <string name="error_exporting_database">Error while exporting database.</string>
 </resources>

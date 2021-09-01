@@ -45,6 +45,9 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         private var INSTANCE: FrisbeegolferRoomDatabase? = null
 
         const val databaseName = "frisbeegolfer_database"
+        const val emergencyBackupFolderName = "emergency_backup"
+        const val databaseFilesToImportFolderName = "database_files_to_import"
+        const val exportedDatabasesFolderName = "exported_databases"
 
         fun getDatabase(
             context: Context,
@@ -73,6 +76,11 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         INSTANCE = null
     }
 
+    /**
+     * Creates a .zip package containing the database files: actual db, -shm file and -wal file.
+     *
+     * @return File object representing the .zip package containing database files.
+     */
     fun createDatabaseZip(context: Context): File {
         val currentDate = SimpleDateFormat("ddMMyy", Locale.getDefault())
         val dbPath = context.getDatabasePath(databaseName)
@@ -80,7 +88,7 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         val walPath = context.getDatabasePath("$databaseName-wal")
         val dbFiles = listOf(dbPath, shmPath, walPath)
 
-        val zipPathDir = File(context.filesDir, "exported_databases")
+        val zipPathDir = File(context.filesDir, exportedDatabasesFolderName)
         if (!zipPathDir.exists()) {
             zipPathDir.mkdir()
         }
@@ -97,10 +105,22 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         return zippedDatabase
     }
 
+    /**
+     *  Function for importing database.
+     *
+     *  The database files a unzipped to filesDir/database_files_to_import/, and from there copied
+     *  to dbFolder.
+     *  @throws FileNotFoundException If [zippedDatabase] does not exist.
+     *  @throws IllegalArgumentException If [zippedDatabase] is not a .zip file.
+     *  @throws IllegalArgumentException If [zippedDatabase] does not contain the expected files (db, db-shm, db-wal).
+     *  @param context Activity context.
+     *  @param zippedDatabase Zip package containing the database files.
+     */
     fun importDatabaseZip(context: Context, zippedDatabase: File) {
+        createEmergencyBackup(context)
         if (!zippedDatabase.exists()) throw FileNotFoundException("Database file does not exist.")
         if (zippedDatabase.extension != "zip") throw IllegalArgumentException("Database file is not a .zip file.")
-        val tempDir = File(context.filesDir, "database_files_to_import")
+        val tempDir = File(context.filesDir, databaseFilesToImportFolderName)
         if (!tempDir.exists()) {
             tempDir.mkdir()
         }
@@ -123,19 +143,53 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         if (walFile.size != 1) throw IllegalArgumentException("Imported database zip did not contain the database-wal file.")
         if (shmFile.size != 1) throw IllegalArgumentException("Imported database zip did not contain the database-shm file.")
 
-        // TODO - Should db be closed at this point?
-        // TODO - Take a snapshot of the database before overwriting?
-        // TODO - Autorestore to previous version if something goes wrong in this process?
         val databaseFolder = context.getDatabasePath(databaseName).parentFile
 
         for (file: File in tempDir.listFiles()) {
-            val toFile = File(tempDir, file.name)
+            val toFile = File(databaseFolder, file.name)
+            copyDataFromOneToAnother(file.canonicalPath, toFile.canonicalPath)
+        }
+    }
+
+    /**
+     * Function for creating an emergency backup of the existing database files - in case something
+     * goes wrong with the import process, database can still be restored.
+     */
+    private fun createEmergencyBackup(context: Context) {
+        val dbPath = context.getDatabasePath(databaseName)
+        val shmPath = context.getDatabasePath("$databaseName-shm")
+        val walPath = context.getDatabasePath("$databaseName-wal")
+        val dbFiles = listOf(dbPath, shmPath, walPath)
+
+        val emergencyBackupFolder = File(context.filesDir, emergencyBackupFolderName)
+        if (!emergencyBackupFolder.exists()) {
+            emergencyBackupFolder.mkdir()
+        }
+
+        for (file: File in dbFiles) {
+            val toFile = File(emergencyBackupFolder, file.name)
+            copyDataFromOneToAnother(file.canonicalPath, toFile.canonicalPath)
+        }
+    }
+
+    /**
+     * Function for restoring database from emergency copy.
+     */
+    fun restoreFromEmergencyBackup(context: Context) {
+        val databaseFolder = context.getDatabasePath(databaseName).parentFile
+        val emergencyBackupFolder = File(context.filesDir, emergencyBackupFolderName)
+        for (file: File in emergencyBackupFolder.listFiles()) {
+            val toFile = File(databaseFolder, file.name)
             copyDataFromOneToAnother(file.canonicalPath, toFile.canonicalPath)
         }
 
-        // TODO - Verify db integrity?
     }
 
+    /**
+     * Copies file from [fromPath] to [toPath].
+     * @param fromPath Source file path.
+     * @param toPath Destination file path.
+     */
     private fun copyDataFromOneToAnother(fromPath: String, toPath: String) {
         val inStream = File(fromPath).inputStream()
         val outStream = FileOutputStream(toPath)
