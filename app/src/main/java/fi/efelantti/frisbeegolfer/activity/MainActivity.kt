@@ -23,12 +23,13 @@ import androidx.navigation.ui.setupWithNavController
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.ActivityMainWithNavigationBinding
+import fi.efelantti.frisbeegolfer.fragment.DialogConfirmImport
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.io.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSelected {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainWithNavigationBinding
@@ -52,7 +53,9 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_import_data -> {
-                importZippedDatabase()
+                DialogConfirmImport(this).show(
+                    supportFragmentManager, DialogConfirmImport.TAG
+                )
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -173,9 +176,11 @@ class MainActivity : AppCompatActivity() {
      */
     private fun exportDatabaseAsZip() {
         try {
+            val db = (applicationContext as FrisbeegolferApplication).database
             roundViewModel.checkPoint()
+            db.close()
             val zippedDatabase =
-                (applicationContext as FrisbeegolferApplication).database.createDatabaseZip(this)
+                db.createDatabaseZip(this)
             val contentUri: Uri = getUriForFile(
                 this,
                 "fi.efelantti.frisbeegolfer.fileprovider",
@@ -206,7 +211,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // TODO Notify user to export database before importing !!! Also verify that user wants to import. (WARN about possible data loss).
     /**
     Start the importing process by asking user the database file they want to import.
      */
@@ -214,7 +218,7 @@ class MainActivity : AppCompatActivity() {
         val openIntent: Intent = Intent().apply {
             action = Intent.ACTION_OPEN_DOCUMENT
             addCategory(Intent.CATEGORY_OPENABLE)
-            putExtra(Intent.EXTRA_TITLE, R.string.import_database)
+            putExtra(Intent.EXTRA_TITLE, resources.getText(R.string.import_database))
             type = "application/zip"
         }
 
@@ -240,7 +244,6 @@ class MainActivity : AppCompatActivity() {
         Runtime.getRuntime().exit(0)
     }
 
-    // TODO - Restore emergency backup if app breaks after restart.
     /**
      *Invoke import function and restart app.
      *@param zippedDatabase The database that should be imported. Expected a .zip file.
@@ -264,5 +267,9 @@ class MainActivity : AppCompatActivity() {
             Log.e("IMPORT DB", "Error while importing database: ${exception.message}")
             db.restoreFromEmergencyBackup(this)
         }
+    }
+
+    override fun returnUserConfirmation() {
+        importZippedDatabase()
     }
 }

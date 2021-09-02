@@ -87,7 +87,7 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener,
 
     private fun deleteCourse(course: CourseWithHoles) {
         DialogConfirmDelete(this, course, getString(R.string.course_type)).show(
-            childFragmentManager, DialogScoreAmount.TAG
+            childFragmentManager, DialogConfirmDelete.TAG
         )
     }
 

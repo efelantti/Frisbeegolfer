@@ -247,4 +247,7 @@
     <string name="no_import_file_received">No file was chosen.</string>
     <string name="error_importing_database">Error importing database.</string>
     <string name="error_exporting_database">Error while exporting database.</string>
+    <string name="database_imported">Data imported!</string>
+    <string name="import_confirmation_title">Confirm import</string>
+    <string name="import_confirmation_message">Are you sure want to import data? Please make sure to export current data first, as the import process may result in data loss - current data will be overwritten!</string>
 </resources>
