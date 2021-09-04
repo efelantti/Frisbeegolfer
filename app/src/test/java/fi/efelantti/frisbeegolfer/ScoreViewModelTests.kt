@@ -241,7 +241,7 @@ class ScoreViewModelTests {
 
         assertThat(currentScore.score.result, equalTo(0))
 
-        scoreViewModel.setResult(currentScore.score, 3)
+        scoreViewModel.setResult(3)
         currentScore = scoreViewModel.currentScore.getValueBlocking()
             ?: throw InvalidObjectException("Null returned as current score.")
 

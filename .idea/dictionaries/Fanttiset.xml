@@ -2,6 +2,8 @@
   <dictionary name="Fanttiset">
     <words>
       <w>autofill</w>
+      <w>deserializing</w>
+      <w>discscores</w>
       <w>efelantti</w>
       <w>esimerkki</w>
       <w>fileprovider</w>
@@ -14,6 +16,7 @@
       <w>lastname</w>
       <w>maisa</w>
       <w>mallikappale</w>
+      <w>moshi</w>
       <w>noninfringement</w>
     </words>
   </dictionary>

@@ -36,10 +36,16 @@ class RepositoryTests {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var repository: Repository
+
+    @Mock
+    private lateinit var db: FrisbeegolferRoomDatabase
+
     @Mock
     private lateinit var fakePlayerDao: PlayerDao
+
     @Mock
-    private lateinit var fakeCourseDao : CourseDao
+    private lateinit var fakeCourseDao: CourseDao
+
     @Mock
     private lateinit var fakeRoundDao: RoundDao
 
@@ -47,7 +53,7 @@ class RepositoryTests {
     fun getAllPlayersWhenEmpty() = runBlockingTest {
         `when`(fakePlayerDao.getPlayers())
             .thenReturn(MutableLiveData(emptyList()))
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         val allPlayers = repository.allPlayers
         val result = allPlayers.getValueBlocking() ?: throw InvalidObjectException("null returned as players")
         assertThat(result.count(), equalTo(0))
@@ -57,7 +63,7 @@ class RepositoryTests {
     fun getAllPlayersWhenNonEmpty() = runBlockingTest {
         `when`(fakePlayerDao.getPlayers())
             .thenReturn(MutableLiveData(listOf(Player(name = "Tester1"), Player(name= "Tester2"), Player(name="Tester3"))))
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         val allPlayers = repository.allPlayers
         val result = allPlayers.getValueBlocking() ?: throw InvalidObjectException("null returned as players")
         assertThat(result.count(), equalTo(3))
@@ -70,7 +76,7 @@ class RepositoryTests {
     fun getAllCoursesWhenEmpty() = runBlockingTest {
         `when`(fakeCourseDao.getCoursesWithHoles())
             .thenReturn(MutableLiveData(emptyList()))
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         val allCourses = repository.allCourses
         val result = allCourses.getValueBlocking() ?: throw InvalidObjectException("null returned as players")
         assertThat(result.count(), equalTo(0))
@@ -83,7 +89,7 @@ class RepositoryTests {
                     CourseWithHoles(Course(name = "Course1", city= "City1"), holes=listOf(Hole(), Hole())),
                     CourseWithHoles(Course(name = "Course2", city= "City2"), holes=listOf(Hole(), Hole(), Hole()))
                 )))
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         val allCourses = repository.allCourses
         val result = allCourses.getValueBlocking() ?: throw InvalidObjectException("null returned as players")
         assertThat(result.count(), equalTo(2))
@@ -97,7 +103,7 @@ class RepositoryTests {
     fun getAllRoundsWhenEmpty() = runBlockingTest {
         `when`(fakeRoundDao.getRounds())
             .thenReturn(MutableLiveData(emptyList()))
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         val allRounds = repository.allRounds
         val result = allRounds.getValueBlocking() ?: throw InvalidObjectException("null returned as players")
         assertThat(result.count(), equalTo(0))
@@ -137,7 +143,7 @@ class RepositoryTests {
                     )
                 )
             )
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         val allRounds = repository.allRounds
         val result = allRounds.getValueBlocking() ?: throw InvalidObjectException("null returned as players")
         assertThat(result.count(), equalTo(2))
@@ -150,7 +156,7 @@ class RepositoryTests {
     @Test
     fun insertPlayer() = runBlockingTest {
         val player = Player(name="Tester")
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         repository.insert(player)
         verify(fakePlayerDao).insert(player)
     }
@@ -158,7 +164,7 @@ class RepositoryTests {
     @Test
     fun insertRound() = runBlockingTest {
         val round = Round(dateStarted = OffsetDateTime.now(), courseId = 0)
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         repository.insert(round)
         verify(fakeRoundDao).insert(round)
     }
@@ -166,7 +172,7 @@ class RepositoryTests {
     @Test
     fun insertScore() = runBlockingTest {
         val score = Score(parentRoundId = OffsetDateTime.now())
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         repository.insert(score)
         verify(fakeRoundDao).insert(score)
     }
@@ -174,7 +180,7 @@ class RepositoryTests {
     @Test
     fun updatePlayer() = runBlockingTest {
         val player = Player(name="Tester")
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         repository.update(player)
         verify(fakePlayerDao).update(player)
     }
@@ -182,7 +188,7 @@ class RepositoryTests {
     @Test
     fun updateScore() = runBlockingTest {
         val score = Score(parentRoundId = OffsetDateTime.now())
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         repository.update(score)
         verify(fakeRoundDao).update(score)
     }
@@ -190,7 +196,7 @@ class RepositoryTests {
     @Test
     fun deleteHole() = runBlockingTest {
         val hole = Hole()
-        repository = Repository(fakePlayerDao, fakeCourseDao, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, fakeRoundDao)
         repository.delete(hole)
         verify(fakeCourseDao).delete(hole)
     }
@@ -219,7 +225,7 @@ class RepositoryTests {
             coEvery { alternativeMock.delete(score.score) } returns Unit
         }
 
-        repository = Repository(fakePlayerDao, fakeCourseDao, alternativeMock)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, alternativeMock)
         repository.delete(roundWithCourseAndScores)
 
         coVerify(exactly = 1) { alternativeMock.delete(roundWithCourseAndScores.round) }
@@ -237,7 +243,7 @@ class RepositoryTests {
         coEvery { alternativeMock.update(courseWithHoles.course) } returns Unit
         coEvery { alternativeMock.updateAll(courseWithHoles.holes) } returns Unit
 
-        repository = Repository(fakePlayerDao, alternativeMock, fakeRoundDao)
+        repository = Repository(db, fakePlayerDao, alternativeMock, fakeRoundDao)
         repository.update(courseWithHoles)
         coVerify(exactly = 1) { alternativeMock.update(courseWithHoles.course)}
         coVerify(exactly = 1) { alternativeMock.updateAll(courseWithHoles.holes)}
@@ -247,10 +253,12 @@ class RepositoryTests {
     fun insertCourseWithHoles() = runBlockingTest {
         val courseWithHoles = CourseWithHoles(Course(), listOf(Hole()))
         val alternativeMock = mockk<CourseDao>()
-        every { alternativeMock.getCoursesWithHoles() } returns MutableLiveData<List<CourseWithHoles>>(emptyList())
-        coEvery { alternativeMock.insert(courseWithHoles.course)} returns 0
-        coEvery { alternativeMock.insertAll(courseWithHoles.holes)} returns Unit
-        repository = Repository(fakePlayerDao, alternativeMock, fakeRoundDao)
+        every { alternativeMock.getCoursesWithHoles() } returns MutableLiveData<List<CourseWithHoles>>(
+            emptyList()
+        )
+        coEvery { alternativeMock.insert(courseWithHoles.course) } returns 0
+        coEvery { alternativeMock.insertAll(courseWithHoles.holes) } returns Unit
+        repository = Repository(db, fakePlayerDao, alternativeMock, fakeRoundDao)
         repository.insertCourseWithHoles(courseWithHoles)
 
         coVerify(exactly = 1) { alternativeMock.insert(courseWithHoles.course) }
@@ -262,13 +270,17 @@ class RepositoryTests {
         val courseWithHoles = CourseWithHoles(Course(), listOf(Hole()))
 
         val alternativeMock = mockk<CourseDao>()
-        every { alternativeMock.getCoursesWithHoles() } returns MutableLiveData<List<CourseWithHoles>>(emptyList())
-        every { alternativeMock.getCourseWithHolesWithId(0)} returns MutableLiveData(courseWithHoles)
-        repository = Repository(fakePlayerDao, alternativeMock, fakeRoundDao)
+        every { alternativeMock.getCoursesWithHoles() } returns MutableLiveData<List<CourseWithHoles>>(
+            emptyList()
+        )
+        every { alternativeMock.getCourseWithHolesWithId(0) } returns MutableLiveData(
+            courseWithHoles
+        )
+        repository = Repository(db, fakePlayerDao, alternativeMock, fakeRoundDao)
 
         repository.getCourseWithHolesById(0)
 
-        verify ( exactly = 1 ) { alternativeMock.getCourseWithHolesWithId(0)}
+        verify(exactly = 1) { alternativeMock.getCourseWithHolesWithId(0) }
     }
 
     @Test
@@ -291,7 +303,7 @@ class RepositoryTests {
         every { alternativeMock.getRounds() } returns MutableLiveData<List<RoundWithCourseAndScores>>(emptyList())
         every { alternativeMock.getRoundWithId(roundId)} returns MutableLiveData(roundWithCourseAndScores)
 
-        repository = Repository(fakePlayerDao, fakeCourseDao, alternativeMock)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, alternativeMock)
         repository.getRoundWithRoundId(roundId)
 
         verify ( exactly = 1 ) { alternativeMock.getRoundWithId(roundId)}
@@ -305,7 +317,7 @@ class RepositoryTests {
         every { alternativeMock.getRounds() } returns MutableLiveData<List<RoundWithCourseAndScores>>(emptyList())
         every { alternativeMock.getHoleStatistics(playerId, holeId)} returns MutableLiveData<HoleStatistics>(HoleStatistics(bestResult=1, avgResult=1.5f, latestResult=2))
 
-        repository = Repository(fakePlayerDao, fakeCourseDao, alternativeMock)
+        repository = Repository(db, fakePlayerDao, fakeCourseDao, alternativeMock)
         repository.getHoleStatistics(playerId, holeId)
 
         verify(exactly = 1) { alternativeMock.getHoleStatistics(playerId, holeId)}

@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "createdAt": "1625608755019",
+  "players": [
+    {
+      "createdAt": "1480538044571",
+      "id": "1",
+      "name": "Pelaaja",
+      "owner": 1,
+      "profileImageFilename": "e155e109dc904591908618fc113296c9.jpg",
+      "updatedAt": "1480597010074",
+      "uuid": "7119fe28-2c0b-455f-b053-f04018d1ea03"
+    },
+    {
+      "createdAt": "1480594922431",
+      "id": "2",
+      "name": "Testaaja",
+      "owner": 0,
+      "profileImageFilename": "3b17d090254349e5b040f0f96ebe8a0f.jpg",
+      "uuid": "d0f56002-7de1-49b6-ab6c-6610aaadc696"
+    },
+    {
+      "createdAt": "1495639234587",
+      "id": "3",
+      "name": "Testeri",
+      "owner": 0,
+      "profileImageFilename": "d0b8edf8267144bdbc46742386e66d09.jpg",
+      "uuid": "f19b9b00-fcaf-4789-b334-7c1d4894033c"
+    },
+    {
+      "createdAt": "1527865907815",
+      "id": "4",
+      "name": "Aapeli",
+      "owner": 0,
+      "uuid": "dbd8be15-b4c5-4c19-b68f-e1b480f565fd"
+    },
+    {
+      "createdAt": "1620570674280",
+      "id": "5",
+      "name": "Jukka",
+      "owner": 0,
+      "uuid": "eaa98259-5be2-48a8-b9eb-a700acfb6c24"
+    },
+    {
+      "createdAt": "1620810251654",
+      "id": "6",
+      "name": "Tosipitkäpelaajannimiihantestimielessä",
+      "owner": 0,
+      "uuid": "8e606cdb-3f69-452c-b21c-e2c93b180cc2"
+    },
+    {
+      "createdAt": "1624027674244",
+      "id": "7",
+      "name": "Bertta",
+      "owner": 0,
+      "uuid": "3c524aa7-cbac-4588-bb8e-5777af066078"
+    }
+  ]
+}
