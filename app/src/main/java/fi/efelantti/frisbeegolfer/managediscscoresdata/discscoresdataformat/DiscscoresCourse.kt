@@ -13,5 +13,6 @@ data class DiscscoresCourse(
     @Json(name = "name")
     val name: String,
     @Json(name = "uuid")
-    val uuid: String
+    val uuid: String,
+    var newCourseId: Long?
 )

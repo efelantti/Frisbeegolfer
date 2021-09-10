@@ -15,5 +15,6 @@ data class DiscscoresGamePlayer(
     @Json(name = "playerUuid")
     val playerUuid: String,
     @Json(name = "uuid")
-    val uuid: String
+    val uuid: String,
+    var newPlayerId: Long?
 )
