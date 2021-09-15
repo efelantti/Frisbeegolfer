@@ -124,9 +124,6 @@ class DiscscoresDataHandler(
             rounds.add(round)
         }
 
-        // TODO - Problem with scores: In Discscores, if game is ended before all scores are set, then the score objects are not created for the rest of the holes. In our case, we would need to go through each game, and make sure for all holes in the courses, there are Scores.
-        // Possible solution - make sure that for each hole in the course, there is a Score. If not, for the rest, create empty scores.
-        // Another solution - loop through Hole numbers from 1 to CourseHolesCount. Find holes with hole number, and for those that can't be found, create with no data.
         discscoresGames.discscoresScores.forEachIndexed { scoreId, dsScore ->
             val parentRoundIdString =
                 discscoresGames.discscoresGames.find { dsGame -> dsGame.uuid == dsScore.gameUuid }?.createdAt
@@ -141,7 +138,6 @@ class DiscscoresDataHandler(
                     ?: throw Exception("GameHole with uuid ${dsScore.gameHoleUuid} couldn't be found.")
             val holeId = gameHole.newHoleId
                 ?: throw Exception("GameHole with uuid ${gameHole.uuid} didn't have new hole assigned.")
-
             val score = Score(
                 id = scoreId.toLong(),
                 parentRoundId = parentRoundId,
@@ -153,25 +149,44 @@ class DiscscoresDataHandler(
             )
             scores.add(score)
         }
-    }
 
-    fun getPlayers(discscoresPlayers: DiscscoresPlayers): List<Player> {
-        return discscoresPlayers.players.mapIndexed { index, player ->
-            Player(
-                id = index.toLong(),
-                name = player.name
-            )
+        // Problem with scores: In Discscores, if game is ended before all scores are set, then the score objects are not created for the rest of the holes. In our case, we would need to go through each game, and make sure for all holes in the courses, there are Scores.
+        // This is why the rounds are looped through, to add the scores for missing holes.
+        // Rounds with no scores are deleted.
+        val emptyRounds = mutableListOf<Round>()
+
+        var nextScoreId = (scores.count() + 1).toLong()
+        rounds.forEach { round ->
+            val roundCourse = courses.find { it.courseId == round.courseId }
+                ?: throw Exception("Couldn't find course with id ${round.courseId}.")
+            val courseHoles = holes.filter { it.parentCourseId == roundCourse.courseId }
+            val roundScores = scores.filter { it.parentRoundId == round.dateStarted }
+
+            if (roundScores.count() == 0) {
+                emptyRounds.add(round)
+                return@forEach
+            }
+
+            val roundPlayerIds = roundScores.distinctBy { it.playerId }.map { it.playerId }
+
+            for (holeId in courseHoles.map { it.holeId }) {
+                if (roundScores.find { it.holeId == holeId } == null) {
+                    for (playerId in roundPlayerIds) {
+                        val scoreToAdd = Score(
+                            id = nextScoreId,
+                            parentRoundId = round.dateStarted,
+                            playerId = playerId,
+                            holeId = holeId,
+                            result = null
+                        )
+                        scores.add(scoreToAdd)
+                        nextScoreId += 1
+                    }
+                }
+            }
         }
+        rounds.removeAll(emptyRounds)
     }
-
-/*    fun getPlayer(discscoresPlayer: DiscscoresPlayer): Player {
-        // One way to get Long from UUID. However better maybe to use other methods to generate - for example, just use sequential longs.
-        val uuid = UUID.fromString(discscoresPlayer.uuid)
-        return Player(
-            id = uuid.mostSignificantBits and Long.MAX_VALUE,
-            name = discscoresPlayer.name
-        )
-    }*/
 
     companion object {
         fun convertDiscscoresTimeStampToOffsetDateTime(epochValue: Long): OffsetDateTime {
