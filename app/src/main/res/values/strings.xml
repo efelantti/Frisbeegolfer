@@ -249,5 +249,7 @@
     <string name="error_exporting_database">Error while exporting database.</string>
     <string name="database_imported">Data imported!</string>
     <string name="import_confirmation_title">Confirm import</string>
-    <string name="import_confirmation_message">Are you sure want to import data? Please make sure to export current data first, as the import process may result in data loss - current data will be overwritten!</string>
+    <string name="import_confirmation_message">Are you sure want to import data? Please note that importing Discscores data is currently supported only for empty databases. This means that current data will be wiped before importing from Discscores.</string>
+    <string name="action_import_from_discscores">Import Discscores data</string>
+    <string name="import_discscores">Get Discscores data file from another app.</string>
 </resources>

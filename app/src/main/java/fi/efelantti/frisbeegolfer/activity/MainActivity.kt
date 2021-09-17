@@ -24,12 +24,14 @@ import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.ActivityMainWithNavigationBinding
 import fi.efelantti.frisbeegolfer.fragment.DialogConfirmImport
+import fi.efelantti.frisbeegolfer.fragment.DialogConfirmImportFromDiscscores
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.io.*
 
 
-class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSelected {
+class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSelected,
+    DialogConfirmImportFromDiscscores.OnConfirmationSelectedImportDiscscores {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainWithNavigationBinding
@@ -37,7 +39,10 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
         RoundViewModelFactory((applicationContext as FrisbeegolferApplication).repository)
     }
     private lateinit var getZipFileLauncher: ActivityResultLauncher<Intent>
+    private lateinit var getDiscscoresFileLauncher: ActivityResultLauncher<Intent>
     private val downloadedDatabaseFilesToImportFolderName = "downloaded_database_files_to_import"
+    private val downloadedDiscscoresFilesToImportFolderName =
+        "downloaded_discscores_files_to_import"
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -55,6 +60,12 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
             R.id.action_import_data -> {
                 DialogConfirmImport(this).show(
                     supportFragmentManager, DialogConfirmImport.TAG
+                )
+                true
+            }
+            R.id.action_import_data_from_discscores -> {
+                DialogConfirmImportFromDiscscores(this).show(
+                    supportFragmentManager, DialogConfirmImportFromDiscscores.TAG
                 )
                 true
             }
@@ -97,6 +108,35 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
                 }
             }
 
+        getDiscscoresFileLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    if (data == null) Toast.makeText(
+                        this,
+                        R.string.no_import_file_received,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    data?.data.also { uri ->
+                        if (uri == null) Toast.makeText(
+                            this,
+                            R.string.no_import_file_received,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        else {
+                            val discscoresFile = getDiscscoresDownloadFile()
+                            Log.i(
+                                "IMPORT Discscores",
+                                "Starting to download discscores file to import from ${uri.path} to ${discscoresFile.path}."
+                            )
+                            downloadFile(uri, discscoresFile)
+                            Log.i("IMPORT Discscores", "Discscores file downloaded.")
+                            importZippedDiscscoresFile(discscoresFile)
+                        }
+                    }
+                }
+            }
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_content) as NavHostFragment
         val navController = navHostFragment.navController
@@ -126,6 +166,19 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
                 }
             }
         }
+    }
+
+    /**
+     * Function for getting the folder where the imported discscores files are saved before importing. Note
+     * that this is File is reused for each imported discscores file.
+     * @return A file object where the discscores file to import should be saved.
+     */
+    private fun getDiscscoresDownloadFile(): File {
+        val downloadedDiscscoresDir = File(filesDir, downloadedDiscscoresFilesToImportFolderName)
+        if (!downloadedDiscscoresDir.exists()) {
+            downloadedDiscscoresDir.mkdir()
+        }
+        return File(downloadedDiscscoresDir, "discscores.zip")
     }
 
     /**
@@ -214,6 +267,25 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
     /**
     Start the importing process by asking user the database file they want to import.
      */
+    private fun importZippedDiscscoresFile() {
+        val openIntent: Intent = Intent().apply {
+            action = Intent.ACTION_OPEN_DOCUMENT
+            addCategory(Intent.CATEGORY_OPENABLE)
+            putExtra(Intent.EXTRA_TITLE, resources.getText(R.string.import_discscores))
+            type = "application/zip"
+        }
+
+        getDiscscoresFileLauncher.launch(
+            Intent.createChooser(
+                openIntent,
+                resources.getText(R.string.import_discscores)
+            )
+        )
+    }
+
+    /**
+    Start the importing process by asking user the database file they want to import.
+     */
     private fun importZippedDatabase() {
         val openIntent: Intent = Intent().apply {
             action = Intent.ACTION_OPEN_DOCUMENT
@@ -225,7 +297,7 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
         getZipFileLauncher.launch(
             Intent.createChooser(
                 openIntent,
-                resources.getText(R.string.export_database_share)
+                resources.getText(R.string.import_database)
             )
         )
     }
@@ -267,6 +339,36 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
             Log.e("IMPORT DB", "Error while importing database: ${exception.message}")
             db.restoreFromEmergencyBackup(this)
         }
+    }
+
+    /**
+     *Invoke import function and restart app.
+     *@param zippedDiscscoresFile The Discscores file that should be imported. Expected a .zip file.
+     */
+    private fun importZippedDiscscoresFile(zippedDiscscoresFile: File) {
+        Log.i("IMPORT Discscores", "Starting to import discscores file.")
+        val db = (applicationContext as FrisbeegolferApplication).database
+        // TODO
+/*        try {
+            db.importDatabaseZip(
+                this,
+                zippedDiscscoresFile
+            )
+            Log.i("IMPORT DB", "Database imported -> restarting app.")
+            restartApp()
+        } catch (exception: Exception) {
+            Toast.makeText(
+                this,
+                resources.getText(R.string.error_importing_database),
+                Toast.LENGTH_SHORT
+            ).show()
+            Log.e("IMPORT DB", "Error while importing database: ${exception.message}")
+            db.restoreFromEmergencyBackup(this)
+        }*/
+    }
+
+    override fun returnUserConfirmationToImportDiscscores() {
+        importZippedDiscscoresFile()
     }
 
     override fun returnUserConfirmation() {
