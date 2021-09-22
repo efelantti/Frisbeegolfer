@@ -338,6 +338,7 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
             ).show()
             Log.e("IMPORT DB", "Error while importing database: ${exception.message}")
             db.restoreFromEmergencyBackup(this)
+            restartApp()
         }
     }
 
@@ -348,23 +349,22 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
     private fun importZippedDiscscoresFile(zippedDiscscoresFile: File) {
         Log.i("IMPORT Discscores", "Starting to import discscores file.")
         val db = (applicationContext as FrisbeegolferApplication).database
-        // TODO
-/*        try {
-            db.importDatabaseZip(
+        try {
+            db.importDiscscoresZip(
                 this,
                 zippedDiscscoresFile
             )
-            Log.i("IMPORT DB", "Database imported -> restarting app.")
-            restartApp()
+            Log.i("IMPORT Discscores", "Discscores imported.")
         } catch (exception: Exception) {
             Toast.makeText(
                 this,
-                resources.getText(R.string.error_importing_database),
+                resources.getText(R.string.error_importing_discscores),
                 Toast.LENGTH_SHORT
             ).show()
-            Log.e("IMPORT DB", "Error while importing database: ${exception.message}")
+            Log.e("IMPORT Discscores", "Error while importing discscores: ${exception.message}")
             db.restoreFromEmergencyBackup(this)
-        }*/
+            restartApp()
+        }
     }
 
     override fun returnUserConfirmationToImportDiscscores() {

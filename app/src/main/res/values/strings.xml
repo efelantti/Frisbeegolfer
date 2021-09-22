@@ -252,4 +252,5 @@
     <string name="import_confirmation_message">Are you sure want to import data? Please note that importing Discscores data is currently supported only for empty databases. This means that current data will be wiped before importing from Discscores.</string>
     <string name="action_import_from_discscores">Import Discscores data</string>
     <string name="import_discscores">Get Discscores data file from another app.</string>
+    <string name="error_importing_discscores">There was an error while importing Discscores data.</string>
 </resources>

@@ -47,6 +47,7 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         const val databaseName = "frisbeegolfer_database"
         const val emergencyBackupFolderName = "emergency_backup"
         const val databaseFilesToImportFolderName = "database_files_to_import"
+        const val discscoresFilesToImportFolderName = "discscores_files_to_import"
         const val exportedDatabasesFolderName = "exported_databases"
 
         fun getDatabase(
@@ -149,6 +150,50 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
             val toFile = File(databaseFolder, file.name)
             copyDataFromOneToAnother(file.canonicalPath, toFile.canonicalPath)
         }
+    }
+
+    /**
+     *  Function for importing discscores zip.
+     *
+     *  The database files are unzipped to filesDir/discscores_files_to_import/, then they are read (to discscoresdataformat objects) and stored to database.
+     *  @throws FileNotFoundException If [zippedDiscscoresFile] does not exist.
+     *  @throws IllegalArgumentException If [zippedDiscscoresFile] is not a .zip file.
+     *  @throws IllegalArgumentException If [zippedDiscscoresFile] does not contain the expected files (players.json, courses.json, games.json).
+     *  @param context Activity context.
+     *  @param zippedDiscscoresFile Zip package containing the discscores files.
+     */
+    fun importDiscscoresZip(context: Context, zippedDiscscoresFile: File) {
+        createEmergencyBackup(context)
+        if (!zippedDiscscoresFile.exists()) throw FileNotFoundException("Discscores zip does not exist.")
+        if (zippedDiscscoresFile.extension != "zip") throw IllegalArgumentException("Discscores file is not a .zip file.")
+        val tempDir = File(context.filesDir, discscoresFilesToImportFolderName)
+        if (!tempDir.exists()) {
+            tempDir.mkdir()
+        }
+        // Remove previous import files.
+        for (file: File in tempDir.listFiles()) {
+            file.delete()
+        }
+        unzip(zippedDiscscoresFile, tempDir)
+        // Discscores zip is expected to have 4 files - players.json, courses.json, games.json & meta.json (however meta.json is not needed for importing).
+        if (tempDir.listFiles().size != 4) throw IllegalArgumentException("Discscores zip did not contain 4 files.")
+        val playersFile = tempDir.listFiles { file ->
+            file.name == "players.json"
+        }
+        val coursesFile = tempDir.listFiles { file ->
+            file.name == "courses.json"
+        }
+        val gamesFile = tempDir.listFiles { file ->
+            file.name == "games.json"
+        }
+        if (playersFile.size != 1) throw IllegalArgumentException("Discscores zip did not contain players.json.")
+        if (coursesFile.size != 1) throw IllegalArgumentException("Discscores zip did not contain courses.json.")
+        if (gamesFile.size != 1) throw IllegalArgumentException("Discscores zip did not contain games.json.")
+
+        // AFTER CREATING EMERGENCY BACKUP BUT BEFORE IMPORTING NEW DATA - Wipe database
+        // Read the files to string
+        // Parse the strings
+        // copy to database
     }
 
     /**
