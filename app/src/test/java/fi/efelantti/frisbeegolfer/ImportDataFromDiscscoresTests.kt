@@ -37,6 +37,14 @@ class ImportDataFromDiscscoresTests {
     }
 
     @Test
+    fun playerIdsAreUnique() {
+        assertThat(
+            discscoresDataHandler.players.map { it.id }.count(),
+            equalTo(discscoresDataHandler.players.count())
+        )
+    }
+
+    @Test
     fun returnsCorrectResultFor24052017() {
         val roundId =
             DiscscoresDataHandler.convertDiscscoresTimeStampToOffsetDateTime(1495639300610)

@@ -1,16 +1,16 @@
 package fi.efelantti.frisbeegolfer
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import fi.efelantti.frisbeegolfer.dao.CourseDao
 import fi.efelantti.frisbeegolfer.dao.PlayerDao
 import fi.efelantti.frisbeegolfer.dao.RoundDao
+import fi.efelantti.frisbeegolfer.managediscscoresdata.DiscscoresDataHandler
 import fi.efelantti.frisbeegolfer.model.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import unzip
 import zip
@@ -175,8 +175,8 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
             file.delete()
         }
         unzip(zippedDiscscoresFile, tempDir)
-        // Discscores zip is expected to have 4 files - players.json, courses.json, games.json & meta.json (however meta.json is not needed for importing).
-        if (tempDir.listFiles().size != 4) throw IllegalArgumentException("Discscores zip did not contain 4 files.")
+        // Discscores zip is expected to have 5 files - players.json, courses.json, games.json, meta.json & images folder (however meta.json & images is not needed for importing).
+        if (tempDir.listFiles().size != 5) throw IllegalArgumentException("Discscores zip did not contain 4 files.")
         val playersFile = tempDir.listFiles { file ->
             file.name == "players.json"
         }
@@ -190,10 +190,40 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         if (coursesFile.size != 1) throw IllegalArgumentException("Discscores zip did not contain courses.json.")
         if (gamesFile.size != 1) throw IllegalArgumentException("Discscores zip did not contain games.json.")
 
-        // AFTER CREATING EMERGENCY BACKUP BUT BEFORE IMPORTING NEW DATA - Wipe database
-        // Read the files to string
-        // Parse the strings
-        // copy to database
+        val playersJsonText = playersFile.single().readText()
+        val coursesJsonText = coursesFile.single().readText()
+        val gamesJsonText = gamesFile.single().readText()
+
+        val discscoresDataHandler =
+            DiscscoresDataHandler(playersJsonText, coursesJsonText, gamesJsonText)
+
+        // WIPE ALL DATA BEFORE THIS.
+
+        GlobalScope.launch(Dispatchers.Main) {
+            insertDiscscoresData(
+                discscoresDataHandler.players,
+                discscoresDataHandler.courses,
+                discscoresDataHandler.holes,
+                discscoresDataHandler.rounds,
+                discscoresDataHandler.scores
+            )
+        }
+    }
+
+    private suspend fun insertDiscscoresData(
+        players: List<Player>,
+        courses: List<Course>,
+        holes: List<Hole>,
+        rounds: List<Round>,
+        scores: List<Score>
+    ) {
+        withTransaction {
+            // TODO - Debug!
+            playerDao().insertAll(players)
+            courseDao().insertAllCourses(courses)
+            courseDao().insertAll(holes)
+            roundDao().insertAll(rounds)
+        }
     }
 
     /**

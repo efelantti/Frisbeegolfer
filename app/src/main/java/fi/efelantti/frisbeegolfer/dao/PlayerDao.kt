@@ -14,6 +14,9 @@ interface PlayerDao {
     suspend fun insert(player: Player)
 
     @Insert
+    suspend fun insertAll(players: List<Player>)
+
+    @Insert
     suspend fun insertAndGetId(player: Player): Long
 
     @Delete

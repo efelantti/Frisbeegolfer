@@ -354,7 +354,8 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
                 this,
                 zippedDiscscoresFile
             )
-            Log.i("IMPORT Discscores", "Discscores imported.")
+            Log.i("IMPORT Discscores", "Discscores data read -> starting to import.")
+
         } catch (exception: Exception) {
             Toast.makeText(
                 this,
