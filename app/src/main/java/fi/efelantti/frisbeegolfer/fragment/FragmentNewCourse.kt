@@ -7,8 +7,6 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
-import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -425,17 +423,7 @@ Parses the data from the UI, validates it and then udpates the course in the dat
      */
     private fun showCourseAlreadyExistsMessage() {
         Log.e(_tag, "Could not add course data to database - duplicate.")
-        val toast = Toast.makeText(
-            requireContext(), HtmlCompat.fromHtml(
-                "<font color='" + ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorErrorMessage
-                ) + "' ><b>" + getString(
-                    R.string.error_duplicate_course
-                ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY
-            ), Toast.LENGTH_LONG
-        )
-        toast.show()
+        ToastUtils.showErrorToast(requireContext(), getString(R.string.error_duplicate_course))
     }
 
     /*

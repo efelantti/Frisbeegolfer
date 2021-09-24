@@ -94,7 +94,8 @@ class DiscscoresDataHandler(
             val holeId = gameHole.newHoleId
                 ?: throw Exception("GameHole with uuid ${gameHole.uuid} didn't have new hole assigned.")
             val score = Score(
-                id = scoreId.toLong(),
+                // Can't add ID 0 to Room.
+                id = (scoreId + 1).toLong(),
                 parentRoundId = parentRoundId,
                 playerId = playerId,
                 holeId = holeId,
@@ -149,7 +150,8 @@ class DiscscoresDataHandler(
      */
     private fun processCourses() {
         discscoresCourses.discscoresCourses.forEachIndexed { courseIndex, discscoresCourse ->
-            val newCourseId = courseIndex.toLong()
+            // Can't add ID 0 to Room
+            val newCourseId = (courseIndex + 1).toLong()
             discscoresCourse.newCourseId = newCourseId
             val course = Course(
                 courseId = newCourseId,
@@ -158,7 +160,7 @@ class DiscscoresDataHandler(
             courses.add(course)
 
             discscoresCourses.discscoresHoles.filter { it.courseUuid == discscoresCourse.uuid }
-                .forEachIndexed { holeId, discscoresHole ->
+                .forEachIndexed { _, discscoresHole ->
                     val hole = Hole(
                         holeId = discscoresHole.newHoleId
                             ?: throw Exception("Hole id was null for hole ${discscoresHole.uuid}."),
@@ -182,7 +184,8 @@ class DiscscoresDataHandler(
      */
     private fun assignNewIdToHoles() {
         discscoresCourses.discscoresHoles.forEachIndexed { holeIndex, dsHole ->
-            val newHoleId = holeIndex.toLong()
+            // Can't add ID 0 to Room
+            val newHoleId = (holeIndex + 1).toLong()
             dsHole.newHoleId = newHoleId
         }
     }
@@ -193,7 +196,8 @@ class DiscscoresDataHandler(
      */
     private fun processPlayerData() {
         discscoresPlayers.players.forEachIndexed { index, discscoresPlayer ->
-            val newPlayerId = index.toLong()
+            // Can't add ID 0 to Room
+            val newPlayerId = (index + 1).toLong()
             discscoresPlayer.newPlayerId = newPlayerId
             val player = Player(
                 id = newPlayerId,

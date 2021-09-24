@@ -253,4 +253,8 @@
     <string name="action_import_from_discscores">Import Discscores data</string>
     <string name="import_discscores">Get Discscores data file from another app.</string>
     <string name="error_importing_discscores">There was an error while importing Discscores data.</string>
+    <string name="adding_discscores_players">Adding players...</string>
+    <string name="adding_discscores_courses">Adding courses...</string>
+    <string name="adding_discscores_rounds">Adding rounds...</string>
+    <string name="discscores_imported">All data imported!</string>
 </resources>

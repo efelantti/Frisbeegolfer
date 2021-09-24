@@ -86,7 +86,7 @@ class ImportDataFromDiscscoresTests {
 
         assertThat(scores.count(), equalTo(players.count() * holes.count()))
 
-        val sortedScoresByOwner = scores.sortedBy { it.holeId }.filter { it.playerId == 0L }
+        val sortedScoresByOwner = scores.sortedBy { it.holeId }.filter { it.playerId == 1L }
 
         var scoresAndHoles = mutableListOf<Pair<Score, Hole>>()
 
@@ -106,7 +106,7 @@ class ImportDataFromDiscscoresTests {
         assertThat(sortedScoresAndHole[6].first.result, equalTo(4))
         assertThat(sortedScoresAndHole[7].first.result, equalTo(3))
 
-        val sortedScoresByOther = scores.sortedBy { it.holeId }.filter { it.playerId == 2L }
+        val sortedScoresByOther = scores.sortedBy { it.holeId }.filter { it.playerId == 3L }
         scoresAndHoles = mutableListOf()
 
         sortedScoresByOther.forEach { score ->

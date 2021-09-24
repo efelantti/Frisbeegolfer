@@ -19,6 +19,9 @@ interface RoundDao {
     @Insert
     suspend fun insert(score: Score): Long
 
+    @Insert
+    suspend fun insertScores(scores: List<Score>)
+
     @Delete
     suspend fun delete(round: Round)
 

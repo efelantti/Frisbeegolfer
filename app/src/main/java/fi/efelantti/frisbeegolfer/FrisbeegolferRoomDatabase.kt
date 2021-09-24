@@ -1,7 +1,12 @@
 package fi.efelantti.frisbeegolfer
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.widget.Toast
 import androidx.room.*
+import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteDatabase
 import fi.efelantti.frisbeegolfer.dao.CourseDao
 import fi.efelantti.frisbeegolfer.dao.PlayerDao
@@ -197,20 +202,35 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         val discscoresDataHandler =
             DiscscoresDataHandler(playersJsonText, coursesJsonText, gamesJsonText)
 
-        // WIPE ALL DATA BEFORE THIS.
-
-        GlobalScope.launch(Dispatchers.Main) {
-            insertDiscscoresData(
-                discscoresDataHandler.players,
-                discscoresDataHandler.courses,
-                discscoresDataHandler.holes,
-                discscoresDataHandler.rounds,
-                discscoresDataHandler.scores
-            )
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                insertDiscscoresData(
+                    context,
+                    discscoresDataHandler.players,
+                    discscoresDataHandler.courses,
+                    discscoresDataHandler.holes,
+                    discscoresDataHandler.rounds,
+                    discscoresDataHandler.scores
+                )
+            } catch (ex: Exception) {
+                Handler(Looper.getMainLooper()).post {
+                    ToastUtils.showErrorToast(
+                        context,
+                        context.resources.getText(R.string.error_importing_discscores)
+                    )
+                }
+                Log.e("IMPORT Discscores", ex.stackTraceToString())
+            }
         }
     }
 
+    /**
+     * Clears existing data from database, and insert new data into database. If any exception occurs, no data is added, nor removed.
+     * Toasts are displayed in order to show progress.
+     *
+     */
     private suspend fun insertDiscscoresData(
+        context: Context,
         players: List<Player>,
         courses: List<Course>,
         holes: List<Hole>,
@@ -218,11 +238,43 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
         scores: List<Score>
     ) {
         withTransaction {
-            // TODO - Debug!
+            clearAllTables()
+            // reset all auto-incrementalValues
+            val query = SimpleSQLiteQuery("DELETE FROM sqlite_sequence")
+            query(query)
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(
+                    context,
+                    context.resources.getText(R.string.adding_discscores_players),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             playerDao().insertAll(players)
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(
+                    context,
+                    context.resources.getText(R.string.adding_discscores_courses),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             courseDao().insertAllCourses(courses)
             courseDao().insertAll(holes)
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(
+                    context,
+                    context.resources.getText(R.string.adding_discscores_rounds),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             roundDao().insertAll(rounds)
+            roundDao().insertScores(scores)
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(
+                    context,
+                    context.resources.getText(R.string.discscores_imported),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

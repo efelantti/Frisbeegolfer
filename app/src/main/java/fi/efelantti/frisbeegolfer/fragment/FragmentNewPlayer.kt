@@ -9,8 +9,6 @@ import android.view.*
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toolbar
-import androidx.core.content.ContextCompat.getColor
-import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
@@ -19,6 +17,7 @@ import com.google.android.material.textfield.TextInputLayout
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.NewPlayerAction
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.ToastUtils
 import fi.efelantti.frisbeegolfer.databinding.FragmentNewPlayerBinding
 import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
@@ -241,17 +240,7 @@ Gets the text from the EditTexts, trims them and packs them to a Pair.
      */
     private fun showPlayerAlreadyExistsError() {
         Log.e(_tag, "Could not add player data to database - duplicate.")
-        val toast = Toast.makeText(
-            requireContext(), HtmlCompat.fromHtml(
-                "<font color='" + getColor(
-                    requireContext(),
-                    R.color.colorErrorMessage
-                ) + "' ><b>" + getString(
-                    R.string.error_duplicate_player
-                ) + "</b></font>", HtmlCompat.FROM_HTML_MODE_LEGACY
-            ), Toast.LENGTH_LONG
-        )
-        toast.show()
+        ToastUtils.showErrorToast(requireContext(), getString(R.string.error_duplicate_player))
     }
 
     /*

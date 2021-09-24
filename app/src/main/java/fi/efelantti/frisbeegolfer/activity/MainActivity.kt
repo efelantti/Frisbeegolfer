@@ -22,6 +22,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.ToastUtils
 import fi.efelantti.frisbeegolfer.databinding.ActivityMainWithNavigationBinding
 import fi.efelantti.frisbeegolfer.fragment.DialogConfirmImport
 import fi.efelantti.frisbeegolfer.fragment.DialogConfirmImportFromDiscscores
@@ -357,12 +358,8 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
             Log.i("IMPORT Discscores", "Discscores data read -> starting to import.")
 
         } catch (exception: Exception) {
-            Toast.makeText(
-                this,
-                resources.getText(R.string.error_importing_discscores),
-                Toast.LENGTH_SHORT
-            ).show()
             Log.e("IMPORT Discscores", "Error while importing discscores: ${exception.message}")
+            ToastUtils.showErrorToast(this, resources.getText(R.string.error_importing_discscores))
             db.restoreFromEmergencyBackup(this)
             restartApp()
         }
