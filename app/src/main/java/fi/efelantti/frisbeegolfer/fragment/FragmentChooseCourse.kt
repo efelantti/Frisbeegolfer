@@ -31,6 +31,19 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
     private lateinit var emptyView: TextView
     private lateinit var fab: FloatingActionButton
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val menuItemsToHide = listOf(
+            R.id.action_import_data,
+            R.id.action_export_data,
+            R.id.action_import_data_from_discscores
+        )
+        menuItemsToHide.forEach {
+            val item = menu.findItem(it)
+            if (item != null) item.isVisible = false
+        }
+        super.onPrepareOptionsMenu(menu)
+    }
+
     private val actionModeCallback = object : ActionMode.Callback {
         // Called when the action mode is created; startActionMode() was called
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {

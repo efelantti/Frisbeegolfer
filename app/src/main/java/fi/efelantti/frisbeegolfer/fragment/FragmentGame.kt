@@ -1,9 +1,8 @@
 package fi.efelantti.frisbeegolfer.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
@@ -29,6 +28,34 @@ class FragmentGame : Fragment() {
         RoundViewModelFactory((requireActivity().applicationContext as FrisbeegolferApplication).repository)
     }
     private val binding get() = _binding!!
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.appbar_fragment_game, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val menuItemsToHide = listOf(
+            R.id.action_import_data,
+            R.id.action_export_data,
+            R.id.action_import_data_from_discscores
+        )
+        menuItemsToHide.forEach {
+            val item = menu.findItem(it)
+            if (item != null) item.isVisible = false
+        }
+        super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_change_start_datetime -> {
+                Toast.makeText(requireContext(), "Check!", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

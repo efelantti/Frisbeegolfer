@@ -257,4 +257,5 @@
     <string name="adding_discscores_courses">Adding courses...</string>
     <string name="adding_discscores_rounds">Adding rounds...</string>
     <string name="discscores_imported">All data imported!</string>
+    <string name="action_change_start_datetime">Change round start date/time</string>
 </resources>
