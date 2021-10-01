@@ -31,6 +31,21 @@ interface RoundDao {
     @Update
     suspend fun update(score: Score)
 
+    @Query("UPDATE Round Set dateStarted=:newRoundId WHERE dateStarted=:roundId")
+    suspend fun updateStartTimeForRoundWithId(roundId: OffsetDateTime, newRoundId: OffsetDateTime)
+
+    @Query("UPDATE Score SET parentRoundId=:newRoundId WHERE parentRoundId=:roundId")
+    suspend fun updateRoundIdForHoles(roundId: OffsetDateTime, newRoundId: OffsetDateTime)
+
+    @Transaction
+    suspend fun updateRoundIdForRoundAndScores(
+        roundId: OffsetDateTime,
+        newRoundId: OffsetDateTime
+    ) {
+        updateStartTimeForRoundWithId(roundId, newRoundId)
+        updateRoundIdForHoles(roundId, newRoundId)
+    }
+
     @Transaction
     @Query("SELECT * FROM Round ORDER BY datetime(dateStarted) DESC")
     fun getRounds(): LiveData<List<RoundWithCourseAndScores>>
@@ -48,7 +63,7 @@ interface RoundDao {
     @Query(
         "SELECT (SELECT MIN(result) AS bestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS bestResult, (SELECT AVG(result) AS avgResult FROM Score WHERE playerId=:playerId AND holeId=:holeId) AS avgResult,(SELECT result AS latestResult FROM Score WHERE playerId=:playerId AND holeId=:holeId AND result is not null ORDER BY datetime(parentRoundId) desc LIMIT 1) AS latestResult"
     )
-    fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics>
+    fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics?>
 
     @Transaction
     @Query("SELECT * FROM Score WHERE parentRoundId=:roundId AND playerId =:playerId AND holeId=:holeId LIMIT 1")
@@ -56,7 +71,7 @@ interface RoundDao {
         roundId: OffsetDateTime,
         playerId: Long,
         holeId: Long
-    ): LiveData<ScoreWithPlayerAndHole>
+    ): LiveData<ScoreWithPlayerAndHole?>
 
     @RawQuery
     fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery?): Int

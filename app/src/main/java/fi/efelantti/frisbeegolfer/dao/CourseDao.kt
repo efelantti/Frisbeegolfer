@@ -48,4 +48,7 @@ interface CourseDao {
 
     @Delete
     suspend fun delete(hole: Hole)
+
+    @Query("SELECT * FROM Hole WHERE holeId =:id")
+    fun getHoleById(id: Long): LiveData<Hole?>
 }

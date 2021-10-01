@@ -38,12 +38,12 @@ interface IRepository {
 
     fun getRoundWithRoundId(roundId: OffsetDateTime): LiveData<RoundWithCourseAndScores>
 
-    fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics>
+    fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics?>
     fun getScore(
         roundId: OffsetDateTime,
         playerId: Long,
         holeId: Long
-    ): LiveData<ScoreWithPlayerAndHole>
+    ): LiveData<ScoreWithPlayerAndHole?>
 
     fun getPlayerById(id: Long): LiveData<Player>
     fun playerExists(name: String): LiveData<Boolean>
@@ -52,6 +52,13 @@ interface IRepository {
     suspend fun delete(course: CourseWithHoles)
 
     fun checkpoint()
+    suspend fun updateStartTimeForRoundWithId(roundId: OffsetDateTime, newRoundId: OffsetDateTime)
+    suspend fun updateStartTimeForRoundAndScores(
+        roundId: OffsetDateTime,
+        newRoundId: OffsetDateTime
+    )
+
+    fun getHoleById(id: Long): LiveData<Hole?>
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -86,6 +93,20 @@ class Repository(// Room executes all queries on a separate thread.
 
     override suspend fun update(score: Score) {
         roundDao.update(score)
+    }
+
+    override suspend fun updateStartTimeForRoundWithId(
+        roundId: OffsetDateTime,
+        newRoundId: OffsetDateTime
+    ) {
+        roundDao.updateStartTimeForRoundWithId(roundId, newRoundId)
+    }
+
+    override suspend fun updateStartTimeForRoundAndScores(
+        roundId: OffsetDateTime,
+        newRoundId: OffsetDateTime
+    ) {
+        roundDao.updateRoundIdForRoundAndScores(roundId, newRoundId)
     }
 
     override suspend fun delete(playerToDelete: Player) {
@@ -131,7 +152,7 @@ class Repository(// Room executes all queries on a separate thread.
         return roundDao.getRoundWithId(roundId)
     }
 
-    override fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics> {
+    override fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics?> {
         return roundDao.getHoleStatistics(playerId, holeId)
     }
 
@@ -139,12 +160,16 @@ class Repository(// Room executes all queries on a separate thread.
         roundId: OffsetDateTime,
         playerId: Long,
         holeId: Long
-    ): LiveData<ScoreWithPlayerAndHole> {
+    ): LiveData<ScoreWithPlayerAndHole?> {
         return roundDao.getScore(roundId, playerId, holeId)
     }
 
     override fun getPlayerById(id: Long): LiveData<Player> {
         return playerDao.getPlayerById(id)
+    }
+
+    override fun getHoleById(id: Long): LiveData<Hole?> {
+        return courseDao.getHoleById(id)
     }
 
     override fun playerExists(name: String): LiveData<Boolean> {

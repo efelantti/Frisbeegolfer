@@ -1,0 +1,305 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 18,
+    "identityHash": "4f8b2d437ead63eaecf0b6e8061d7079",
+    "entities": [
+      {
+        "tableName": "Player",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `email` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Course",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`courseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `city` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "courseId",
+            "columnName": "courseId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "city",
+            "columnName": "city",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "courseId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Hole",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`holeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parentCourseId` INTEGER NOT NULL, `holeNumber` INTEGER NOT NULL, `par` INTEGER NOT NULL, `lengthMeters` INTEGER, FOREIGN KEY(`parentCourseId`) REFERENCES `Course`(`courseId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "holeId",
+            "columnName": "holeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentCourseId",
+            "columnName": "parentCourseId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "holeNumber",
+            "columnName": "holeNumber",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "par",
+            "columnName": "par",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lengthMeters",
+            "columnName": "lengthMeters",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "holeId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Hole_parentCourseId",
+            "unique": false,
+            "columnNames": [
+              "parentCourseId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Hole_parentCourseId` ON `${TABLE_NAME}` (`parentCourseId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Course",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "parentCourseId"
+            ],
+            "referencedColumns": [
+              "courseId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Round",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dateStarted` TEXT NOT NULL, `courseId` INTEGER NOT NULL, PRIMARY KEY(`dateStarted`), FOREIGN KEY(`courseId`) REFERENCES `Course`(`courseId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "dateStarted",
+            "columnName": "dateStarted",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "courseId",
+            "columnName": "courseId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "dateStarted"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Round_courseId",
+            "unique": false,
+            "columnNames": [
+              "courseId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Round_courseId` ON `${TABLE_NAME}` (`courseId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Course",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "courseId"
+            ],
+            "referencedColumns": [
+              "courseId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Score",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parentRoundId` TEXT NOT NULL, `playerId` INTEGER NOT NULL, `holeId` INTEGER NOT NULL, `result` INTEGER, `isOutOfBounds` INTEGER NOT NULL, `didNotFinish` INTEGER NOT NULL, FOREIGN KEY(`parentRoundId`) REFERENCES `Round`(`dateStarted`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`playerId`) REFERENCES `Player`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`holeId`) REFERENCES `Hole`(`holeId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentRoundId",
+            "columnName": "parentRoundId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playerId",
+            "columnName": "playerId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "holeId",
+            "columnName": "holeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "result",
+            "columnName": "result",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isOutOfBounds",
+            "columnName": "isOutOfBounds",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "didNotFinish",
+            "columnName": "didNotFinish",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Score_parentRoundId",
+            "unique": false,
+            "columnNames": [
+              "parentRoundId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Score_parentRoundId` ON `${TABLE_NAME}` (`parentRoundId`)"
+          },
+          {
+            "name": "index_Score_playerId",
+            "unique": false,
+            "columnNames": [
+              "playerId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Score_playerId` ON `${TABLE_NAME}` (`playerId`)"
+          },
+          {
+            "name": "index_Score_holeId",
+            "unique": false,
+            "columnNames": [
+              "holeId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Score_holeId` ON `${TABLE_NAME}` (`holeId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Round",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "parentRoundId"
+            ],
+            "referencedColumns": [
+              "dateStarted"
+            ]
+          },
+          {
+            "table": "Player",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "playerId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Hole",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "holeId"
+            ],
+            "referencedColumns": [
+              "holeId"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4f8b2d437ead63eaecf0b6e8061d7079')"
+    ]
+  }
+}

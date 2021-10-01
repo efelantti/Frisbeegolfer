@@ -6,6 +6,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.room.*
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteDatabase
 import fi.efelantti.frisbeegolfer.dao.CourseDao
@@ -27,11 +28,10 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-//TODO - Consider export schema
 @Database(
     entities = [Player::class, Course::class, Hole::class, Round::class, Score::class],
-    version = 17,
-    exportSchema = false
+    version = 18,
+    exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
@@ -44,6 +44,57 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
     abstract fun roundDao(): RoundDao
 
     companion object {
+        val MIGRATION_17_18 = object : Migration(17, 18) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Create the new table with "ON UPDATE CASCADE" for parentRoundId foreign key action
+                database.execSQL(
+                    """
+             CREATE TABLE `Score_new`
+             (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+             `parentRoundId` TEXT NOT NULL,
+             `playerId` INTEGER NOT NULL,
+             `holeId` INTEGER NOT NULL,
+             `result` INTEGER,
+             `isOutOfBounds` INTEGER NOT NULL,
+             `didNotFinish` INTEGER NOT NULL,
+             FOREIGN KEY(`parentRoundId`) REFERENCES `Round`(`dateStarted`) ON UPDATE CASCADE ON DELETE CASCADE ,
+             FOREIGN KEY(`playerId`) REFERENCES `Player`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE ,
+             FOREIGN KEY(`holeId`) REFERENCES `Hole`(`holeId`) ON UPDATE NO ACTION ON DELETE CASCADE )"""
+                        .trimIndent()
+                )
+                // Copy the rows from existing table to new table
+                database.execSQL(
+                    """
+            INSERT INTO Score_new (id, parentRoundId, playerId, holeId, result, isOutOfBounds, didNotFinish)
+            SELECT id, parentRoundId, playerId, holeId, result, isOutOfBounds, didNotFinish FROM Score"""
+                        .trimIndent()
+                )
+
+                // Remove the old table
+                database.execSQL("DROP TABLE Score")
+                // Change the new table name to the correct one
+                database.execSQL("ALTER TABLE Score_new RENAME TO Score")
+
+                // Add indices
+                database.execSQL(
+                    """
+                    CREATE INDEX IF NOT EXISTS `index_Score_parentRoundId` ON `Score` (`parentRoundId`)
+                """.trimIndent()
+                )
+                database.execSQL(
+                    """
+                    CREATE INDEX IF NOT EXISTS `index_Score_playerId` ON `Score` (`playerId`)
+                """.trimIndent()
+                )
+                database.execSQL(
+                    """
+                    CREATE INDEX IF NOT EXISTS `index_Score_holeId` ON `Score` (`holeId`)
+                """.trimIndent()
+                )
+            }
+        }
+
+
         // Singleton prevents multiple instances of database opening at the
         // same time.
         @Volatile
@@ -70,7 +121,9 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
                     databaseName
                 )
                     .addCallback(FrisbeegolferDatabaseCallback(scope))
-                    .fallbackToDestructiveMigrationFrom(15, 16).build()
+                    .fallbackToDestructiveMigrationFrom(15, 16)
+                    .addMigrations(MIGRATION_17_18)
+                    .build()
                 INSTANCE = instance
                 return instance
             }

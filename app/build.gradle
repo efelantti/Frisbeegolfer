@@ -16,6 +16,12 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation":
+                                      "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -38,6 +44,8 @@ android {
         unitTests.returnDefaultValues = true
     }
     sourceSets {
+        // Adds exported schema location as test app assets.
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
         main {
             assets {
                 srcDirs 'src\\main\\assets'
@@ -84,6 +92,7 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.2.3"
     implementation "androidx.fragment:fragment-ktx:1.3.4"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
 
 
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -118,7 +127,8 @@ dependencies {
     implementation 'com.evrencoskun.library:tableview:0.8.9.4'
     implementation("com.squareup.moshi:moshi:1.12.0")
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.12.0'
-
+    testImplementation "androidx.room:room-testing:2.3.0"
+    androidTestImplementation "androidx.room:room-testing:2.3.0"
     // For score card data table
     //implementation 'com.github.ISchwarz23:SortableTableView:2.8.1'
 

@@ -1,9 +1,9 @@
 package fi.efelantti.frisbeegolfer.fragment
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +26,72 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
     private lateinit var scoreViewModel: ScoreViewModel
     private lateinit var scoreViewModelFactory: ScoreViewModelFactory
     private var numberOfHoles by Delegates.notNull<Int>()
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.appbar_fragment_game, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    // TODO - Try if setting RoundId as LiveData helps in crashing problem.
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val menuItemsToHide = listOf(
+            R.id.action_import_data,
+            R.id.action_export_data,
+            R.id.action_import_data_from_discscores
+        )
+        menuItemsToHide.forEach {
+            val item = menu.findItem(it)
+            if (item != null) item.isVisible = false
+        }
+        super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_change_start_datetime -> {
+                pickDateTime()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun pickDateTime() {
+        val currentDateTime = OffsetDateTime.now()
+        val startYear = currentDateTime.year
+        val startMonth = currentDateTime.month.value
+        val startDay = currentDateTime.dayOfMonth
+        val startHour = currentDateTime.hour
+        val startMinute = currentDateTime.minute
+
+        DatePickerDialog(
+            requireContext(),
+            DatePickerDialog.OnDateSetListener { _, year, month, day ->
+                TimePickerDialog(
+                    requireContext(),
+                    TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+                        val pickedDateTime = OffsetDateTime.of(
+                            year,
+                            month,
+                            day,
+                            hour,
+                            minute,
+                            0,
+                            0,
+                            currentDateTime.offset
+                        )
+                        scoreViewModel.updateCurrentRound(pickedDateTime)
+                    },
+                    startHour,
+                    startMinute,
+                    true
+                ).show()
+            },
+            startYear,
+            startMonth,
+            startDay
+        ).show()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +116,7 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
         return binding.root
     }
 
+    // TODO - Disable buttons while setting score is loading.
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?
@@ -57,7 +124,7 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
         super.onViewCreated(view, savedInstanceState)
 
         scoreViewModel.currentRound.observeOnce(viewLifecycleOwner) { currentRound ->
-            if (currentRound.scores.count() > 0) {
+            if (currentRound != null && currentRound.scores.count() > 0) {
                 scoreViewModel.initializeScore(currentRound.scores)
             }
         }
@@ -69,46 +136,55 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
         // TODO - Show skeleton view before data has been loaded.
         scoreViewModel.currentScore.observe(viewLifecycleOwner) {
             it?.let { currentScore ->
-                binding.fragmentScoreCurrentPlayer.text = currentScore.player.name
+                currentScore?.let {
+                    binding.fragmentScoreCurrentPlayer.text = currentScore.player.name
 
-                val holeNumber = currentScore.hole.holeNumber
-                val previousHoleNumber = if (holeNumber >= 2) holeNumber - 1 else numberOfHoles
-                val nextHoleNumber = if (holeNumber < numberOfHoles) holeNumber + 1 else 1
+                    val holeNumber = currentScore.hole.holeNumber
+                    val previousHoleNumber = if (holeNumber >= 2) holeNumber - 1 else numberOfHoles
+                    val nextHoleNumber = if (holeNumber < numberOfHoles) holeNumber + 1 else 1
 
-                binding.fragmentScoreCurrentHole.text = holeNumber.toString()
-                // These are not required if there is only one hole.
-                if (numberOfHoles >= 1) {
-                    binding.fragmentScorePreviousHole.text = previousHoleNumber.toString()
-                    binding.fragmentScoreNextHole.text = nextHoleNumber.toString()
-                }
-                binding.fragmentScoreCurrentHolePar.text = currentScore.hole.par.toString()
-
-                scoreViewModel.getHoleStatistics(currentScore.player.id, currentScore.hole.holeId)
-                    .observe(viewLifecycleOwner) { it2 ->
-                        it2?.let { holeStatistics ->
-                            if (holeStatistics.bestResult == null) binding.fragmentScoreCurrentHoleBest.text =
-                                getString(R.string.notApplicable)
-                            else binding.fragmentScoreCurrentHoleBest.text =
-                                holeStatistics.bestResult.toString()
-                            val avgResult = holeStatistics.avgResult
-                            if (avgResult == null) binding.fragmentScoreCurrentHoleAverage.text =
-                                getString(R.string.notApplicable)
-                            else binding.fragmentScoreCurrentHoleAverage.text =
-                                avgResult.toPrettyString()
-                            if (holeStatistics.latestResult == null) binding.fragmentScoreCurrentHoleLatest.text =
-                                getString(R.string.notApplicable)
-                            else binding.fragmentScoreCurrentHoleLatest.text =
-                                holeStatistics.latestResult.toString()
-                        }
+                    binding.fragmentScoreCurrentHole.text = holeNumber.toString()
+                    // These are not required if there is only one hole.
+                    if (numberOfHoles >= 1) {
+                        binding.fragmentScorePreviousHole.text = previousHoleNumber.toString()
+                        binding.fragmentScoreNextHole.text = nextHoleNumber.toString()
                     }
+                    binding.fragmentScoreCurrentHolePar.text = currentScore.hole.par.toString()
 
-                binding.fragmentScorePlusMinus.text = scoreViewModel.plusMinus(currentScore.player)
+                    // TODO - Flashes N/A before showing actual result.
+                    scoreViewModel.getHoleStatistics(
+                        currentScore.player.id,
+                        currentScore.hole.holeId
+                    )
+                        .observe(viewLifecycleOwner) { it2 ->
+                            it2?.let { holeStatistics ->
+                                if (holeStatistics.bestResult == null || holeStatistics.bestResult == -1) binding.fragmentScoreCurrentHoleBest.text =
+                                    getString(R.string.notApplicable)
+                                else binding.fragmentScoreCurrentHoleBest.text =
+                                    holeStatistics.bestResult.toString()
+                                val avgResult = holeStatistics.avgResult
+                                if (avgResult == null || holeStatistics.avgResult == -1f) binding.fragmentScoreCurrentHoleAverage.text =
+                                    getString(R.string.notApplicable)
+                                else binding.fragmentScoreCurrentHoleAverage.text =
+                                    avgResult.toPrettyString()
+                                if (holeStatistics.latestResult == null || holeStatistics.latestResult == -1) binding.fragmentScoreCurrentHoleLatest.text =
+                                    getString(R.string.notApplicable)
+                                else binding.fragmentScoreCurrentHoleLatest.text =
+                                    holeStatistics.latestResult.toString()
+                            }
+                        }
 
-                setScoringTermForButtons(currentScore.hole.par)
-                controlScoreButtonActivationState(currentScore.score.result)
+                    binding.fragmentScorePlusMinus.text =
+                        scoreViewModel.plusMinus(currentScore.player)
 
-                binding.fragmentScoreButtonOb.button.isActivated = currentScore.score.isOutOfBounds
-                binding.fragmentScoreButtonDnf.button.isActivated = currentScore.score.didNotFinish
+                    setScoringTermForButtons(currentScore.hole.par)
+                    controlScoreButtonActivationState(currentScore.score.result)
+
+                    binding.fragmentScoreButtonOb.button.isActivated =
+                        currentScore.score.isOutOfBounds
+                    binding.fragmentScoreButtonDnf.button.isActivated =
+                        currentScore.score.didNotFinish
+                }
             }
         }
 

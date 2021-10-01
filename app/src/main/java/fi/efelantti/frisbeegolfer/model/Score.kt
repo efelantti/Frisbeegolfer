@@ -15,7 +15,8 @@ import java.util.*
             entity = Round::class,
             parentColumns = arrayOf("dateStarted"),
             childColumns = arrayOf("parentRoundId"),
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = Player::class,

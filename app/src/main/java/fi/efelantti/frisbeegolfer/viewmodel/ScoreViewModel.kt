@@ -2,8 +2,8 @@ package fi.efelantti.frisbeegolfer.viewmodel
 
 import androidx.lifecycle.*
 import fi.efelantti.frisbeegolfer.IRepository
-import fi.efelantti.frisbeegolfer.RefreshableLiveData
 import fi.efelantti.frisbeegolfer.Repository
+import fi.efelantti.frisbeegolfer.combine
 import fi.efelantti.frisbeegolfer.getViewModelScope
 import fi.efelantti.frisbeegolfer.model.*
 import kotlinx.coroutines.CoroutineScope
@@ -18,24 +18,40 @@ class ScoreViewModel(
     private val holeIds: LongArray
 ) :
     ViewModel() {
+    // TODO - Idea: Keep a cache copy of Scores, and show those in the UI.
+    //  Update those to actual values in the database as well, but don't fetch changes from DB every time.
 
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
-    val currentRound: RefreshableLiveData<RoundWithCourseAndScores> = RefreshableLiveData {
-        repository.getRoundWithRoundId(roundId)
-    }
+    private val currentRoundId = MutableLiveData(roundId)
 
-    private val scoreIdLiveData = MutableLiveData(Pair(playerIds[0], holeIds[0]))
-    val currentScore: LiveData<ScoreWithPlayerAndHole> =
-        Transformations.switchMap(scoreIdLiveData) { pair ->
-            repository.getScore(roundId, pair.first, pair.second)
+    val currentRound: LiveData<RoundWithCourseAndScores> =
+        Transformations.switchMap(currentRoundId) { roundId ->
+            repository.getRoundWithRoundId(roundId)
         }
 
-    fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics> {
+
+    private val currentPlayerId = MutableLiveData(playerIds[0])
+    private val currentHoleId = MutableLiveData(holeIds[0])
+
+    val currentScore: MediatorLiveData<ScoreWithPlayerAndHole?> = combine(
+        currentRound, currentPlayerId, currentHoleId
+    ) { round, playerId, holeId ->
+        round?.scores?.find { it.player.id == playerId && it.hole.holeId == holeId }
+    }
+
+    /* val currentScore: LiveData<ScoreWithPlayerAndHole?> = currentRound.switchMap { round ->
+        liveData (context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            emit(round.scores.find { it.player.id == currentPlayerId.value!! &&  it.hole.holeId == currentHoleId.value!!})
+        }
+     }*/
+
+    fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics?> {
         return repository.getHoleStatistics(playerId, holeId)
     }
 
     private fun setScoreId(playerId: Long, holeId: Long) {
-        scoreIdLiveData.value = Pair(playerId, holeId)
+        currentPlayerId.value = playerId
+        currentHoleId.value = holeId
     }
 
     fun initializeScore(scores: List<ScoreWithPlayerAndHole>) {
@@ -60,11 +76,16 @@ class ScoreViewModel(
         repository.update(score)
     }
 
+    fun updateCurrentRound(newRoundId: OffsetDateTime) = coroutineScope.launch {
+        repository.updateStartTimeForRoundAndScores(currentRoundId.value!!, newRoundId)
+        currentRoundId.value = newRoundId
+    }
+
 
     fun previousScore() {
-        val indexOfCurrentPlayer = playerIds.indexOf(scoreIdLiveData.value!!.first)
+        val indexOfCurrentPlayer = playerIds.indexOf(currentPlayerId.value!!)
         if (indexOfCurrentPlayer == 0) { // Last player on previous hole.
-            val indexOfCurrentHole = holeIds.indexOf(scoreIdLiveData.value!!.second)
+            val indexOfCurrentHole = holeIds.indexOf(currentHoleId.value!!)
             val newHoleIndex = Math.floorMod(indexOfCurrentHole - 1, holeIds.count())
             val newHoleId = holeIds[newHoleIndex]
             setScoreId(playerIds.last(), newHoleId)
@@ -74,7 +95,7 @@ class ScoreViewModel(
     }
 
     fun nextScore() {
-        val indexOfCurrentPlayer = playerIds.indexOf(scoreIdLiveData.value!!.first)
+        val indexOfCurrentPlayer = playerIds.indexOf(currentPlayerId.value!!)
         if (indexOfCurrentPlayer == playerIds.count() - 1) { // Last player on current hole
             nextHole()
         } else {
@@ -86,27 +107,27 @@ class ScoreViewModel(
     Previous player BUT current hole.
      */
     fun previousPlayer() {
-        val indexOfCurrentPlayer = playerIds.indexOf(scoreIdLiveData.value!!.first)
+        val indexOfCurrentPlayer = playerIds.indexOf(currentPlayerId.value!!)
         val newPlayerIndex = Math.floorMod(indexOfCurrentPlayer - 1, playerIds.count())
         val newPlayerId = playerIds[newPlayerIndex]
-        setScoreId(newPlayerId, scoreIdLiveData.value!!.second)
+        setScoreId(newPlayerId, currentHoleId.value!!)
     }
 
     /*
     Next player BUT current hole.
      */
     fun nextPlayer() {
-        val indexOfCurrentPlayer = playerIds.indexOf(scoreIdLiveData.value!!.first)
+        val indexOfCurrentPlayer = playerIds.indexOf(currentPlayerId.value!!)
         val newPlayerIndex = Math.floorMod(indexOfCurrentPlayer + 1, playerIds.count())
         val newPlayerId = playerIds[newPlayerIndex]
-        setScoreId(newPlayerId, scoreIdLiveData.value!!.second)
+        setScoreId(newPlayerId, currentHoleId.value!!)
     }
 
     /*
     Previous hole and first player.
      */
     fun previousHole() {
-        val indexOfCurrentHole = holeIds.indexOf(scoreIdLiveData.value!!.second)
+        val indexOfCurrentHole = holeIds.indexOf(currentHoleId.value!!)
         val newHoleIndex = Math.floorMod(indexOfCurrentHole - 1, holeIds.count())
         val newHoleId = holeIds[newHoleIndex]
         setScoreId(playerIds.first(), newHoleId)
@@ -116,7 +137,7 @@ class ScoreViewModel(
     Next hole first player.
      */
     fun nextHole() {
-        val indexOfCurrentHole = holeIds.indexOf(scoreIdLiveData.value!!.second)
+        val indexOfCurrentHole = holeIds.indexOf(currentHoleId.value!!)
         val newHoleIndex = Math.floorMod(indexOfCurrentHole + 1, holeIds.count())
         val newHoleId = holeIds[newHoleIndex]
         setScoreId(playerIds.first(), newHoleId)
@@ -158,7 +179,7 @@ class ScoreViewModel(
     }
 
     fun plusMinus(player: Player): String {
-        currentRound.refresh()
+        //currentRound.refresh()
         val round = currentRound.value
             ?: throw IllegalStateException("Value inside current round live data was null.")
         val scores = round.scores.filter { it.player == player }

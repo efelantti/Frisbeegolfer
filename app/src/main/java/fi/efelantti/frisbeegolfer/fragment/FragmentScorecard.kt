@@ -1,9 +1,9 @@
 package fi.efelantti.frisbeegolfer.fragment
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -27,6 +27,71 @@ class FragmentScorecard : Fragment() {
     private lateinit var scoreViewModel: ScoreViewModel
     private lateinit var scoreViewModelFactory: ScoreViewModelFactory
     private var expectedScoresCount = 0
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.appbar_fragment_game, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val menuItemsToHide = listOf(
+            R.id.action_import_data,
+            R.id.action_export_data,
+            R.id.action_import_data_from_discscores
+        )
+        menuItemsToHide.forEach {
+            val item = menu.findItem(it)
+            if (item != null) item.isVisible = false
+        }
+        super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_change_start_datetime -> {
+                pickDateTime()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun pickDateTime() {
+        val currentDateTime = OffsetDateTime.now()
+        val startYear = currentDateTime.year
+        val startMonth = currentDateTime.month.value
+        val startDay = currentDateTime.dayOfMonth
+        val startHour = currentDateTime.hour
+        val startMinute = currentDateTime.minute
+
+        DatePickerDialog(
+            requireContext(),
+            DatePickerDialog.OnDateSetListener { _, year, month, day ->
+                TimePickerDialog(
+                    requireContext(),
+                    TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+                        val pickedDateTime = OffsetDateTime.of(
+                            year,
+                            month + 1,
+                            day,
+                            hour,
+                            minute,
+                            0,
+                            0,
+                            currentDateTime.offset
+                        )
+                        scoreViewModel.updateCurrentRound(pickedDateTime)
+                    },
+                    startHour,
+                    startMinute,
+                    true
+                ).show()
+            },
+            startYear,
+            startMonth,
+            startDay
+        ).show()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,7 +127,7 @@ class FragmentScorecard : Fragment() {
         tableView.setAdapter(adapter)
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
-            if (currentRound.scores.count() == expectedScoresCount) {
+            if (currentRound != null && currentRound.scores.count() == expectedScoresCount) {
                 val playerList =
                     currentRound.scores.distinctBy { it.player.id }.sortedBy { it.player.name }
                         .map { it.player }

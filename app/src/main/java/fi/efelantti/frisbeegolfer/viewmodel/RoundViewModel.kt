@@ -50,6 +50,11 @@ class RoundViewModel(
         repository.update(score)
     }
 
+    fun updateStartTimeForRoundWithId(roundId: OffsetDateTime, newRoundId: OffsetDateTime) =
+        coroutineScope.launch {
+            repository.updateStartTimeForRoundWithId(roundId, newRoundId)
+        }
+
     /**
      * Adds an entry to the database for the round. Creates all the necessary scores, that are
      * then later to be edited when playing the round.
