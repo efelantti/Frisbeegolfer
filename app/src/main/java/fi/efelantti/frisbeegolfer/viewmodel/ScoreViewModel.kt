@@ -21,22 +21,31 @@ class ScoreViewModel(
     // TODO - Idea: Keep a cache copy of Scores, and show those in the UI.
     //  Update those to actual values in the database as well, but don't fetch changes from DB every time.
 
+    private val expectedScoresCount = playerIds.count() * holeIds.count()
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
-    private val currentRoundId = MutableLiveData(roundId)
+    val currentRoundId = MutableLiveData(roundId)
 
     val currentRound: LiveData<RoundWithCourseAndScores> =
         Transformations.switchMap(currentRoundId) { roundId ->
             repository.getRoundWithRoundId(roundId)
         }
 
-
     private val currentPlayerId = MutableLiveData(playerIds[0])
     private val currentHoleId = MutableLiveData(holeIds[0])
+    val currentPlayer = Transformations.switchMap(currentPlayerId) {
+        repository.getPlayerById(it)
+    }
+    val currentHole = Transformations.switchMap(currentHoleId) {
+        repository.getHoleById(it)
+    }
+    lateinit var testScores: List<ScoreWithPlayerAndHole>
 
     val currentScore: MediatorLiveData<ScoreWithPlayerAndHole?> = combine(
         currentRound, currentPlayerId, currentHoleId
     ) { round, playerId, holeId ->
-        round?.scores?.find { it.player.id == playerId && it.hole.holeId == holeId }
+        if (round != null && round.scores != null && round.scores.count() == expectedScoresCount)
+            round.scores.find { it.player.id == playerId && it.hole.holeId == holeId }
+        else null
     }
 
     /* val currentScore: LiveData<ScoreWithPlayerAndHole?> = currentRound.switchMap { round ->
@@ -76,9 +85,10 @@ class ScoreViewModel(
         repository.update(score)
     }
 
+    // TODO - Change RoundId to long
     fun updateCurrentRound(newRoundId: OffsetDateTime) = coroutineScope.launch {
-        repository.updateStartTimeForRoundAndScores(currentRoundId.value!!, newRoundId)
         currentRoundId.value = newRoundId
+        repository.updateStartTimeForRoundAndScores(roundId, newRoundId)
     }
 
 

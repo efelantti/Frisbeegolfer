@@ -59,7 +59,7 @@ class FragmentScorecard : Fragment() {
     private fun pickDateTime() {
         val currentDateTime = OffsetDateTime.now()
         val startYear = currentDateTime.year
-        val startMonth = currentDateTime.month.value
+        val startMonth = currentDateTime.month.value - 1
         val startDay = currentDateTime.dayOfMonth
         val startHour = currentDateTime.hour
         val startMinute = currentDateTime.minute
@@ -111,7 +111,7 @@ class FragmentScorecard : Fragment() {
             playerIds,
             holeIds
         )
-        scoreViewModel = ViewModelProvider(this, scoreViewModelFactory)
+        scoreViewModel = ViewModelProvider(requireParentFragment(), scoreViewModelFactory)
             .get(ScoreViewModel::class.java)
         return binding.root
     }

@@ -31,11 +31,14 @@ interface RoundDao {
     @Update
     suspend fun update(score: Score)
 
+    @Update
+    suspend fun update(round: Round)
+
     @Query("UPDATE Round Set dateStarted=:newRoundId WHERE dateStarted=:roundId")
     suspend fun updateStartTimeForRoundWithId(roundId: OffsetDateTime, newRoundId: OffsetDateTime)
 
     @Query("UPDATE Score SET parentRoundId=:newRoundId WHERE parentRoundId=:roundId")
-    suspend fun updateRoundIdForHoles(roundId: OffsetDateTime, newRoundId: OffsetDateTime)
+    suspend fun updateRoundIdForScores(roundId: OffsetDateTime, newRoundId: OffsetDateTime)
 
     @Transaction
     suspend fun updateRoundIdForRoundAndScores(
@@ -43,7 +46,7 @@ interface RoundDao {
         newRoundId: OffsetDateTime
     ) {
         updateStartTimeForRoundWithId(roundId, newRoundId)
-        updateRoundIdForHoles(roundId, newRoundId)
+        updateRoundIdForScores(roundId, newRoundId)
     }
 
     @Transaction

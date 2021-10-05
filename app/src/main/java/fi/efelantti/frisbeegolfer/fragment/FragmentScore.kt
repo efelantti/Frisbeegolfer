@@ -3,6 +3,7 @@ package fi.efelantti.frisbeegolfer.fragment
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -59,7 +60,7 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
     private fun pickDateTime() {
         val currentDateTime = OffsetDateTime.now()
         val startYear = currentDateTime.year
-        val startMonth = currentDateTime.month.value
+        val startMonth = currentDateTime.month.value - 1
         val startDay = currentDateTime.dayOfMonth
         val startHour = currentDateTime.hour
         val startMinute = currentDateTime.minute
@@ -72,7 +73,7 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
                     TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                         val pickedDateTime = OffsetDateTime.of(
                             year,
-                            month,
+                            month + 1,
                             day,
                             hour,
                             minute,
@@ -110,7 +111,7 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
             playerIds,
             holeIds
         )
-        scoreViewModel = ViewModelProvider(this, scoreViewModelFactory)
+        scoreViewModel = ViewModelProvider(requireParentFragment(), scoreViewModelFactory)
             .get(ScoreViewModel::class.java)
         numberOfHoles = holeIds.count()
         return binding.root
@@ -123,8 +124,12 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
+        scoreViewModel.currentRoundId.observe(viewLifecycleOwner) {
+            Log.i("CURRENT ROUND ID", it.toString())
+        }
+
         scoreViewModel.currentRound.observeOnce(viewLifecycleOwner) { currentRound ->
-            if (currentRound != null && currentRound.scores.count() > 0) {
+            if (currentRound.scores.count() > 0) {
                 scoreViewModel.initializeScore(currentRound.scores)
             }
         }
@@ -133,22 +138,30 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
             // Observing just to make LiveData to update.
         }
 
+        scoreViewModel.currentPlayer.observe(viewLifecycleOwner) { player ->
+            binding.fragmentScoreCurrentPlayer.text = player.name
+        }
+
+        scoreViewModel.currentHole.observe(viewLifecycleOwner) { hole ->
+            if (hole != null) {
+                val holeNumber = hole.holeNumber
+                val previousHoleNumber = if (holeNumber >= 2) holeNumber - 1 else numberOfHoles
+                val nextHoleNumber = if (holeNumber < numberOfHoles) holeNumber + 1 else 1
+
+                binding.fragmentScoreCurrentHole.text = holeNumber.toString()
+                // These are not required if there is only one hole.
+                if (numberOfHoles >= 1) {
+                    binding.fragmentScorePreviousHole.text = previousHoleNumber.toString()
+                    binding.fragmentScoreNextHole.text = nextHoleNumber.toString()
+                }
+            }
+        }
+
         // TODO - Show skeleton view before data has been loaded.
         scoreViewModel.currentScore.observe(viewLifecycleOwner) {
             it?.let { currentScore ->
                 currentScore?.let {
-                    binding.fragmentScoreCurrentPlayer.text = currentScore.player.name
 
-                    val holeNumber = currentScore.hole.holeNumber
-                    val previousHoleNumber = if (holeNumber >= 2) holeNumber - 1 else numberOfHoles
-                    val nextHoleNumber = if (holeNumber < numberOfHoles) holeNumber + 1 else 1
-
-                    binding.fragmentScoreCurrentHole.text = holeNumber.toString()
-                    // These are not required if there is only one hole.
-                    if (numberOfHoles >= 1) {
-                        binding.fragmentScorePreviousHole.text = previousHoleNumber.toString()
-                        binding.fragmentScoreNextHole.text = nextHoleNumber.toString()
-                    }
                     binding.fragmentScoreCurrentHolePar.text = currentScore.hole.par.toString()
 
                     // TODO - Flashes N/A before showing actual result.
