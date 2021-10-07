@@ -5,7 +5,10 @@ import fi.efelantti.frisbeegolfer.IRepository
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.combine
 import fi.efelantti.frisbeegolfer.getViewModelScope
-import fi.efelantti.frisbeegolfer.model.*
+import fi.efelantti.frisbeegolfer.model.Player
+import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
+import fi.efelantti.frisbeegolfer.model.Score
+import fi.efelantti.frisbeegolfer.model.ScoreWithPlayerAndHole
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
@@ -18,8 +21,6 @@ class ScoreViewModel(
     private val holeIds: LongArray
 ) :
     ViewModel() {
-    // TODO - Idea: Keep a cache copy of Scores, and show those in the UI.
-    //  Update those to actual values in the database as well, but don't fetch changes from DB every time.
 
     private val expectedScoresCount = playerIds.count() * holeIds.count()
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
@@ -38,7 +39,6 @@ class ScoreViewModel(
     val currentHole = Transformations.switchMap(currentHoleId) {
         repository.getHoleById(it)
     }
-    lateinit var testScores: List<ScoreWithPlayerAndHole>
 
     val currentScore: MediatorLiveData<ScoreWithPlayerAndHole?> = combine(
         currentRound, currentPlayerId, currentHoleId
@@ -48,14 +48,9 @@ class ScoreViewModel(
         else null
     }
 
-    /* val currentScore: LiveData<ScoreWithPlayerAndHole?> = currentRound.switchMap { round ->
-        liveData (context = viewModelScope.coroutineContext + Dispatchers.IO) {
-            emit(round.scores.find { it.player.id == currentPlayerId.value!! &&  it.hole.holeId == currentHoleId.value!!})
-        }
-     }*/
-
-    fun getHoleStatistics(playerId: Long, holeId: Long): LiveData<HoleStatistics?> {
-        return repository.getHoleStatistics(playerId, holeId)
+    val holeStatistics = Transformations.switchMap(currentScore) {
+        if (it != null) repository.getHoleStatistics(it.player.id, it.hole.holeId)
+        else null
     }
 
     private fun setScoreId(playerId: Long, holeId: Long) {
@@ -63,6 +58,9 @@ class ScoreViewModel(
         currentHoleId.value = holeId
     }
 
+    /**
+     * Sets score id to first not scored score, or if no such, then the last score.
+     */
     fun initializeScore(scores: List<ScoreWithPlayerAndHole>) {
         val sortedScores =
             scores.sortedWith(compareBy<ScoreWithPlayerAndHole> { it.hole.holeNumber }.thenBy { it.player.name })
@@ -73,24 +71,14 @@ class ScoreViewModel(
         setScoreId(sortedScores[index].player.id, sortedScores[index].hole.holeId)
     }
 
-    /*
-    /*
-    Used to force refresh the observers of the LiveData object.
-     */
-    private fun refresh() {
-        (currentRound as RefreshableLiveData).refresh()
-    }*/
-
     fun update(score: Score) = coroutineScope.launch {
         repository.update(score)
     }
 
-    // TODO - Change RoundId to long
     fun updateCurrentRound(newRoundId: OffsetDateTime) = coroutineScope.launch {
         currentRoundId.value = newRoundId
         repository.updateStartTimeForRoundAndScores(roundId, newRoundId)
     }
-
 
     fun previousScore() {
         val indexOfCurrentPlayer = playerIds.indexOf(currentPlayerId.value!!)
@@ -113,7 +101,7 @@ class ScoreViewModel(
         }
     }
 
-    /*
+    /**
     Previous player BUT current hole.
      */
     fun previousPlayer() {
@@ -123,7 +111,7 @@ class ScoreViewModel(
         setScoreId(newPlayerId, currentHoleId.value!!)
     }
 
-    /*
+    /**
     Next player BUT current hole.
      */
     fun nextPlayer() {
@@ -133,7 +121,7 @@ class ScoreViewModel(
         setScoreId(newPlayerId, currentHoleId.value!!)
     }
 
-    /*
+    /**
     Previous hole and first player.
      */
     fun previousHole() {
@@ -143,7 +131,7 @@ class ScoreViewModel(
         setScoreId(playerIds.first(), newHoleId)
     }
 
-    /*
+    /**
     Next hole first player.
      */
     fun nextHole() {
@@ -153,7 +141,7 @@ class ScoreViewModel(
         setScoreId(playerIds.first(), newHoleId)
     }
 
-    /*
+    /**
     Sets the result of the current score. Calls repository.update as well.
      */
     fun setResult(resultToSet: Int) {
@@ -165,7 +153,7 @@ class ScoreViewModel(
         update(score)
     }
 
-    /*
+    /**
     Toggles OB and updates the score.
      */
     fun toggleOb() {
@@ -176,7 +164,7 @@ class ScoreViewModel(
         update(score)
     }
 
-    /*
+    /**
     Toggles OB and updates the score.
      */
     fun toggleDnf() {
@@ -189,7 +177,6 @@ class ScoreViewModel(
     }
 
     fun plusMinus(player: Player): String {
-        //currentRound.refresh()
         val round = currentRound.value
             ?: throw IllegalStateException("Value inside current round live data was null.")
         val scores = round.scores.filter { it.player == player }
@@ -234,9 +221,9 @@ class ScoreViewModel(
             else totalResult.toString()
         }
 
-        /*
+        /**
         Returns the scoring term for the hole.
-        */
+         */
         fun getScoringTerm(result: Int, par: Int): ScoringTerm {
             if (result <= 0) return ScoringTerm.NoName
             if (result == 1) return ScoringTerm.Ace

@@ -1,7 +1,9 @@
 package fi.efelantti.frisbeegolfer
 
+import kotlin.math.abs
+
 fun Float.toPrettyString() =
-    if (this - this.toLong() == 0.0f)
-        String.format("%d", this.toLong())
+    if ((abs(this).rem(1.0) < 1e-10))
+        "%.0f".format(this)
     else
-        String.format("%s", this)
+        "%.1f".format(this)

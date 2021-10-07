@@ -18,6 +18,7 @@ import fi.efelantti.frisbeegolfer.tableview.model.RowHeader
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 import java.time.OffsetDateTime
+import java.util.*
 
 
 class FragmentScorecard : Fragment() {
@@ -64,7 +65,7 @@ class FragmentScorecard : Fragment() {
         val startHour = currentDateTime.hour
         val startMinute = currentDateTime.minute
 
-        DatePickerDialog(
+        val datePicker = DatePickerDialog(
             requireContext(),
             DatePickerDialog.OnDateSetListener { _, year, month, day ->
                 TimePickerDialog(
@@ -90,7 +91,9 @@ class FragmentScorecard : Fragment() {
             startYear,
             startMonth,
             startDay
-        ).show()
+        )
+        datePicker.datePicker.firstDayOfWeek = Calendar.MONDAY
+        datePicker.show()
     }
 
     override fun onCreateView(
