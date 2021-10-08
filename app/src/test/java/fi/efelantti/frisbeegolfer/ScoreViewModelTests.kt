@@ -1,13 +1,23 @@
 package fi.efelantti.frisbeegolfer
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import fi.efelantti.frisbeegolfer.model.*
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
+import fi.efelantti.frisbeegolfer.viewmodel.ScoringTerm
+import io.mockk.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.*
+import org.hamcrest.CoreMatchers.equalTo
+import org.junit.After
+import org.junit.Assert.assertThat
+import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
+import java.io.InvalidObjectException
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @ExperimentalCoroutinesApi
 class ScoreViewModelTests {
@@ -31,7 +41,7 @@ class ScoreViewModelTests {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-/*
+
     @Before
     fun setup() {
         roundId = OffsetDateTime.of(2020, 12, 31, 12, 0, 0, 0, ZoneOffset.UTC)
@@ -329,6 +339,10 @@ class ScoreViewModelTests {
         )
 
         scoreViewModel = ScoreViewModel(testScope, repository, roundId, playerIds, holeIds)
+        val viewModelScores = scoreViewModel.currentRound.getValueBlocking()
+            ?: throw InvalidObjectException("Null returned as list of scores.")
+
+        scoreViewModel.initializeScore(viewModelScores.scores)
 
         val initialCurrentScore = scoreViewModel.currentScore.getValueBlocking()
             ?: throw InvalidObjectException("Null returned as current score.")
@@ -416,6 +430,10 @@ class ScoreViewModelTests {
         every { repository.getScore(roundId, 0, 0) } returns MutableLiveData(scores.last())
 
         scoreViewModel = ScoreViewModel(testScope, repository, roundId, playerIds, holeIds)
+        val viewModelScores = scoreViewModel.currentRound.getValueBlocking()
+            ?: throw InvalidObjectException("Null returned as list of scores.")
+
+        scoreViewModel.initializeScore(viewModelScores.scores)
 
         val initialCurrentScore = scoreViewModel.currentScore.getValueBlocking()
             ?: throw InvalidObjectException("Null returned as current score.")
@@ -510,7 +528,7 @@ class ScoreViewModelTests {
         val desiredHoleStatistics = HoleStatistics(1, 2f, 3)
         every { repository.getHoleStatistics(0, 0) } returns MutableLiveData(desiredHoleStatistics)
 
-        val holeStatistics = scoreViewModel.getHoleStatistics(0, 0).getValueBlocking()
+        val holeStatistics = scoreViewModel.holeStatistics.getValueBlocking()
             ?: throw InvalidObjectException("Null returned as current score.")
 
         assertThat(holeStatistics.latestResult, equalTo(desiredHoleStatistics.latestResult))
@@ -537,6 +555,4 @@ class ScoreViewModelTests {
         assertThat(ScoreViewModel.getScoringTerm(8, 4), equalTo(ScoringTerm.NoName))
         assertThat(ScoreViewModel.getScoringTerm(10, 3), equalTo(ScoringTerm.NoName))
     }
-
- */
 }

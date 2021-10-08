@@ -1,13 +1,12 @@
 package fi.efelantti.frisbeegolfer.fragment
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import fi.efelantti.frisbeegolfer.DateTimePicker
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.FragmentScorecardBinding
@@ -18,7 +17,6 @@ import fi.efelantti.frisbeegolfer.tableview.model.RowHeader
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 import java.time.OffsetDateTime
-import java.util.*
 
 
 class FragmentScorecard : Fragment() {
@@ -58,42 +56,10 @@ class FragmentScorecard : Fragment() {
     }
 
     private fun pickDateTime() {
-        val currentDateTime = OffsetDateTime.now()
-        val startYear = currentDateTime.year
-        val startMonth = currentDateTime.month.value - 1
-        val startDay = currentDateTime.dayOfMonth
-        val startHour = currentDateTime.hour
-        val startMinute = currentDateTime.minute
-
-        val datePicker = DatePickerDialog(
-            requireContext(),
-            DatePickerDialog.OnDateSetListener { _, year, month, day ->
-                TimePickerDialog(
-                    requireContext(),
-                    TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-                        val pickedDateTime = OffsetDateTime.of(
-                            year,
-                            month + 1,
-                            day,
-                            hour,
-                            minute,
-                            0,
-                            0,
-                            currentDateTime.offset
-                        )
-                        scoreViewModel.updateCurrentRound(pickedDateTime)
-                    },
-                    startHour,
-                    startMinute,
-                    true
-                ).show()
-            },
-            startYear,
-            startMonth,
-            startDay
-        )
-        datePicker.datePicker.firstDayOfWeek = Calendar.MONDAY
-        datePicker.show()
+        DateTimePicker(requireContext(), true) {
+            val pickedDateTime = it.pickedDateTime
+            scoreViewModel.updateCurrentRound(pickedDateTime)
+        }.show()
     }
 
     override fun onCreateView(
