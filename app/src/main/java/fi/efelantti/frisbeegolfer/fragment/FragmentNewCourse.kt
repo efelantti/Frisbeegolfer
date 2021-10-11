@@ -76,7 +76,7 @@ class FragmentNewCourse : DialogFragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        val toolbar: Toolbar = binding.dialogToolbarNewCourse
+        val toolbar: Toolbar = binding.dialogToolbarNewCourse.toolbar
         toolbar.setNavigationIcon(R.drawable.ic_close)
         toolbar.inflateMenu(R.menu.appbar_dialog)
 

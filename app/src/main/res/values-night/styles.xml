@@ -6,4 +6,9 @@
         <item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
         <item name="background">@color/material_grey_800</item>
     </style>
+
+    <!-- TOOLBAR THEME -->
+    <style name="ToolbarTheme" parent="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:background">?backgroundColor</item>
+    </style>
 </resources>

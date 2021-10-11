@@ -14,10 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
-import fi.efelantti.frisbeegolfer.NewPlayerAction
-import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.ToastUtils
+import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.databinding.FragmentNewPlayerBinding
 import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
@@ -68,7 +65,7 @@ class FragmentNewPlayer : DialogFragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        val toolbar: Toolbar = binding.dialogToolbar
+        val toolbar: Toolbar = binding.dialogToolbar.toolbar
         toolbar.setNavigationIcon(R.drawable.ic_close)
         toolbar.inflateMenu(R.menu.appbar_dialog)
 
@@ -143,7 +140,7 @@ class FragmentNewPlayer : DialogFragment() {
             emailLayout.error = null
         }
         if (isValidName && isValidEmail) {
-            playerViewModel.playerExists(name).observe(viewLifecycleOwner) {
+            playerViewModel.playerExists(name).observeOnce(viewLifecycleOwner) {
                 it?.let { playerFound ->
                     if (!playerFound) {
                         val playerData = Player(
@@ -273,7 +270,7 @@ Gets the text from the EditTexts, trims them and packs them to a Pair.
                 // But if the name has changed, then verify that there is not already a player with the same name.
                 else {
                     playerViewModel.playerExists(playerData.name!!)
-                        .observe(viewLifecycleOwner) {
+                        .observeOnce(viewLifecycleOwner) {
                             it?.let { playerFound ->
                                 if (!playerFound) {
                                     playerViewModel.update(playerData)

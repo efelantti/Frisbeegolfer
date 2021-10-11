@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Color for error message, eg. invalid field. -->
-    <color name="colorErrorMessage">#B00020</color>
     <color name="grey_800">#424242</color>
 
     <color name="green_700">#388e3c</color>
@@ -25,7 +24,6 @@
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>
 
-    <color name="recyclerview_item_background">#03DAC5</color>
     <color name="score_button_background_activated">#03DAC5</color>
     <color name="score_button_border_color">#808080</color>
     <color name="cell_background_color">#ffffff</color>

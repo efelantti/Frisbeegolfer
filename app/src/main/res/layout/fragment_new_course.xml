@@ -12,16 +12,11 @@
         android:orientation="vertical"
         android:layout_height="match_parent">
 
-        <Toolbar
+        <include
+            layout="@layout/toolbar"
             android:id="@+id/dialog_toolbar_new_course"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/course_section_header"

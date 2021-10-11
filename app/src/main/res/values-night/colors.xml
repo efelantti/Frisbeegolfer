@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorErrorMessage">#B00020</color>
-
-    <!--    TODO - Chanage to secondary color where this is referenced-->
-    <color name="recyclerview_item_background">#03DAC5</color>
-
     <!--    TODO - Chanage to secondary color where this is referenced-->
     <color name="score_button_background_activated">#03DAC5</color>
     <color name="score_button_border_color">#808080</color>
