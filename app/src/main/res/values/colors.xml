@@ -2,13 +2,26 @@
 <resources>
     <!-- Color for error message, eg. invalid field. -->
     <color name="colorErrorMessage">#B00020</color>
+    <color name="grey_800">#424242</color>
 
-    <color name="primaryColor">#66bb6a</color>
-    <color name="primaryLightColor">#98ee99</color>
-    <color name="primaryDarkColor">#338a3e</color>
-    <color name="secondaryColor">#90caf9</color>
-    <color name="secondaryLightColor">#c3fdff</color>
-    <color name="secondaryDarkColor">#5d99c6</color>
+    <color name="green_700">#388e3c</color>
+    <color name="green_700_light">#6abf69</color>
+    <color name="green_700_dark">#00600f</color>
+
+    <color name="green_500">#4caf50</color>
+    <color name="green_500_light">#80e27e</color>
+    <color name="green_500_dark">#087f23</color>
+
+    <color name="green_200">#a5d6a7</color>
+
+    <color name="blue_500">#2196f3</color>
+    <color name="blue_500_dark">#0069c0</color>
+    <color name="blue_500_light">#6ec6ff</color>
+
+    <color name="blue_200">#90caf9</color>
+    <color name="blue_200_light">#c3fdff</color>
+    <color name="blue_200_dark">#5d99c6</color>
+
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>
 
@@ -29,4 +42,8 @@
     <color name="result_triple_bogey">#C62828</color>
     <color name="result_more">#F44336</color>
     <color name="result_other">#808080</color>
+    <color name="table_content_cell_bg_solid">#eee</color>
+    <color name="table_content_cell_bg_stroke">#AFAFAF</color>
+    <color name="table_header_cell_bg_solid">#0074f1</color>
+    <color name="table_header_cell_bg_stroke">#AFAFAF</color>
 </resources>
