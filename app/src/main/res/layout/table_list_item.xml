@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/table_content_cell_bg"
     android:orientation="horizontal">
 
     <TextView
@@ -10,7 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="top"
-        android:background="@drawable/table_content_cell_bg"
         tools:text="Rank"
         android:textSize="16sp" />
 

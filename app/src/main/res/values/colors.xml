@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Color for error message, eg. invalid field. -->
     <color name="grey_800">#424242</color>
 
     <color name="green_700">#388e3c</color>
@@ -26,9 +25,16 @@
 
     <color name="score_button_background_activated">#03DAC5</color>
     <color name="score_button_border_color">#808080</color>
+
     <color name="cell_background_color">#ffffff</color>
     <color name="header_line_color">#0a0a0a</color>
     <color name="table_view_default_text_color">#0a0a0a</color>
+
+    <color name="table_content_cell_bg_solid">#eee</color>
+    <color name="table_content_cell_bg_stroke">#AFAFAF</color>
+    <color name="table_header_cell_bg_solid">#0074f1</color>
+    <color name="table_header_cell_bg_stroke">#AFAFAF</color>
+
     <color name="result_ace">#3F51B5</color>
     <color name="result_condor">#3F51B5</color>
     <color name="result_albatross">#3F51B5</color>
@@ -40,8 +46,4 @@
     <color name="result_triple_bogey">#C62828</color>
     <color name="result_more">#F44336</color>
     <color name="result_other">#808080</color>
-    <color name="table_content_cell_bg_solid">#eee</color>
-    <color name="table_content_cell_bg_stroke">#AFAFAF</color>
-    <color name="table_header_cell_bg_solid">#0074f1</color>
-    <color name="table_header_cell_bg_stroke">#AFAFAF</color>
 </resources>

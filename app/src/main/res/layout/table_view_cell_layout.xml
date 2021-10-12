@@ -6,8 +6,12 @@
     app:layout_constraintWidth_min="@dimen/cell_min_width"
     app:layout_constraintWidth_max="@dimen/cell_max_width"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/cell_height"
-    android:background="@color/cell_background_color">
+    android:layout_height="@dimen/cell_height">
+
+    <FrameLayout
+        android:background="@color/cell_background_color"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
 
     <ImageView
         android:id="@+id/result"

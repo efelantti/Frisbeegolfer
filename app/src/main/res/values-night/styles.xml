@@ -11,4 +11,19 @@
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <item name="android:background">?backgroundColor</item>
     </style>
+
+    <style name="PlusMinusButton" parent="Widget.MaterialComponents.Button.OutlinedButton.Icon">
+        <item name="iconSize">30dp</item>
+        <item name="iconTint">?colorSecondary</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="shapeAppearanceOverlay">
+            @style/ShapeAppearanceOverlay.Frisbeegolfer.Button.Circle
+        </item>
+    </style>
 </resources>

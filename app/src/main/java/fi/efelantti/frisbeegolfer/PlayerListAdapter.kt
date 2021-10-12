@@ -2,6 +2,7 @@ package fi.efelantti.frisbeegolfer
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,7 @@ import fi.efelantti.frisbeegolfer.model.Player
 
 
 class PlayerListAdapter internal constructor(
-    context: Context,
+    val context: Context,
     onClickListener: ListItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -49,6 +50,7 @@ class PlayerListAdapter internal constructor(
             itemView.setOnClickListener(this)
             builder = TextDrawable.builder()
                 .beginConfig()
+                .textColor(Color.BLACK)
                 .endConfig()
                 .round()
         }
@@ -94,6 +96,7 @@ class PlayerListAdapter internal constructor(
 
             val current = players[position]
             val color = generator.getColor(current.name)
+
             val initial = current.name?.take(1)
             val icon = builder.build(initial, color)
             playerIcon.setImageDrawable(icon)
