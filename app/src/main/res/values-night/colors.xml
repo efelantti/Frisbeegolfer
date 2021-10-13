@@ -24,4 +24,6 @@
     <color name="result_triple_bogey">#C62828</color>
     <color name="result_more">#F44336</color>
     <color name="result_other">#808080</color>
+
+    <color name="textDrawable_text_color">#000000</color>
 </resources>

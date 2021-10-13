@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
@@ -16,7 +17,7 @@ import fi.efelantti.frisbeegolfer.model.Player
 
 
 class PlayerListAdapterMultiSelect internal constructor(
-    context: Context,
+    val context: Context,
     onClickListener: ListItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -48,6 +49,13 @@ class PlayerListAdapterMultiSelect internal constructor(
             itemView.setOnClickListener(this)
             builder = TextDrawable.builder()
                 .beginConfig()
+                .textColor(
+                    ResourcesCompat.getColor(
+                        context.resources,
+                        R.color.textDrawable_text_color,
+                        null
+                    )
+                )
                 .endConfig()
                 .round()
         }
@@ -80,6 +88,13 @@ class PlayerListAdapterMultiSelect internal constructor(
             itemView.setOnClickListener(this)
             builder = TextDrawable.builder()
                 .beginConfig()
+                .textColor(
+                    ResourcesCompat.getColor(
+                        context.resources,
+                        R.color.textDrawable_text_color,
+                        null
+                    )
+                )
                 .endConfig()
                 .round()
         }
