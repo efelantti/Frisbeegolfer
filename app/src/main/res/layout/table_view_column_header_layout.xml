@@ -9,7 +9,6 @@
         android:id="@+id/column_header_container"
         app:layout_constraintWidth_max="@dimen/cell_max_width"
         app:layout_constraintWidth_min="@dimen/cell_min_width"
-        android:background="@color/cell_background_color"
         android:orientation="vertical"
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
@@ -17,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
+            style="@style/CellFrame"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -44,30 +44,22 @@
                         android:maxLines="1"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:textColor="@color/table_view_default_text_color"
-                        android:textSize="@dimen/text_size_column_header_player_name"
-                        android:textStyle="bold"
+                        android:textAppearance="@style/ColumnHeaderText"
                         tools:text="Header Data" />
 
                     <TextView
                         android:id="@+id/column_header_result"
+                        android:textAppearance="@style/ColumnHeaderText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:textColor="@color/table_view_default_text_color"
-                        android:textSize="@dimen/text_size_column_header_result"
-                        android:textStyle="bold"
                         tools:text="Header Data 123" />
                 </LinearLayout>
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_gravity="bottom"
-                android:background="@color/header_line_color" />
+            <View style="@style/header_line" />
         </FrameLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,9 +9,9 @@
     android:layout_height="@dimen/cell_height">
 
     <FrameLayout
-        android:background="@color/cell_background_color"
+        style="@style/CellFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/result"
@@ -29,14 +29,13 @@
 
     <TextView
         android:id="@+id/plus_minus_cumulative"
+        style="@style/CellTextViewStyle"
+        android:textAppearance="@style/CellText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center_vertical"
         android:layout_marginEnd="4dp"
         android:layout_marginStart="4dp"
         android:maxLines="1"
-        android:textColor="@color/table_view_default_text_color"
-        android:textSize="@dimen/text_size"
         app:layout_constraintStart_toEndOf="@id/result"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

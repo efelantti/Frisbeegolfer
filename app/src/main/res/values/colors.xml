@@ -47,5 +47,6 @@
     <color name="result_more">#F44336</color>
     <color name="result_other">#808080</color>
 
+    <color name="selected_item_color">#90caf9</color>
     <color name="textDrawable_text_color">#ffffff</color>
 </resources>

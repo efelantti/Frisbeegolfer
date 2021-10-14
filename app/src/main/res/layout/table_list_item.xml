@@ -10,8 +10,7 @@
         android:id="@+id/cellData"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="top"
-        tools:text="Rank"
-        android:textSize="16sp" />
+        style="@style/TableListItem"
+        tools:text="Rank" />
 
 </FrameLayout>

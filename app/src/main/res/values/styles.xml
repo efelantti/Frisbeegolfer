@@ -50,5 +50,31 @@
         <item name="cornerSize">50%</item>
     </style>
 
-    <style name="ThrowResultButton" parent=""></style>
+    <style name="ThrowResultButton" parent="" />
+
+    <style name="TableListItem">
+        <item name="android:layout_gravity">top</item>
+        <item name="android:textSize">?attr/textAppearanceBody1</item>
+    </style>
+
+    <style name="CellFrame">
+        <item name="android:background">?android:colorBackground</item>
+    </style>
+
+    <style name="CellTextViewStyle">
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="CellText" parent="TextAppearance.MaterialComponents.Body1"></style>
+
+    <style name="ColumnHeaderText" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="header_line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:background">?attr/colorOnBackground</item>
+    </style>
 </resources>
