@@ -20,6 +20,13 @@
     <color name="blue_200_light">#c3fdff</color>
     <color name="blue_200_dark">#5d99c6</color>
 
+    <color name="black">#000000</color>
+    <color name="black_87">#DE000000</color>
+    <color name="black_54">#8a000000</color>
+    <color name="white">#ffffff</color>
+    <color name="white_87">#deffffff</color>
+    <color name="white_38">#61ffffff</color>
+
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>
 
@@ -47,6 +54,6 @@
     <color name="result_more">#F44336</color>
     <color name="result_other">#808080</color>
 
-    <color name="selected_item_color">#90caf9</color>
+    <color name="selected_item_grey">#424242</color>
     <color name="textDrawable_text_color">#ffffff</color>
 </resources>

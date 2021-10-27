@@ -6,7 +6,7 @@
     android:layout_height="@dimen/cell_height">
 
     <LinearLayout
-        android:background="@color/cell_background_color"
+        style="@style/CellFrame"
         android:id="@+id/row_header_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,9 +19,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:maxLines="1"
-            android:textColor="@color/table_view_default_text_color"
-            android:textSize="@dimen/text_size"
-            android:textStyle="bold"
+            android:textAppearance="@style/RowHeader_HoleNumber_Text"
             tools:text="Row Data" />
 
         <TextView
@@ -30,8 +28,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:maxLines="1"
-            android:textColor="@color/table_view_default_text_color"
-            android:textSize="@dimen/text_size_par_count"
+            android:textAppearance="@style/RowHeader_Par_Text"
             tools:text="Par 3" />
     </LinearLayout>
 
@@ -40,5 +37,5 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="0dp"
-        android:background="@color/header_line_color" />
+        style="@style/row_line" />
 </RelativeLayout>
