@@ -101,4 +101,20 @@
     <style name="row_line">
         <item name="android:background">?attr/colorOnBackground</item>
     </style>
+
+    <style name="score_button_result_text_style">
+        <item name="android:textSize">40sp</item>
+    </style>
+
+    <style name="score_button_scoring_term_text_style">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="high_emphasis_text">
+        <item name="android:textColor">@color/black_60</item>
+    </style>
+
+    <style name="medium_emphasis_text">
+        <item name="android:textColor">@color/black_60</item>
+    </style>
 </resources>

@@ -26,4 +26,12 @@
             @style/ShapeAppearanceOverlay.Frisbeegolfer.Button.Circle
         </item>
     </style>
+
+    <style name="high_emphasis_text">
+        <item name="android:textColor">@color/white_87</item>
+    </style>
+
+    <style name="medium_emphasis_text">
+        <item name="android:textColor">@color/white_60</item>
+    </style>
 </resources>

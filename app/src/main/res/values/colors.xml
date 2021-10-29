@@ -22,9 +22,10 @@
 
     <color name="black">#000000</color>
     <color name="black_87">#DE000000</color>
-    <color name="black_54">#8a000000</color>
+    <color name="black_60">#99000000</color>
     <color name="white">#ffffff</color>
     <color name="white_87">#deffffff</color>
+    <color name="white_60">#99ffffff</color>
     <color name="white_38">#61ffffff</color>
 
     <color name="primaryTextColor">#000000</color>
