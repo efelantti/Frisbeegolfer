@@ -86,6 +86,7 @@ class RoundListAdapter internal constructor(
 
         val current = rounds[position]
         val scores = current.scores
+        val players = current.scores.distinctBy { it.player.name }.sortedBy { it.player.name }
 
         val color = generator.getColor(current.course.course.name)
         val initial = current.course.course.name?.take(1)
@@ -98,9 +99,14 @@ class RoundListAdapter internal constructor(
         holder.roundItemViewStartedOnTime.text =
             current.round.dateStarted.format(DateTimeFormatter.ofPattern("HH:mm"))
         holder.roundItemViewPlayers.text =
-            scores.distinctBy { it.player.id }.sortedByDescending { it.player.name }
-                .map { "${it.player.name} (${ScoreViewModel.plusMinus(it.player, scores)})" }
-                .joinToString()
+            players.joinToString {
+                "${it.player.name} (${
+                    ScoreViewModel.plusMinus(
+                        it.player,
+                        scores
+                    )
+                })"
+            }
     }
 
     internal fun setRounds(rounds: List<RoundWithCourseAndScores>) {

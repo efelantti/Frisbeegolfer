@@ -30,7 +30,8 @@ import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.io.*
 
-
+// TODO - Restart application after importing Discscores data in order to refresh the app.
+// TODO - If round is already finished, open the round in "read_only" mode per default and allow to change to edit mode.
 class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSelected,
     DialogConfirmImportFromDiscscores.OnConfirmationSelectedImportDiscscores {
 
