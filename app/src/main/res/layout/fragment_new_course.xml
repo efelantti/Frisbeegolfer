@@ -21,7 +21,7 @@
         <TextView
             android:id="@+id/course_section_header"
             android:text="@string/new_course_fragment_header_course_data"
-            android:textSize="20sp"
+            style="@style/high_emphasis_h5"
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
             android:layout_width="wrap_content"
@@ -91,7 +91,7 @@
         <TextView
             android:id="@+id/holes_sub_header"
             android:text="@string/new_course_fragment_header_holes_data"
-            android:textSize="20sp"
+            style="@style/high_emphasis_h6"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"

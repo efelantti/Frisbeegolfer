@@ -41,8 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/par_label"
-            android:textSize="16sp"
-            android:textAppearance="@style/medium_emphasis_text"
+            android:textAppearance="@style/medium_emphasis_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHolePar"
@@ -54,8 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:textSize="30sp"
-            android:textAppearance="@style/high_emphasis_text"
+            android:textAppearance="@style/high_emphasis_h4"
             app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentHolePar_label"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHolePar_label"
             app:layout_constraintEnd_toEndOf="parent"
@@ -101,8 +99,7 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:textSize="22sp"
-            android:textAppearance="@style/high_emphasis_text"
+            android:textAppearance="@style/high_emphasis_h5"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_button_next_player"
             app:layout_constraintHorizontal_weight="2"
             app:layout_constraintStart_toEndOf="@id/fragment_score_button_previous_player"
@@ -137,8 +134,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:textSize="26sp"
-            android:textAppearance="@style/high_emphasis_text"
+            android:textAppearance="@style/high_emphasis_h4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fragment_score_currentPlayer"
@@ -151,11 +147,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/best_label"
-            android:textSize="16sp"
-            android:textAppearance="@style/medium_emphasis_text"
+            android:textAppearance="@style/medium_emphasis_label"
             app:layout_constraintBottom_toTopOf="@id/score_button_layout"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHoleAverage_label"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -167,8 +162,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:textSize="26sp"
-            android:textAppearance="@style/high_emphasis_text"
+            android:textAppearance="@style/high_emphasis_h5"
             app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentHoleBest_label"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHoleBest_label"
             tools:text="3" />
@@ -177,8 +171,7 @@
             android:id="@+id/fragment_score_currentHoleAverage_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/medium_emphasis_text"
-            android:textSize="16sp"
+            android:textAppearance="@style/medium_emphasis_label"
             android:text="@string/average_label"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHoleLatest_label"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHoleBest_label"
@@ -189,8 +182,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:textSize="26sp"
-            android:textAppearance="@style/high_emphasis_text"
+            android:textAppearance="@style/high_emphasis_h5"
             app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentHoleAverage_label"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHoleAverage_label"
             tools:text="3.4" />
@@ -199,8 +191,7 @@
             android:id="@+id/fragment_score_currentHoleLatest_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/medium_emphasis_text"
-            android:textSize="16sp"
+            android:textAppearance="@style/medium_emphasis_label"
             android:text="@string/latest_label"
             app:layout_constraintEnd_toEndOf="@id/fragment_score_currentHoleLatest"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHoleAverage_label"
@@ -212,8 +203,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="8dp"
-            android:textSize="26sp"
-            android:textAppearance="@style/high_emphasis_text"
+            android:textAppearance="@style/high_emphasis_h5"
             app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentHoleLatest_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHoleLatest_label"
@@ -227,7 +217,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintHeight_percent="0.54"
+            app:layout_constraintHeight_percent="0.55"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -237,7 +227,8 @@
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dp">
+                android:layout_height="0dp"
+                android:baselineAligned="false">
 
                 <include
                     android:layout_weight="1"
@@ -271,7 +262,8 @@
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dp">
+                android:layout_height="0dp"
+                android:baselineAligned="false">
 
                 <include
                     android:layout_weight="1"
@@ -306,7 +298,8 @@
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dp">
+                android:layout_height="0dp"
+                android:baselineAligned="false">
 
                 <include
                     android:layout_weight="1"
@@ -340,7 +333,8 @@
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dp">
+                android:layout_height="0dp"
+                android:baselineAligned="false">
 
                 <include
                     android:layout_weight="1"

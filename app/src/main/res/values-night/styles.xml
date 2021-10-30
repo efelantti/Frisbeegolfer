@@ -27,11 +27,73 @@
         </item>
     </style>
 
+    <style name="CellText" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/white_87</item>
+    </style>
+
+    <style name="ColumnHeaderText" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white_87</item>
+    </style>
+
+    <style name="CornerHeaderText" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white_87</item>
+    </style>
+
+    <style name="RowHeader_HoleNumber_Text" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white_87</item>
+    </style>
+
+    <style name="header_line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:background">@color/white_60</item>
+    </style>
+
+    <style name="corner_line_right">
+        <item name="android:background">@color/white_60</item>
+    </style>
+
+    <style name="corner_line_bottom">
+        <item name="android:background">@color/white_60</item>
+    </style>
+
+    <style name="row_line">
+        <item name="android:background">@color/white_60</item>
+    </style>
+
     <style name="high_emphasis_text">
         <item name="android:textColor">@color/white_87</item>
     </style>
 
+    <style name="high_emphasis_h4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/white_87</item>
+    </style>
+
+    <style name="high_emphasis_h5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">@color/white_87</item>
+    </style>
+
+    <style name="high_emphasis_h6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/white_87</item>
+    </style>
+
+    <style name="high_emphasis_body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textColor">@color/white_87</item>
+    </style>
+
     <style name="medium_emphasis_text">
+        <item name="android:textColor">@color/white_60</item>
+    </style>
+
+    <style name="medium_emphasis_label" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/white_60</item>
+    </style>
+
+    <style name="medium_emphasis_body2" parent="TextAppearance.AppCompat.Body2">
         <item name="android:textColor">@color/white_60</item>
     </style>
 </resources>
