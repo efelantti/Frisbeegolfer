@@ -22,6 +22,7 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
     private lateinit var scoreViewModel: ScoreViewModel
     private lateinit var scoreViewModelFactory: ScoreViewModelFactory
     private var numberOfHoles by Delegates.notNull<Int>()
+    private var readOnly = false
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.appbar_fragment_game, menu)
@@ -29,11 +30,13 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        val menuItemsToHide = listOf(
+        val menuItemsToHide = mutableListOf(
             R.id.action_import_data,
             R.id.action_export_data,
             R.id.action_import_data_from_discscores
         )
+        if (readOnly) menuItemsToHide.add(R.id.action_disable_readonly)
+        else menuItemsToHide.add(R.id.action_enable_readonly)
         menuItemsToHide.forEach {
             val item = menu.findItem(it)
             if (item != null) item.isVisible = false
@@ -64,6 +67,8 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
     ): View {
         _binding = FragmentScoreBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
+        readOnly = requireArguments().getBoolean(FragmentScore.READONLY)
+        requireActivity().invalidateOptionsMenu()
         val roundId = requireArguments().getSerializable(ROUND_ID) as OffsetDateTime
         val playerIds = requireArguments().getLongArray(PLAYER_IDS)
             ?: throw IllegalArgumentException("List of player ids was null.")
@@ -295,13 +300,20 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
         private const val ROUND_ID = "round_Id"
         private const val PLAYER_IDS = "player_Ids"
         private const val HOLE_IDS = "hole_Ids"
+        private const val READONLY = "readOnly"
 
-        fun newInstance(roundId: OffsetDateTime, playerIds: LongArray, holeIds: LongArray) =
+        fun newInstance(
+            roundId: OffsetDateTime,
+            playerIds: LongArray,
+            holeIds: LongArray,
+            readOnly: Boolean
+        ) =
             FragmentScore().apply {
                 arguments = bundleOf(
                     ROUND_ID to roundId,
                     PLAYER_IDS to playerIds,
-                    HOLE_IDS to holeIds
+                    HOLE_IDS to holeIds,
+                    READONLY to readOnly
                 )
             }
     }

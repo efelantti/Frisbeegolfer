@@ -114,6 +114,10 @@ class RoundListAdapter internal constructor(
         notifyDataSetChanged()
     }
 
+    internal fun isRoundSelected(): Boolean {
+        return selectedPosition == defaultSelectedPosition
+    }
+
     internal fun getSelectedRound(): RoundWithCourseAndScores? {
         return if (selectedPosition == defaultSelectedPosition) null
         else rounds[selectedPosition]

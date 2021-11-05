@@ -19,7 +19,6 @@ import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 
 // TODO - Allow to filter rounds (for example, by player or course)
-// TODO - Allow to change start time of Round.
 class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
     DialogConfirmDelete.OnConfirmationSelected {
 
@@ -131,7 +130,7 @@ class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
                 round.round.dateStarted,
                 holeIds,
                 playerIds,
-                true
+                !round.isFinished()
             )
         findNavController().navigate(action)
     }

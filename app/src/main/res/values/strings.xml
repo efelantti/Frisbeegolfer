@@ -258,4 +258,6 @@
     <string name="adding_discscores_rounds">Adding rounds...</string>
     <string name="discscores_imported">All data imported!</string>
     <string name="action_change_start_datetime">Change round start date/time</string>
+    <string name="enable_readonly">Disable edit</string>
+    <string name="disable_readonly">Enable edit</string>
 </resources>

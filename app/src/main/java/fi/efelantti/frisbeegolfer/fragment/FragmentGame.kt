@@ -49,7 +49,8 @@ class FragmentGame : Fragment() {
             this,
             roundId = args.roundId,
             holeIds = args.holeIds,
-            playerIds = args.playerIds
+            playerIds = args.playerIds,
+            readOnly = args.shouldOpenScorecard
         )
         viewPager = binding.pager
 
@@ -79,15 +80,16 @@ class GameFragmentAdapter(
     fragment: Fragment,
     val roundId: OffsetDateTime,
     val playerIds: LongArray,
-    val holeIds: LongArray
+    val holeIds: LongArray,
+    val readOnly: Boolean
 ) : FragmentStateAdapter(fragment) {
 
     override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> FragmentScore.newInstance(roundId, playerIds, holeIds)
-            1 -> FragmentScorecard.newInstance(roundId, playerIds, holeIds)
+            0 -> FragmentScore.newInstance(roundId, playerIds, holeIds, readOnly)
+            1 -> FragmentScorecard.newInstance(roundId, playerIds, holeIds, readOnly)
             else -> throw IndexOutOfBoundsException("No fragment found for index value $position.")
         }
     }

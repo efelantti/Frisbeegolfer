@@ -1,6 +1,16 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/action_enable_readonly"
+        android:icon="@drawable/ic_edit"
+        android:title="@string/enable_readonly"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_disable_readonly"
+        android:icon="@drawable/ic_baseline_edit_off_24"
+        android:title="@string/disable_readonly"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_change_start_datetime"
         android:title="@string/action_change_start_datetime"
         app:showAsAction="never" />
