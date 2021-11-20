@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter
 class RoundListAdapter internal constructor(
     val context: Context,
     onClickListener: ListItemClickListener
-) : RecyclerView.Adapter<RoundListAdapter.CourseViewHolder>() {
+) : RecyclerView.Adapter<RoundListAdapter.RoundViewHolder>() {
 
     interface ListItemClickListener {
         fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
@@ -32,9 +32,10 @@ class RoundListAdapter internal constructor(
     private lateinit var builder: TextDrawable.IBuilder
     private val generator = ColorGenerator.MATERIAL
 
-    inner class CourseViewHolder(binding: RecyclerviewRoundBinding) :
+    inner class RoundViewHolder(binding: RecyclerviewRoundBinding) :
         RecyclerView.ViewHolder(binding.root),
-        View.OnClickListener {
+        View.OnClickListener,
+        View.OnLongClickListener {
         val roundCard = binding.roundCard
         val roundIcon = binding.txtCourseNameAvatar
         val roundItemViewStartedOnDate = binding.txtStartedOnDate
@@ -45,6 +46,7 @@ class RoundListAdapter internal constructor(
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
             builder = TextDrawable.builder()
                 .beginConfig()
                 .textColor(
@@ -57,6 +59,25 @@ class RoundListAdapter internal constructor(
                 .endConfig()
                 .round()
         }
+
+
+        override fun onLongClick(v: View?): Boolean {
+            val position: Int = bindingAdapterPosition
+            val shouldStartActionMode: Boolean
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                shouldStartActionMode = false
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                shouldStartActionMode = true
+            }
+            mOnClickListener.onListItemClick(position, shouldStartActionMode)
+            return false
+        }
+
 
         override fun onClick(v: View?) {
             val position: Int = bindingAdapterPosition
@@ -75,13 +96,13 @@ class RoundListAdapter internal constructor(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoundViewHolder {
         val binding =
             RecyclerviewRoundBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CourseViewHolder(binding)
+        return RoundViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RoundViewHolder, position: Int) {
         holder.roundCard.isActivated = selectedPosition == position
 
         val current = rounds[position]

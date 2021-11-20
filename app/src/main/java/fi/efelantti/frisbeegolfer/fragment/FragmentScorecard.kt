@@ -1,7 +1,10 @@
 package fi.efelantti.frisbeegolfer.fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -26,26 +29,12 @@ class FragmentScorecard : Fragment() {
     private lateinit var scoreViewModel: ScoreViewModel
     private lateinit var scoreViewModelFactory: ScoreViewModelFactory
     private var expectedScoresCount = 0
-    private var readOnly = false
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.appbar_fragment_game, menu)
-        return super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        val menuItemsToHide = mutableListOf(
-            R.id.action_import_data,
-            R.id.action_export_data,
-            R.id.action_import_data_from_discscores
-        )
-        if (readOnly) menuItemsToHide.add(R.id.action_disable_readonly)
-        else menuItemsToHide.add(R.id.action_enable_readonly)
-        menuItemsToHide.forEach {
-            val item = menu.findItem(it)
-            if (item != null) item.isVisible = false
-        }
-        super.onPrepareOptionsMenu(menu)
+    private fun pickDateTime() {
+        DateTimePicker(requireContext(), true) {
+            val pickedDateTime = it.pickedDateTime
+            scoreViewModel.updateCurrentRound(pickedDateTime)
+        }.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -58,20 +47,12 @@ class FragmentScorecard : Fragment() {
         }
     }
 
-    private fun pickDateTime() {
-        DateTimePicker(requireContext(), true) {
-            val pickedDateTime = it.pickedDateTime
-            scoreViewModel.updateCurrentRound(pickedDateTime)
-        }.show()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentScorecardBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        readOnly = requireArguments().getBoolean(READONLY)
         requireActivity().invalidateOptionsMenu()
         val roundId = requireArguments().getSerializable(ROUND_ID) as OffsetDateTime
         val playerIds = requireArguments().getLongArray(PLAYER_IDS)

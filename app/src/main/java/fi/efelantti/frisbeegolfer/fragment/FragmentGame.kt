@@ -1,11 +1,9 @@
 package fi.efelantti.frisbeegolfer.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -25,10 +23,28 @@ class FragmentGame : Fragment() {
     private lateinit var viewPager: ViewPager2
     private val args: FragmentGameArgs by navArgs()
     private var _binding: FragmentGameBinding? = null
-    private val roundViewModel: RoundViewModel by activityViewModels {
+    private val roundViewModel: RoundViewModel by viewModels {
         RoundViewModelFactory((requireActivity().applicationContext as FrisbeegolferApplication).repository)
     }
     private val binding get() = _binding!!
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.appbar_fragment_game, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val menuItemsToHide = mutableListOf(
+            R.id.action_import_data,
+            R.id.action_export_data,
+            R.id.action_import_data_from_discscores
+        )
+        menuItemsToHide.forEach {
+            val item = menu.findItem(it)
+            if (item != null) item.isVisible = false
+        }
+        super.onPrepareOptionsMenu(menu)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +54,10 @@ class FragmentGame : Fragment() {
         _binding = FragmentGameBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

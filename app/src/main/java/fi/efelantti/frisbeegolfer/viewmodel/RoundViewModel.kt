@@ -19,6 +19,7 @@ class RoundViewModel(
     private val repository: IRepository
 ) : ViewModel() {
 
+    //var isReadOnly: Boolean? = null
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
     val allRounds: LiveData<List<RoundWithCourseAndScores>> = repository.allRounds
 
