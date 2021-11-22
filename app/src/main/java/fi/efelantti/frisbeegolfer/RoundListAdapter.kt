@@ -22,6 +22,7 @@ class RoundListAdapter internal constructor(
 
     interface ListItemClickListener {
         fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
+        fun onListItemLongClick(position: Int, shouldStartActionMode: Boolean)
     }
 
     private val res: Resources = context.resources
@@ -74,23 +75,25 @@ class RoundListAdapter internal constructor(
                 notifyItemChanged(selectedPosition)
                 shouldStartActionMode = true
             }
-            mOnClickListener.onListItemClick(position, shouldStartActionMode)
-            return false
+            mOnClickListener.onListItemLongClick(position, shouldStartActionMode)
+            return true
         }
 
 
         override fun onClick(v: View?) {
             val position: Int = bindingAdapterPosition
-            val shouldStartActionMode: Boolean
-            val previousSelectedPosition = selectedPosition
-            if (selectedPosition == position) {
-                resetSelectedPosition()
-                shouldStartActionMode = false
-            } else {
-                selectedPosition = position
-                notifyItemChanged(previousSelectedPosition)
-                notifyItemChanged(selectedPosition)
-                shouldStartActionMode = true
+            var shouldStartActionMode = true
+            if (selectedPosition != defaultSelectedPosition) {
+                val previousSelectedPosition = selectedPosition
+                if (selectedPosition == position) {
+                    resetSelectedPosition()
+                    shouldStartActionMode = false
+                } else {
+                    selectedPosition = position
+                    notifyItemChanged(previousSelectedPosition)
+                    notifyItemChanged(selectedPosition)
+                    shouldStartActionMode = true
+                }
             }
             mOnClickListener.onListItemClick(position, shouldStartActionMode)
         }

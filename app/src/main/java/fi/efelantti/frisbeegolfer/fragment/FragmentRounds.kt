@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -136,6 +137,18 @@ class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
     }
 
     override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
+        when (actionMode) {
+            null -> {
+                // Start the CAB using the ActionMode.Callback defined above
+                Toast.makeText(requireContext(), "Short clicked!", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                onListItemLongClick(position, shouldStartActionMode)
+            }
+        }
+    }
+
+    override fun onListItemLongClick(position: Int, shouldStartActionMode: Boolean) {
         if (!shouldStartActionMode) {
             actionMode?.finish()
             binding.fabStartRound.isEnabled = true
