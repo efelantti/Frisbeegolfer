@@ -54,6 +54,7 @@ class FragmentScorecard : Fragment() {
         _binding = FragmentScorecardBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         requireActivity().invalidateOptionsMenu()
+        // TODO - Set name of course to title
         val roundId = requireArguments().getSerializable(ROUND_ID) as OffsetDateTime
         val playerIds = requireArguments().getLongArray(PLAYER_IDS)
             ?: throw IllegalArgumentException("List of player ids was null.")
@@ -66,8 +67,9 @@ class FragmentScorecard : Fragment() {
             playerIds,
             holeIds
         )
-        scoreViewModel = ViewModelProvider(requireParentFragment(), scoreViewModelFactory)
-            .get(ScoreViewModel::class.java)
+        scoreViewModel =
+            ViewModelProvider(this, scoreViewModelFactory)
+                .get(ScoreViewModel::class.java)
         return binding.root
     }
 
@@ -150,10 +152,10 @@ class FragmentScorecard : Fragment() {
     }
 
     companion object {
-        private const val ROUND_ID = "round_Id"
-        private const val PLAYER_IDS = "player_Ids"
-        private const val HOLE_IDS = "hole_Ids"
-        private const val READONLY = "readOnly"
+        const val ROUND_ID = "round_Id"
+        const val PLAYER_IDS = "player_Ids"
+        const val HOLE_IDS = "hole_Ids"
+        const val READONLY = "readOnly"
 
         fun newInstance(
             roundId: OffsetDateTime,

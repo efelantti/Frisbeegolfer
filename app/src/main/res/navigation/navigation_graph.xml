@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_fragmentChooseRound_to_fragmentChooseCourse"
             app:destination="@id/fragmentChooseCourse" />
+        <action
+            android:id="@+id/action_fragmentChooseRound_to_fragmentScoreCard"
+            app:destination="@id/fragmentScoreCard" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_courses"
@@ -96,5 +99,18 @@
             android:name="shouldOpenScorecard"
             app:argType="boolean"
             android:defaultValue="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentScoreCard"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentScorecard">
+        <argument
+            android:name="round_id"
+            app:argType="java.time.OffsetDateTime" />
+        <argument
+            android:name="holeIds"
+            app:argType="long[]" />
+        <argument
+            android:name="playerIds"
+            app:argType="long[]" />
     </fragment>
 </navigation>

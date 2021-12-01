@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -53,7 +53,7 @@ class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             return when (item.itemId) {
                 R.id.action_edit -> {
-                    chooseSelectedRound()
+                    editSelectedRound()
                     mode.finish() // Action picked, so close the CAB
                     true
                 }
@@ -120,7 +120,22 @@ class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
         }
     }
 
-    private fun chooseSelectedRound() {
+    private fun showRoundScores() {
+        val round = adapter.getSelectedRound()
+        actionMode?.finish()
+        if (round == null) throw java.lang.IllegalArgumentException("No round was selected.")
+        val holeIds = round.course.holes.map { it.holeId }.toLongArray()
+        val playerIds = round.scores.distinctBy { it.player.id }.map { it.player.id }.toLongArray()
+        val bundle = bundleOf(
+            FragmentScorecard.ROUND_ID to round.round.dateStarted,
+            FragmentScorecard.PLAYER_IDS to playerIds,
+            FragmentScorecard.HOLE_IDS to holeIds,
+            FragmentScorecard.READONLY to false
+        )
+        findNavController().navigate(R.id.action_fragmentChooseRound_to_fragmentScoreCard, bundle)
+    }
+
+    private fun editSelectedRound() {
         val round = adapter.getSelectedRound()
         actionMode?.finish()
         if (round == null) throw java.lang.IllegalArgumentException("No round was selected.")
@@ -131,25 +146,25 @@ class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
                 round.round.dateStarted,
                 holeIds,
                 playerIds,
-                !round.isFinished()
+                false
             )
         findNavController().navigate(action)
     }
 
-    override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
+    override fun onListItemClick(position: Int, clickedOnSame: Boolean) {
         when (actionMode) {
             null -> {
                 // Start the CAB using the ActionMode.Callback defined above
-                Toast.makeText(requireContext(), "Short clicked!", Toast.LENGTH_SHORT).show()
+                showRoundScores()
             }
             else -> {
-                onListItemLongClick(position, shouldStartActionMode)
+                onListItemLongClick(position, clickedOnSame)
             }
         }
     }
 
-    override fun onListItemLongClick(position: Int, shouldStartActionMode: Boolean) {
-        if (!shouldStartActionMode) {
+    override fun onListItemLongClick(position: Int, clickedOnSame: Boolean) {
+        if (clickedOnSame) {
             actionMode?.finish()
             binding.fabStartRound.isEnabled = true
         } else {

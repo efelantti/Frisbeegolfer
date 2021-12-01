@@ -21,8 +21,8 @@ class RoundListAdapter internal constructor(
 ) : RecyclerView.Adapter<RoundListAdapter.RoundViewHolder>() {
 
     interface ListItemClickListener {
-        fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
-        fun onListItemLongClick(position: Int, shouldStartActionMode: Boolean)
+        fun onListItemClick(position: Int, clickedOnSame: Boolean)
+        fun onListItemLongClick(position: Int, clickedOnSame: Boolean)
     }
 
     private val res: Resources = context.resources
@@ -64,38 +64,37 @@ class RoundListAdapter internal constructor(
 
         override fun onLongClick(v: View?): Boolean {
             val position: Int = bindingAdapterPosition
-            val shouldStartActionMode: Boolean
+            val clickedOnSame: Boolean
             val previousSelectedPosition = selectedPosition
             if (selectedPosition == position) {
                 resetSelectedPosition()
-                shouldStartActionMode = false
+                clickedOnSame = true
             } else {
                 selectedPosition = position
                 notifyItemChanged(previousSelectedPosition)
                 notifyItemChanged(selectedPosition)
-                shouldStartActionMode = true
+                clickedOnSame = false
             }
-            mOnClickListener.onListItemLongClick(position, shouldStartActionMode)
+            mOnClickListener.onListItemLongClick(position, clickedOnSame)
             return true
         }
 
 
         override fun onClick(v: View?) {
             val position: Int = bindingAdapterPosition
-            var shouldStartActionMode = true
-            if (selectedPosition != defaultSelectedPosition) {
-                val previousSelectedPosition = selectedPosition
-                if (selectedPosition == position) {
-                    resetSelectedPosition()
-                    shouldStartActionMode = false
-                } else {
-                    selectedPosition = position
-                    notifyItemChanged(previousSelectedPosition)
-                    notifyItemChanged(selectedPosition)
-                    shouldStartActionMode = true
-                }
+            var clickedOnSame = false
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                clickedOnSame = true
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                clickedOnSame = false
             }
-            mOnClickListener.onListItemClick(position, shouldStartActionMode)
+
+            mOnClickListener.onListItemClick(position, clickedOnSame)
         }
     }
 
