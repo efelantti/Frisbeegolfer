@@ -19,7 +19,8 @@ class CourseListAdapter internal constructor(
 ) : RecyclerView.Adapter<CourseListAdapter.CourseViewHolder>() {
 
     interface ListItemClickListener {
-        fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
+        fun onListItemClick(position: Int, clickedOnSame: Boolean)
+        fun onListItemLongClick(position: Int, clickedOnSame: Boolean)
     }
 
     private val res: Resources = context.resources
@@ -31,7 +32,7 @@ class CourseListAdapter internal constructor(
     private val generator = ColorGenerator.MATERIAL
 
     inner class CourseViewHolder(val binding: RecyclerviewCourseBinding) :
-        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
         val courseCard = binding.courseCard
         val icon = binding.courseAvatar
         val courseItemViewCourseName = binding.txtCourseName
@@ -39,6 +40,7 @@ class CourseListAdapter internal constructor(
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
             builder = TextDrawable.builder()
                 .beginConfig()
                 .textColor(
@@ -52,20 +54,39 @@ class CourseListAdapter internal constructor(
                 .round()
         }
 
-        override fun onClick(v: View?) {
+        override fun onLongClick(v: View?): Boolean {
             val position: Int = bindingAdapterPosition
-            val shouldStartActionMode: Boolean
+            val clickedOnSame: Boolean
             val previousSelectedPosition = selectedPosition
             if (selectedPosition == position) {
                 resetSelectedPosition()
-                shouldStartActionMode = false
+                clickedOnSame = true
             } else {
                 selectedPosition = position
                 notifyItemChanged(previousSelectedPosition)
                 notifyItemChanged(selectedPosition)
-                shouldStartActionMode = true
+                clickedOnSame = false
             }
-            mOnClickListener.onListItemClick(position, shouldStartActionMode)
+            mOnClickListener.onListItemLongClick(position, clickedOnSame)
+            return true
+        }
+
+
+        override fun onClick(v: View?) {
+            val position: Int = bindingAdapterPosition
+            val clickedOnSame: Boolean
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                clickedOnSame = true
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                clickedOnSame = false
+            }
+
+            mOnClickListener.onListItemClick(position, clickedOnSame)
         }
     }
 

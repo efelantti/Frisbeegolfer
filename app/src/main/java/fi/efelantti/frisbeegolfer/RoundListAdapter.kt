@@ -82,7 +82,7 @@ class RoundListAdapter internal constructor(
 
         override fun onClick(v: View?) {
             val position: Int = bindingAdapterPosition
-            var clickedOnSame = false
+            val clickedOnSame: Boolean
             val previousSelectedPosition = selectedPosition
             if (selectedPosition == position) {
                 resetSelectedPosition()

@@ -22,7 +22,8 @@ class PlayerListAdapter internal constructor(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ListItemClickListener {
-        fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
+        fun onListItemClick(position: Int, clickedOnSame: Boolean)
+        fun onListItemLongClick(position: Int, clickedOnSame: Boolean)
     }
 
     private val res: Resources = context.resources
@@ -39,7 +40,7 @@ class PlayerListAdapter internal constructor(
     }
 
     inner class PlayerWithEmailViewHolder(binding: RecyclerviewPlayerWithEmailBinding) :
-        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
         private val playerCard: ConstraintLayout = binding.playerItem
         private val playerIcon = binding.playerInitialImage
@@ -48,6 +49,7 @@ class PlayerListAdapter internal constructor(
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
             builder = TextDrawable.builder()
                 .beginConfig()
                 .textColor(
@@ -62,7 +64,37 @@ class PlayerListAdapter internal constructor(
         }
 
         override fun onClick(v: View?) {
-            onClickHandler(bindingAdapterPosition)
+            val position: Int = bindingAdapterPosition
+            val clickedOnSame: Boolean
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                clickedOnSame = true
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                clickedOnSame = false
+            }
+
+            mOnClickListener.onListItemClick(position, clickedOnSame)
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            val position: Int = bindingAdapterPosition
+            val clickedOnSame: Boolean
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                clickedOnSame = true
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                clickedOnSame = false
+            }
+            mOnClickListener.onListItemLongClick(position, clickedOnSame)
+            return true
         }
 
         fun bind(position: Int) {
@@ -79,7 +111,7 @@ class PlayerListAdapter internal constructor(
     }
 
     inner class PlayerWithoutEmailViewHolder(binding: RecyclerviewPlayerWithoutEmailBinding) :
-        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
         private val playerCard: ConstraintLayout = binding.playerItem
         private val playerIcon = binding.playerInitialImage
@@ -87,6 +119,7 @@ class PlayerListAdapter internal constructor(
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
             builder = TextDrawable.builder()
                 .beginConfig()
                 .textColor(
@@ -101,7 +134,37 @@ class PlayerListAdapter internal constructor(
         }
 
         override fun onClick(v: View?) {
-            onClickHandler(bindingAdapterPosition)
+            val position: Int = bindingAdapterPosition
+            val clickedOnSame: Boolean
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                clickedOnSame = true
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                clickedOnSame = false
+            }
+
+            mOnClickListener.onListItemClick(position, clickedOnSame)
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            val position: Int = bindingAdapterPosition
+            val clickedOnSame: Boolean
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                clickedOnSame = true
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                clickedOnSame = false
+            }
+            mOnClickListener.onListItemLongClick(position, clickedOnSame)
+            return true
         }
 
         fun bind(position: Int) {
@@ -167,19 +230,4 @@ class PlayerListAdapter internal constructor(
     }
 
     override fun getItemCount() = players.size
-
-    private fun onClickHandler(position: Int) {
-        val previousSelectedPosition = selectedPosition
-        val shouldStartActionMode: Boolean
-        if (selectedPosition == position) {
-            resetSelectedPosition()
-            shouldStartActionMode = false
-        } else {
-            selectedPosition = position
-            notifyItemChanged(previousSelectedPosition)
-            notifyItemChanged(selectedPosition)
-            shouldStartActionMode = true
-        }
-        mOnClickListener.onListItemClick(position, shouldStartActionMode)
-    }
 }

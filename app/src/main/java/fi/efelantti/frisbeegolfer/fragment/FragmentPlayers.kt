@@ -44,7 +44,7 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener,
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             return when (item.itemId) {
                 R.id.action_edit -> {
-                    editSelectedCourse()
+                    editSelectedPlayer()
                     mode.finish()
                     true
                 }
@@ -59,22 +59,23 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener,
             }
         }
 
-        private fun editSelectedCourse() {
-            val player = adapter.getSelectedPlayer()
-                ?: throw java.lang.IllegalArgumentException("No player was selected.")
-            val action =
-                FragmentPlayersDirections.actionFragmentPlayersToFragmentNewPlayer(
-                    NewPlayerAction.EDIT.toString(),
-                    player.id
-                )
-            findNavController().navigate(action)
-        }
-
         override fun onDestroyActionMode(mode: ActionMode) {
             actionMode = null
             adapter.resetSelectedPosition()
             fab.isEnabled = true
         }
+    }
+
+    private fun editSelectedPlayer() {
+        val player = adapter.getSelectedPlayer()
+            ?: throw java.lang.IllegalArgumentException("No player was selected.")
+        val action =
+            FragmentPlayersDirections.actionFragmentPlayersToFragmentNewPlayer(
+                NewPlayerAction.EDIT.toString(),
+                player.id
+            )
+        adapter.resetSelectedPosition()
+        findNavController().navigate(action)
     }
 
     private fun deletePlayer(player: Player) {
@@ -126,6 +127,7 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener,
     }
 
     private fun showNewPlayerDialog() {
+        actionMode?.finish()
         val action =
             FragmentPlayersDirections.actionFragmentPlayersToFragmentNewPlayer(
                 NewPlayerAction.ADD.toString(),
@@ -134,14 +136,27 @@ class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener,
         findNavController().navigate(action)
     }
 
-    override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
-        if (!shouldStartActionMode) {
+    override fun onListItemClick(position: Int, clickedOnSame: Boolean) {
+        when (actionMode) {
+            null -> {
+                // Start the CAB using the ActionMode.Callback defined above
+                editSelectedPlayer()
+            }
+            else -> {
+                onListItemLongClick(position, clickedOnSame)
+            }
+        }
+    }
+
+    override fun onListItemLongClick(position: Int, clickedOnSame: Boolean) {
+        if (clickedOnSame) {
             actionMode?.finish()
-            fab.isEnabled = true
+            binding.fab.isEnabled = true
         } else {
-            fab.isEnabled = false
+            binding.fab.isEnabled = false
             when (actionMode) {
                 null -> {
+                    // Start the CAB using the ActionMode.Callback defined above
                     actionMode = activity?.startActionMode(actionModeCallback)
                 }
             }

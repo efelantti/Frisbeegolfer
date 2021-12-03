@@ -66,17 +66,6 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener,
             }
         }
 
-        private fun editSelectedCourse() {
-            val course = adapter.getSelectedCourse()
-                ?: throw java.lang.IllegalArgumentException("No course was selected.")
-            val action =
-                FragmentCoursesDirections.actionFragmentCoursesToFragmentNewCourse(
-                    NewCourseAction.EDIT.toString(),
-                    course.course.courseId
-                )
-            findNavController().navigate(action)
-        }
-
         // Called when the user exits the action mode
         override fun onDestroyActionMode(mode: ActionMode) {
             actionMode = null
@@ -133,6 +122,18 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener,
         }
     }
 
+    private fun editSelectedCourse() {
+        val course = adapter.getSelectedCourse()
+            ?: throw java.lang.IllegalArgumentException("No course was selected.")
+        val action =
+            FragmentCoursesDirections.actionFragmentCoursesToFragmentNewCourse(
+                NewCourseAction.EDIT.toString(),
+                course.course.courseId
+            )
+        adapter.resetSelectedPosition()
+        findNavController().navigate(action)
+    }
+
     private fun showNewCourseDialog() {
         val fm: FragmentManager = parentFragmentManager
         val action =
@@ -143,12 +144,24 @@ class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener,
         findNavController().navigate(action)
     }
 
-    override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
-        if (!shouldStartActionMode) {
+    override fun onListItemClick(position: Int, clickedOnSame: Boolean) {
+        when (actionMode) {
+            null -> {
+                // Start the CAB using the ActionMode.Callback defined above
+                editSelectedCourse()
+            }
+            else -> {
+                onListItemLongClick(position, clickedOnSame)
+            }
+        }
+    }
+
+    override fun onListItemLongClick(position: Int, clickedOnSame: Boolean) {
+        if (clickedOnSame) {
             actionMode?.finish()
-            fab.isEnabled = true
+            binding.fabAddCourse.isEnabled = true
         } else {
-            fab.isEnabled = false
+            binding.fabAddCourse.isEnabled = false
             when (actionMode) {
                 null -> {
                     // Start the CAB using the ActionMode.Callback defined above

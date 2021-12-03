@@ -129,12 +129,27 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         findNavController().navigate(action)
     }
 
-    override fun onListItemClick(position: Int, shouldStartActionMode: Boolean) {
-        if (!shouldStartActionMode) {
+    override fun onListItemClick(position: Int, clickedOnSame: Boolean) {
+        if (clickedOnSame) {
             actionMode?.finish()
-            fab.isEnabled = false
+            binding.fabChooseCourse.isEnabled = false
         } else {
-            fab.isEnabled = true
+            binding.fabChooseCourse.isEnabled = true
+            when (actionMode) {
+                null -> {
+                    // Start the CAB using the ActionMode.Callback defined above
+                    actionMode = activity?.startActionMode(actionModeCallback)
+                }
+            }
+        }
+    }
+
+    override fun onListItemLongClick(position: Int, clickedOnSame: Boolean) {
+        if (clickedOnSame) {
+            actionMode?.finish()
+            binding.fabChooseCourse.isEnabled = false
+        } else {
+            binding.fabChooseCourse.isEnabled = true
             when (actionMode) {
                 null -> {
                     // Start the CAB using the ActionMode.Callback defined above
