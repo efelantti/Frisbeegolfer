@@ -285,14 +285,14 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
             roundId: OffsetDateTime,
             playerIds: LongArray,
             holeIds: LongArray,
-            readOnly: Boolean
+            readOnly: Boolean,
         ) =
             FragmentScore().apply {
                 arguments = bundleOf(
                     ROUND_ID to roundId,
                     PLAYER_IDS to playerIds,
                     HOLE_IDS to holeIds,
-                    READONLY to readOnly
+                    READONLY to readOnly,
                 )
             }
     }

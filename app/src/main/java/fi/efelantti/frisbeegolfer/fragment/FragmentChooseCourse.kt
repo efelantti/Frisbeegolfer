@@ -120,8 +120,12 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         val course = adapter.getSelectedCourse()
         actionMode?.finish()
         if (course == null) throw java.lang.IllegalArgumentException("No course was selected.")
+        val courseName = course.course.name ?: throw IllegalStateException("Course had no name!")
         val action =
-            FragmentChooseCourseDirections.actionFragmentChooseCourseToFragmentChoosePlayers(course.course.courseId)
+            FragmentChooseCourseDirections.actionFragmentChooseCourseToFragmentChoosePlayers(
+                course.course.courseId,
+                courseName
+            )
         findNavController().navigate(action)
     }
 

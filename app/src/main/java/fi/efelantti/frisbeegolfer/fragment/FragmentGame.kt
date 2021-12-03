@@ -13,7 +13,6 @@ import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.activity.MainActivity
 import fi.efelantti.frisbeegolfer.databinding.FragmentGameBinding
-import fi.efelantti.frisbeegolfer.observeOnce
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.time.OffsetDateTime
@@ -61,16 +60,15 @@ class FragmentGame : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        roundViewModel.getRoundWithRoundId(args.roundId).observeOnce(viewLifecycleOwner) { round ->
-            (requireActivity() as MainActivity).supportActionBar?.title = round.course.course.name
-        }
+        (requireActivity() as MainActivity).supportActionBar?.title = args.roundName
 
         gameFragmentAdapter = GameFragmentAdapter(
             this,
             roundId = args.roundId,
             holeIds = args.holeIds,
             playerIds = args.playerIds,
-            readOnly = args.shouldOpenScorecard
+            readOnly = args.shouldOpenScorecard,
+            roundName = args.roundName
         )
         viewPager = binding.pager
 
@@ -101,7 +99,8 @@ class GameFragmentAdapter(
     val roundId: OffsetDateTime,
     val playerIds: LongArray,
     val holeIds: LongArray,
-    val readOnly: Boolean
+    val readOnly: Boolean,
+    val roundName: String
 ) : FragmentStateAdapter(fragment) {
 
     override fun getItemCount(): Int = 2
@@ -109,7 +108,7 @@ class GameFragmentAdapter(
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> FragmentScore.newInstance(roundId, playerIds, holeIds, readOnly)
-            1 -> FragmentScorecard.newInstance(roundId, playerIds, holeIds, readOnly)
+            1 -> FragmentScorecard.newInstance(roundId, playerIds, holeIds, readOnly, roundName)
             else -> throw IndexOutOfBoundsException("No fragment found for index value $position.")
         }
     }

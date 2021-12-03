@@ -127,8 +127,15 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
             courseViewModel.getCourseWithHolesById(courseId).observe(viewLifecycleOwner, { course ->
                 val roundId = OffsetDateTime.now()
                 val holeIds = course.holes.sortedBy { it.holeNumber }.map { it.holeId }
+                val roundName =
+                    course.course.name ?: throw IllegalStateException("Course has no name!")
                 roundViewModel.addRoundToDatabase(course, playerIds, roundId)
-                navigateToGameFragment(roundId, holeIds.toLongArray(), playerIds.toLongArray())
+                navigateToGameFragment(
+                    roundId,
+                    holeIds.toLongArray(),
+                    playerIds.toLongArray(),
+                    roundName
+                )
             })
         }
     }
@@ -164,13 +171,16 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
     private fun navigateToGameFragment(
         roundId: OffsetDateTime,
         holeIds: LongArray,
-        playerIds: LongArray
+        playerIds: LongArray,
+        roundName: String
     ) {
         val action =
             FragmentChoosePlayersDirections.actionFragmentChoosePlayersToFragmentGame(
                 roundId,
                 holeIds,
-                playerIds
+                playerIds,
+                false,
+                roundName
             )
         findNavController().navigate(action)
     }

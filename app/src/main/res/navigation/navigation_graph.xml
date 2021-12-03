@@ -21,6 +21,9 @@
         <argument
             android:name="courseId"
             app:argType="long" />
+        <argument
+            android:name="roundName"
+            app:argType="string" />
         <action
             android:id="@+id/action_fragmentChoosePlayers_to_fragmentGame"
             app:destination="@id/fragmentGame"
@@ -99,6 +102,9 @@
             android:name="shouldOpenScorecard"
             app:argType="boolean"
             android:defaultValue="false" />
+        <argument
+            android:name="roundName"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/fragmentScoreCard"

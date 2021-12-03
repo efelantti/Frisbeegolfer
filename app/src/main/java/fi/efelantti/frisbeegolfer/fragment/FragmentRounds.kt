@@ -130,7 +130,8 @@ class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
             FragmentScorecard.ROUND_ID to round.round.dateStarted,
             FragmentScorecard.PLAYER_IDS to playerIds,
             FragmentScorecard.HOLE_IDS to holeIds,
-            FragmentScorecard.READONLY to false
+            FragmentScorecard.READONLY to false,
+            FragmentScorecard.ROUNDNAME to round.course.course.name
         )
         findNavController().navigate(R.id.action_fragmentChooseRound_to_fragmentScoreCard, bundle)
     }
@@ -146,7 +147,8 @@ class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
                 round.round.dateStarted,
                 holeIds,
                 playerIds,
-                false
+                false,
+                round.course.course.name ?: throw IllegalStateException("Course had no name.")
             )
         findNavController().navigate(action)
     }

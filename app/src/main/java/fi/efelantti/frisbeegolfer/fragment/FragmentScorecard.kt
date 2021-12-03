@@ -1,10 +1,7 @@
 package fi.efelantti.frisbeegolfer.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -12,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.DateTimePicker
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.activity.MainActivity
 import fi.efelantti.frisbeegolfer.databinding.FragmentScorecardBinding
 import fi.efelantti.frisbeegolfer.tableview.TableViewAdapter
 import fi.efelantti.frisbeegolfer.tableview.model.Cell
@@ -47,6 +45,19 @@ class FragmentScorecard : Fragment() {
         }
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val menuItemsToHide = mutableListOf(
+            R.id.action_import_data,
+            R.id.action_export_data,
+            R.id.action_import_data_from_discscores
+        )
+        menuItemsToHide.forEach {
+            val item = menu.findItem(it)
+            if (item != null) item.isVisible = false
+        }
+        super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,12 +90,19 @@ class FragmentScorecard : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
+        val roundName = requireArguments().getString(ROUNDNAME)
+            ?: throw IllegalArgumentException("Round name was not provided.")
+        val currentTitle = (requireActivity() as MainActivity).supportActionBar?.title
+        if (currentTitle != roundName)
+            (requireActivity() as MainActivity).supportActionBar?.title = roundName
+
         val tableView = binding.contentContainer
         val adapter = TableViewAdapter()
         tableView.setAdapter(adapter)
 
         scoreViewModel.currentRound.observe(viewLifecycleOwner) { currentRound ->
             if (currentRound != null && currentRound.scores.count() == expectedScoresCount) {
+
                 val playerList =
                     currentRound.scores.distinctBy { it.player.id }.sortedBy { it.player.name }
                         .map { it.player }
@@ -156,19 +174,22 @@ class FragmentScorecard : Fragment() {
         const val PLAYER_IDS = "player_Ids"
         const val HOLE_IDS = "hole_Ids"
         const val READONLY = "readOnly"
+        const val ROUNDNAME = "roundName"
 
         fun newInstance(
             roundId: OffsetDateTime,
             playerIds: LongArray,
             holeIds: LongArray,
-            readOnly: Boolean
+            readOnly: Boolean,
+            roundName: String
         ) =
             FragmentScorecard().apply {
                 arguments = bundleOf(
                     ROUND_ID to roundId,
                     PLAYER_IDS to playerIds,
                     HOLE_IDS to holeIds,
-                    READONLY to readOnly
+                    READONLY to readOnly,
+                    ROUNDNAME to roundName
                 )
             }
     }
