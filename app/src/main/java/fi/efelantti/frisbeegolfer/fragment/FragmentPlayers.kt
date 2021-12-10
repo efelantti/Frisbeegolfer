@@ -3,7 +3,6 @@ package fi.efelantti.frisbeegolfer.fragment
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,7 +14,7 @@ import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
-class FragmentPlayers : Fragment(), PlayerListAdapter.ListItemClickListener,
+class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickListener,
     DialogConfirmDelete.OnConfirmationSelected {
 
     private var _binding: FragmentPlayersBinding? = null

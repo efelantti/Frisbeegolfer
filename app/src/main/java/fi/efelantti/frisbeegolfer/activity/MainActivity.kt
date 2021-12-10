@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider.getUriForFile
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -31,10 +32,16 @@ import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.io.*
 
 // TODO - Restart application after importing Discscores data in order to refresh the app.
-// TODO - If round is already finished, open the round in "read_only" mode per default and allow to change to edit mode.
+// TODO - Menu for changing dark / light mode.
+// TODO - Translate strings
+// TODO - Menu option for language.
+// TODO - Add statistics (to relevant fragments + a separate fragment).
+// TODO - Clicking on avatar icon also acts the same way as OnLongClick.
+// TODO - OnLongClick -> Change icon to selected icon (like gmail and outlook).
 class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSelected,
     DialogConfirmImportFromDiscscores.OnConfirmationSelectedImportDiscscores {
 
+    private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainWithNavigationBinding
     private val roundViewModel: RoundViewModel by viewModels {
@@ -141,7 +148,7 @@ class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSele
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_content) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.fragmentChooseRound,

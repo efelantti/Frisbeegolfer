@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,7 +19,7 @@ import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 
 // TODO - Allow to filter rounds (for example, by player or course)
-class FragmentRounds : Fragment(), RoundListAdapter.ListItemClickListener,
+class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickListener,
     DialogConfirmDelete.OnConfirmationSelected {
 
     private var _binding: FragmentRoundsBinding? = null

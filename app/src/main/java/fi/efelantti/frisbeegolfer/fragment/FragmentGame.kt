@@ -17,7 +17,7 @@ import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.time.OffsetDateTime
 
-class FragmentGame : Fragment() {
+class FragmentGame : SettingsMenuFragment() {
     private lateinit var gameFragmentAdapter: GameFragmentAdapter
     private lateinit var viewPager: ViewPager2
     private val args: FragmentGameArgs by navArgs()

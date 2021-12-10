@@ -65,7 +65,6 @@ class FragmentScorecard : Fragment() {
         _binding = FragmentScorecardBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         requireActivity().invalidateOptionsMenu()
-        // TODO - Set name of course to title
         val roundId = requireArguments().getSerializable(ROUND_ID) as OffsetDateTime
         val playerIds = requireArguments().getLongArray(PLAYER_IDS)
             ?: throw IllegalArgumentException("List of player ids was null.")

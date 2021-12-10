@@ -5,6 +5,14 @@
     app:startDestination="@id/fragmentChooseRound">
 
     <fragment
+        android:label="@string/settings_fragment_title"
+        android:id="@+id/fragmentSettings"
+        android:name="fi.efelantti.frisbeegolfer.fragment.FragmentSettings">
+        <action
+            android:id="@+id/fragmentSettings"
+            app:destination="@id/fragmentSettings" />
+    </fragment>
+    <fragment
         tools:layout="@layout/fragment_choose_a_course"
         android:id="@+id/fragmentChooseCourse"
         android:name="fi.efelantti.frisbeegolfer.fragment.FragmentChooseCourse"

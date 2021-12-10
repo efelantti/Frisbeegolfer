@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -17,7 +16,7 @@ import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
-class FragmentCourses : Fragment(), CourseListAdapter.ListItemClickListener,
+class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickListener,
     DialogConfirmDelete.OnConfirmationSelected {
 
     private var _binding: FragmentCoursesBinding? = null
