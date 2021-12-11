@@ -253,9 +253,9 @@
     <string name="action_import_from_discscores">Import Discscores data</string>
     <string name="import_discscores">Get Discscores data file from another app.</string>
     <string name="error_importing_discscores">There was an error while importing Discscores data.</string>
-    <string name="adding_discscores_players">Adding players...</string>
-    <string name="adding_discscores_courses">Adding courses...</string>
-    <string name="adding_discscores_rounds">Adding rounds...</string>
+    <string name="adding_discscores_players">Adding players…</string>
+    <string name="adding_discscores_courses">Adding courses…</string>
+    <string name="adding_discscores_rounds">Adding rounds…</string>
     <string name="discscores_imported">All data imported!</string>
     <string name="action_change_start_datetime">Change round start date/time</string>
     <string name="enable_readonly">Disable edit</string>
@@ -276,4 +276,12 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="settings_fragment_title">Settings</string>
+    <string name="theme_preferences_key"><xliff:g id="preference_key">theme</xliff:g></string>
+    <string name="dark_theme_preference_value">Dark</string>
+    <string name="light_theme_preference_value">Light</string>
+    <string name="system_theme_preference_value">System default</string>
+    <string name="theme_preference_title">Theme</string>
+    <string name="dark_theme_description">Dark mode</string>
+    <string name="light_theme_description">Light mode</string>
+    <string name="system_theme_description">System default</string>
 </resources>
