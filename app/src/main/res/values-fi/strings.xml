@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Frisbeegolfer</string>
+    <string name="button_newRound_text">Uusi kierros</string>
+    <string name="button_courses_text">Radat</string>
+    <string name="button_players_text">Pelaajat</string>
+    <string name="button_statistics_text">Tilastot</string>
+    <string name="button_settings_text">Asetukset</string>
+    <string name="add_player">Lisää pelaaja</string>
+    <string name="hint_word_name">Nimi (pakollinen)</string>
+    <string name="hint_word_email">Sähköposti</string>
+    <string name="text_activity_new_player_title_add">Lisää pelaaja</string>
+    <string name="text_activity_new_player_title_edit">Muokkaa pelaajaa</string>
+    <string name="button_yes">Kyllä</string>
+    <string name="button_no">Ei</string>
+    <string name="action_edit">Muokkaa</string>
+    <string name="players_activity_title">Pelaajat</string>
+    <string name="error_message_requiredFields">Varmista kenttien arvot.</string>
+    <string name="no_players_available">Pelaajia ei ole vielä lisätty.</string>
+    <string name="no_players_available_when_choosing">Pelaajia ei oel vielä lisätty. Lisää ensin vähintään yksi pelaaja.</string>
+    <string name="error_duplicate_player">Samanniminen pelaaja on jo olemassa!</string>
+    <string name="player_data_not_edited">Tietoa ei muokattu.</string>
+    <string name="email_descriptor">Sähköposti: <xliff:g example="example@example.com" id="email">%s</xliff:g></string>
+    <string name="invalid_field">Tarkista kentän <xliff:g example="First name" id="Field name">%1$s</xliff:g></string>
+    <string name="action_save">Tallenna</string>
+    <string name="no_courses_available">Ratoja ei ole vielä lisätty.</string>
+    <string name="no_courses_available_when_choosing">Ratoja ei löytynyt. Lisää ensin ainakin yksi rata.</string>
+    <string name="add_course">Lisää rata.</string>
+    <string name="courses_activity_title">Radat</string>
+    <string name="error_duplicate_course">Samoilla tiedoilla oleva rata on jo olemassa!</string>
+    <string name="courseName"><xliff:g example="Laajavuori Frisbeegolf park" id="courseName">%s</xliff:g></string>
+    <string name="city"><xliff:g example="Jyväskylä" id="city">%s</xliff:g></string>
+    <string name="numberOfHoles">Väylät: <xliff:g example="21" id="numberOfHoles">%d</xliff:g></string>
+    <string name="text_activity_new_course_title_add">Uusi rata</string>
+    <string name="text_activity_new_course_title_edit">Muokkaa rataa</string>
+    <string name="hint_word_course_name">Radan nimi (pakollinen)</string>
+    <string name="hint_word_city">Kaupunki (pakollinen)</string>
+    <string name="dialog_title_overwrite">Korvaaminen</string>
+    <string name="dialog_message_confirm_overwrite">Haluatko korvata vanhat tiedot uusilla?Toimintoa ei voi peruuttaa.</string>
+</resources>

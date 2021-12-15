@@ -6,5 +6,12 @@
         app:key="@string/theme_preferences_key"
         app:defaultValue="@string/system_theme_preference_value"
         app:title="@string/theme_preference_title" />
-
+    <ListPreference
+        app:key="pref_key_language"
+        app:title="@string/preferences_language"
+        app:dialogTitle="@string/preferences_language"
+        app:entries="@array/settings_language_values"
+        app:entryValues="@array/locales"
+        app:defaultValue="@string/system_locale"
+        app:summary="%s"></ListPreference>
 </PreferenceScreen>

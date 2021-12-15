@@ -69,7 +69,7 @@
     <string name="player_data_not_edited">No value was changed</string>
 
     <!-- Message that is displayed on the appbar when a player is selected from the player listing. -->
-    <string name="player_selected">1</string>
+    <string name="player_selected" translatable="false">1</string>
 
     <!-- Name of the save action in the appbar. -->
     <string name="action_save">Save</string>
@@ -90,7 +90,7 @@
     <string name="error_duplicate_course">A course with same details already exists!</string>
 
     <!-- Message that is displayed when a course is selected. -->
-    <string name="course_selected">1</string>
+    <string name="course_selected" translatable="false">1</string>
 
     <!-- String for course name (label + name). -->
     <string name="courseName"><xliff:g example="Laajavuori Frisbeegolf park" id="courseName">%s</xliff:g></string>
@@ -284,4 +284,9 @@
     <string name="dark_theme_description">Dark mode</string>
     <string name="light_theme_description">Light mode</string>
     <string name="system_theme_description">System default</string>
+    <string name="system_locale" translatable="false">system</string>
+    <string name="default_locale" translatable="false" />
+    <string name="preferences_language">Language</string>
+    <string name="language_setting_english">English</string>
+    <string name="language_setting_finnish">Suomi</string>
 </resources>

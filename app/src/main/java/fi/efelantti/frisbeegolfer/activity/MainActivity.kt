@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider.getUriForFile
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -38,7 +37,7 @@ import java.io.*
 // TODO - Add statistics (to relevant fragments + a separate fragment).
 // TODO - Clicking on avatar icon also acts the same way as OnLongClick.
 // TODO - OnLongClick -> Change icon to selected icon (like gmail and outlook).
-class MainActivity : AppCompatActivity(), DialogConfirmImport.OnConfirmationSelected,
+class MainActivity : BaseActivity(), DialogConfirmImport.OnConfirmationSelected,
     DialogConfirmImportFromDiscscores.OnConfirmationSelectedImportDiscscores {
 
     private lateinit var navController: NavController
