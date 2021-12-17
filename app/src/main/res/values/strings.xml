@@ -225,10 +225,9 @@
     <string name="action_change_start_datetime">Change round start date/time</string>
     <string name="action_open_settings">Settings</string>
     <string name="settings_fragment_title">Settings</string>
-    <string name="theme_preferences_key"><xliff:g id="preference_key">theme</xliff:g></string>
-    <string name="dark_theme_preference_value">Dark</string>
-    <string name="light_theme_preference_value">Light</string>
-    <string name="system_theme_preference_value">System default</string>
+    <string name="dark_theme_preference_value" translatable="false">Dark</string>
+    <string name="light_theme_preference_value" translatable="false">Light</string>
+    <string name="system_theme_preference_value" translatable="false">System default</string>
     <string name="theme_preference_title">Theme</string>
     <string name="dark_theme_description">Dark mode</string>
     <string name="light_theme_description">Light mode</string>

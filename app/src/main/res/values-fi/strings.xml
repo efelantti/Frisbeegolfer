@@ -113,10 +113,6 @@
     <string name="action_change_start_datetime">Vaihda kierroksen aloitusaikaa</string>
     <string name="action_open_settings">Asetukset</string>
     <string name="settings_fragment_title">Asetukset</string>
-    <string name="theme_preferences_key"><xliff:g id="preference_key">teema</xliff:g></string>
-    <string name="dark_theme_preference_value">Tumma</string>
-    <string name="light_theme_preference_value">Vaalea</string>
-    <string name="system_theme_preference_value">Järjestelmän käyttämä</string>
     <string name="theme_preference_title">Teema</string>
     <string name="dark_theme_description">Tumma tila</string>
     <string name="light_theme_description">Vaalea tila</string>

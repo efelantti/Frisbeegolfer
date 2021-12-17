@@ -4,6 +4,7 @@ import android.app.UiModeManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import fi.efelantti.frisbeegolfer.fragment.FragmentSettings
 import java.security.InvalidParameterException
 
 // https://medium.com/swlh/androids-dark-mode-through-user-configurations-4df9d75b0db0
@@ -12,7 +13,7 @@ class ThemeProvider(private val context: Context) {
     fun getThemeFromPreferences(): Int {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val selectedTheme = sharedPreferences.getString(
-            context.getString(R.string.theme_preferences_key),
+            FragmentSettings.KEY_PREF_THEME,
             context.getString(R.string.system_theme_preference_value)
         )
 

@@ -1,11 +1,11 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ListPreference
+        app:key="pref_key_theme"
+        app:title="@string/theme_preference_title"
         app:entries="@array/themes_entries"
         app:entryValues="@array/themes_values"
-        app:key="@string/theme_preferences_key"
-        app:defaultValue="@string/system_theme_preference_value"
-        app:title="@string/theme_preference_title" />
+        app:defaultValue="@string/system_theme_preference_value" />
     <ListPreference
         app:key="pref_key_language"
         app:title="@string/preferences_language"
@@ -13,5 +13,5 @@
         app:entries="@array/settings_language_values"
         app:entryValues="@array/locales"
         app:defaultValue="@string/system_locale"
-        app:summary="%s"></ListPreference>
+        app:summary="%s" />
 </PreferenceScreen>
