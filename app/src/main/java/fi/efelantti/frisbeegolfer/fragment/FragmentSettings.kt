@@ -35,8 +35,7 @@ class FragmentSettings : PreferenceFragmentCompat(),
         setPreferencesFromResource(R.xml.settings, rootKey)
         setThemePreferenceSummaryProvider()
     }
-
-    // TODO - Bug - If changing language after changing theme, theme does not persist
+    
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             KEY_PREF_LANGUAGE -> {
