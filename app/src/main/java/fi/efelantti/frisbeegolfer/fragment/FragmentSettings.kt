@@ -10,6 +10,7 @@ import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.ThemeProvider
 
+
 // TODO - https://github.com/akexorcist/Localization/issues/112
 class FragmentSettings : PreferenceFragmentCompat() {
 
@@ -37,7 +38,9 @@ class FragmentSettings : PreferenceFragmentCompat() {
                     LocaleHelper.setLocale(
                         requireContext(),
                         getDefaultSharedPreferences(requireContext()).getString(newValue, "")
-                    );
+                    )
+                    // Setting theme seems to set language instantly... maybe that can be abused
+                    // AppCompatDelegate.setDefaultNightMode()
                     requireActivity().recreate(); // necessary here because this Activity is currently running and thus a recreate() in onResume() would be too late
                 }
                 true

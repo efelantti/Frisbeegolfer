@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Frisbeegolfer</string>
-    <string name="button_newRound_text">Uusi kierros</string>
-    <string name="button_courses_text">Radat</string>
-    <string name="button_players_text">Pelaajat</string>
-    <string name="button_statistics_text">Tilastot</string>
-    <string name="button_settings_text">Asetukset</string>
     <string name="add_player">Lisää pelaaja</string>
     <string name="hint_word_name">Nimi (pakollinen)</string>
     <string name="hint_word_email">Sähköposti</string>
@@ -15,13 +10,12 @@
     <string name="button_no">Ei</string>
     <string name="action_edit">Muokkaa</string>
     <string name="players_activity_title">Pelaajat</string>
-    <string name="error_message_requiredFields">Varmista kenttien arvot.</string>
     <string name="no_players_available">Pelaajia ei ole vielä lisätty.</string>
     <string name="no_players_available_when_choosing">Pelaajia ei oel vielä lisätty. Lisää ensin vähintään yksi pelaaja.</string>
     <string name="error_duplicate_player">Samanniminen pelaaja on jo olemassa!</string>
     <string name="player_data_not_edited">Tietoa ei muokattu.</string>
     <string name="email_descriptor">Sähköposti: <xliff:g example="example@example.com" id="email">%s</xliff:g></string>
-    <string name="invalid_field">Tarkista kentän <xliff:g example="First name" id="Field name">%1$s</xliff:g></string>
+    <string name="invalid_field">Tarkista kenttä <xliff:g example="First name" id="Field name">%1$s</xliff:g></string>
     <string name="action_save">Tallenna</string>
     <string name="no_courses_available">Ratoja ei ole vielä lisätty.</string>
     <string name="no_courses_available_when_choosing">Ratoja ei löytynyt. Lisää ensin ainakin yksi rata.</string>
@@ -37,4 +31,95 @@
     <string name="hint_word_city">Kaupunki (pakollinen)</string>
     <string name="dialog_title_overwrite">Korvaaminen</string>
     <string name="dialog_message_confirm_overwrite">Haluatko korvata vanhat tiedot uusilla?Toimintoa ei voi peruuttaa.</string>
+    <string name="dialog_title_cancel">Peruuta</string>
+    <string name="dialog_message_cancel">Haluatko varmasti peruuttaa? Muokattuja tietoja ei tallenneta.</string>
+    <string name="new_course_fragment_header_course_data">Rata</string>
+    <string name="new_course_fragment_header_holes_data">Väylät</string>
+    <string name="hint_word_number_of_holes">Väylien määrä</string>
+    <string name="create_holes">Aseta</string>
+    <string name="hint_word_length">Väylän pituus (m)</string>
+    <string name="hole_number_header">Väylänro</string>
+    <string name="par_count_header">Par</string>
+    <string name="invalid_number_of_holes">Vain arvot välillä 1-<xliff:g example="99" id="maximumNumberOfHoles">%d</xliff:g> ovat sallittuja.</string>
+    <string name="remove_holes">Väylien poisto</string>
+    <string name="dialog_message_confirm_remove_holes">Jatkamalla listan viimeiset väylät poistetaan. Haluatko jatkaa?</string>
+    <string name="select_course">Valitse rata</string>
+    <string name="select_players">Valitse pelaajat</string>
+    <string name="choose_a_course_title">Valitse rata</string>
+    <string name="choose_players_title">Valitse pelaajat</string>
+    <string name="no_rounds_available">Tässä näytettäisiin pelatut kierrokset, mutta kierroksia ei ole vielä pelattu. Aloittaaksesi kierroksen, paina plus-merkkiä oikeassa alakulmassa.</string>
+    <string name="rounds_fragment_title">Kierrokset</string>
+    <string name="notApplicable">-</string>
+    <string name="error_message_noHoles">Lisää ainakin yksi väylä.</string>
+    <string name="contentDescription_player_initial_image">Kuvake, jossa on pelaajan nimen alkukirjain.</string>
+    <string name="contentDescription_course_avatar">Kuvake, jossa näytetään väylien lukumäärä.</string>
+    <string name="contentDescription_round_avatar">Kuvake, jossa on radan nimen alkukirjain.</string>
+    <string name="edit_number_of_holes_helper_text">Hyväksytyt arvot: 1–99</string>
+    <string name="fragment_score_tab_text">Merkitse</string>
+    <string name="fragment_scorecard_tab_text">Tuloskortti</string>
+    <string name="plus_minus_label">±</string>
+    <string name="par_label">Par</string>
+    <string name="best_label">Paras</string>
+    <string name="average_label">Keskiarvo</string>
+    <string name="latest_label">Viimeisin</string>
+    <string name="button_ob_text">OB</string>
+    <string name="button_more_text">Enemmän</string>
+    <string name="button_dnf_text">DNF</string>
+    <string name="scoring_term_ace">Ace</string>
+    <string name="scoring_term_condor">Condor</string>
+    <string name="scoring_term_albatross">Albatross</string>
+    <string name="scoring_term_eagle">Eagle</string>
+    <string name="scoring_term_birdie">Birdie</string>
+    <string name="scoring_term_Par">Par</string>
+    <string name="scoring_term_bogey">Bogey</string>
+    <string name="scoring_term_double_bogey">Double Bogey</string>
+    <string name="scoring_term_triple_bogey">Triple Bogey</string>
+    <string name="score_amount">Tulos</string>
+    <string name="set_score_helper_text">Arvon tulee olla vähintään 1</string>
+    <string name="set_score">OK</string>
+    <string name="cancel">Peruuta</string>
+    <string name="dialog_score_amount_title">Aseta tulos</string>
+    <string name="dialog_score_amount_error">Arvot välillä 1-<xliff:g example="100" id="maximumNumberOfThrows">%d</xliff:g> hyväksytään.</string>
+    <string name="scorecard_corner_text">Väylä</string>
+    <string name="contentDescription_result">Tulos</string>
+    <string name="scorecard_row_header_par_count">Par <xliff:g example="3" id="parCount">%d</xliff:g></string>
+    <string name="action_delete">Poista</string>
+    <string name="delete_confirmation">Haluatko varmasti poistaa <xliff:g example="course" id="objectToDeleteType">%s</xliff:g>? Tietoja ei voi palauttaa.</string>
+    <string name="delete_confirmation_title">Hyväksy poisto</string>
+    <string name="player_type">pelaajan</string>
+    <string name="course_type">radan</string>
+    <string name="round_type">pelin</string>
+    <string name="fragment_rounds_menu_label">Pelit</string>
+    <string name="fragment_courses_menu_label">Radat</string>
+    <string name="fragment_players_menu_label">Pelaajat</string>
+    <string name="fragment_statistics_menu_label">Tilastot</string>
+    <string name="fab_description_start_round">Aloita peli</string>
+    <string name="export_database_share">Jaa tietokanta toiseen sovellukseen</string>
+    <string name="action_export_database">Vie tiedot</string>
+    <string name="action_import_database">Tuo tiedot</string>
+    <string name="import_database">Kopioi tietokanta toisesta sovelluksesta</string>
+    <string name="no_import_file_received">Tiedostoa ei valittu.</string>
+    <string name="error_importing_database">Virhe tietokantaa tuodessa.</string>
+    <string name="error_exporting_database">Virhe tietokantaa viedessä.</string>
+    <string name="import_confirmation_title">Tietokannan tuominen</string>
+    <string name="import_confirmation_message">Haluatko varmasti tuoda tietokannan? Discscores-tietokannan tuomisessa ei toistaiseksi tueta tietojen yhdistämistä. Tämä tarkoittaa, että tämän sovelluksen tiedot tyhjennetään ennen Discscores-tietokannan tuomista.</string>
+    <string name="action_import_from_discscores">Tietokannan tuominen Discscores-sovelluksesta</string>
+    <string name="import_discscores">Tuo Discscores-sovelluksen tietokanta toisesta sovelluksesta</string>
+    <string name="error_importing_discscores">Virhe Discscores-tietokannan tuomisessa.</string>
+    <string name="adding_discscores_players">Lisätään pelaajia…</string>
+    <string name="adding_discscores_courses">Lisätään ratoja…</string>
+    <string name="adding_discscores_rounds">Lisätään tuloksia…</string>
+    <string name="discscores_imported">Tiedot tuotu onnistuneesti!</string>
+    <string name="action_change_start_datetime">Vaihda kierroksen aloitusaikaa</string>
+    <string name="action_open_settings">Asetukset</string>
+    <string name="settings_fragment_title">Asetukset</string>
+    <string name="theme_preferences_key"><xliff:g id="preference_key">teema</xliff:g></string>
+    <string name="dark_theme_preference_value">Tumma</string>
+    <string name="light_theme_preference_value">Vaalea</string>
+    <string name="system_theme_preference_value">Järjestelmän käyttämä</string>
+    <string name="theme_preference_title">Teema</string>
+    <string name="dark_theme_description">Tumma tila</string>
+    <string name="light_theme_description">Vaalea tila</string>
+    <string name="system_theme_description">Järjestelmän käyttämä</string>
+    <string name="preferences_language">Kieli</string>
 </resources>

@@ -11,6 +11,11 @@
         <action
             android:id="@+id/fragmentSettings"
             app:destination="@id/fragmentSettings" />
+        <action
+            android:id="@+id/fragmentSettings_pop"
+            app:destination="@id/fragmentSettings"
+            app:popUpTo="@id/fragmentSettings"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_choose_a_course"

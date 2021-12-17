@@ -3,25 +3,8 @@
     <!-- Name of the application. Used in the manifest file. -->
     <string name="app_name">Frisbeegolfer</string>
 
-    <!-- Name of the button in the start screen that allows the user to start a new round. -->
-    <string name="button_newRound_text">New Round</string>
-
-    <!-- Name of the button in the start screen that allows the user to list, add and edit courses. -->
-    <string name="button_courses_text">Courses</string>
-
-    <!-- Name of the button in the start screen that allows the user to list, add and edit players. -->
-    <string name="button_players_text">Players</string>
-
-    <!-- Name of the button in the start screen that navigates to the statistics screen. -->
-    <string name="button_statistics_text">Statistics</string>
-
-    <!-- Name of the button in the start screen that takes the user to the settings menu. -->
-    <string name="button_settings_text">Settings</string>
-
     <!-- Name of the button in the players screen that allows the user to add a new player. -->
     <string name="add_player">Add player</string>
-
-    <!-- Text for save button. -->
 
     <!-- Formatting for how email is displayed. Includes the label. -->
     <string name="email_descriptor">Email: <xliff:g example="example@example.com" id="email">%s</xliff:g></string>
@@ -52,9 +35,6 @@
 
     <!-- Title for the players screen. -->
     <string name="players_activity_title">Players</string>
-
-    <!-- Error message that is displayed when one or more fields are invalid. -->
-    <string name="error_message_requiredFields">Please verify validity of fields.</string>
 
     <!-- Message that is shown instead of a player list, when the database contains no players. -->
     <string name="no_players_available">There are no players added yet.</string>
@@ -140,8 +120,6 @@
     <!-- Label for field "Length (meters)" ie., the length of the hole. -->
     <string name="hint_word_length">Length (meters)</string>
 
-    <!-- Label for field "Par". -->
-
     <!-- Header for field "Hole number". -->
     <string name="hole_number_header">Hole number</string>
 
@@ -155,7 +133,7 @@
     <string name="remove_holes">Remove holes?</string>
 
     <!-- Message that is displayed to the user when asking confirmation about removing holes (when setting a smaller amount of holes that currently shown). -->
-    <string name="dialog_message_confirm_remove_holes">Proceeding will delete holes from the end of the list. Are you want to continue?</string>
+    <string name="dialog_message_confirm_remove_holes">Proceeding will delete holes from the end of the list. Do you want to continue?</string>
 
     <!-- Content description for FAB that allows user to select a course for a round. -->
     <string name="select_course">Select course</string>
@@ -169,31 +147,22 @@
     <!-- Title for fragment that allows the player to choose players for a round. -->
     <string name="choose_players_title">Choose players</string>
 
-    <!-- Text for button in main menu that allows user to continue a previous round. -->
-    <string name="button_continue_round_text">Continue round</string>
-
     <!-- Text for continue round activity, when there are no rounds available in the database. -->
     <string name="no_rounds_available">Rounds would be listed here - but no rounds have yet been played. To start a round, click on the plus sign in the bottom right corner.</string>
 
     <!-- Text that is displayed on the appbar when a round is selected. -->
-    <string name="round_selected">1</string>
-
-    <!-- String for number of players (label + amount). -->
-    <string name="players">Players: <xliff:g example="Andy, Bert, Clint" id="listOfPlayers">%s</xliff:g></string>
+    <string name="round_selected" translatable="false">1</string>
 
     <!-- Title for activity Continue round. -->
     <string name="rounds_fragment_title">Rounds</string>
-    <string name="score_title">Score</string>
     <string name="notApplicable">N/A</string>
     <string name="error_message_noHoles">Please add at least one hole.</string>
-    <string name="contentDescription_player_initial_image">Avatar with the first letter of the player\'s name</string>
+    <string name="contentDescription_player_initial_image">Icon with the first letter of the player\'s name.</string>
     <string name="contentDescription_course_avatar">Icon for the course displaying the number of holes.</string>
-    <string name="contentDescription_round_avatar">Avatar for round. Contains the first letter of the course name.</string>
+    <string name="contentDescription_round_avatar">Icon for the round. Contains the first letter of the course name.</string>
     <string name="edit_number_of_holes_helper_text">Value range: 1–99</string>
     <string name="fragment_score_tab_text">Play</string>
     <string name="fragment_scorecard_tab_text">Scorecard</string>
-    <string name="button_previous_player_text">Player</string>
-    <string name="button_next_player_text">Player</string>
     <string name="plus_minus_label">±</string>
     <string name="par_label">Par</string>
     <string name="best_label">Best</string>
@@ -216,14 +185,13 @@
     <string name="scoring_term_bogey">Bogey</string>
     <string name="scoring_term_double_bogey">Double Bogey</string>
     <string name="scoring_term_triple_bogey">Triple Bogey</string>
-    <string name="scoring_term_noname" />
+    <string name="scoring_term_noname" translatable="false" />
     <string name="score_amount">Score</string>
     <string name="set_score_helper_text">Value must be at least 1</string>
     <string name="set_score">OK</string>
     <string name="cancel">Cancel</string>
     <string name="dialog_score_amount_title">Set score</string>
     <string name="dialog_score_amount_error" formatted="true">Only values in the range 1-<xliff:g example="100" id="maximumNumberOfThrows">%d</xliff:g> are valid.</string>
-    <string name="score_card_hole_number">#</string>
     <string name="scorecard_corner_text">Hole</string>
     <string name="contentDescription_result">Result</string>
     <string name="scorecard_row_header_par_count">Par <xliff:g example="3" id="parCount">%d</xliff:g></string>
@@ -238,8 +206,6 @@
     <string name="fragment_players_menu_label">Players</string>
     <string name="fragment_statistics_menu_label">Statistics</string>
     <string name="fab_description_start_round">Add round</string>
-    <string name="action_backup">Backup database</string>
-    <string name="chooser_title">Backup</string>
     <string name="export_database_share">Share database to another app</string>
     <string name="action_export_database">Export data</string>
     <string name="action_import_database">Import data</string>
@@ -247,7 +213,6 @@
     <string name="no_import_file_received">No file was chosen.</string>
     <string name="error_importing_database">Error importing database.</string>
     <string name="error_exporting_database">Error while exporting database.</string>
-    <string name="database_imported">Data imported!</string>
     <string name="import_confirmation_title">Confirm import</string>
     <string name="import_confirmation_message">Are you sure want to import data? Please note that importing Discscores data is currently supported only for empty databases. This means that current data will be wiped before importing from Discscores.</string>
     <string name="action_import_from_discscores">Import Discscores data</string>
@@ -258,23 +223,7 @@
     <string name="adding_discscores_rounds">Adding rounds…</string>
     <string name="discscores_imported">All data imported!</string>
     <string name="action_change_start_datetime">Change round start date/time</string>
-    <string name="enable_readonly">Disable edit</string>
-    <string name="disable_readonly">Enable edit</string>
     <string name="action_open_settings">Settings</string>
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="settings_fragment_title">Settings</string>
     <string name="theme_preferences_key"><xliff:g id="preference_key">theme</xliff:g></string>
     <string name="dark_theme_preference_value">Dark</string>
@@ -287,6 +236,6 @@
     <string name="system_locale" translatable="false">system</string>
     <string name="default_locale" translatable="false" />
     <string name="preferences_language">Language</string>
-    <string name="language_setting_english">English</string>
-    <string name="language_setting_finnish">Suomi</string>
+    <string name="language_setting_english" translatable="false">English</string>
+    <string name="language_setting_finnish" translatable="false">Suomi</string>
 </resources>
