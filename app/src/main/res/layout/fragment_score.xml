@@ -14,9 +14,11 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:textSize="30sp"
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintBottom_toBottomOf="@+id/fragment_score_currentHole"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHole"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/fragment_score_currentHole"
             tools:text="1" />
@@ -28,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="60sp"
-            app:layout_constraintEnd_toEndOf="@id/fragment_score_nextHole"
+            app:layout_constraintEnd_toStartOf="@id/fragment_score_nextHole"
             app:layout_constraintStart_toEndOf="@id/fragment_score_previousHole"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/fragment_score_currentHolePar_label"
@@ -39,24 +41,26 @@
             android:id="@+id/fragment_score_currentHolePar_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/par_label"
             android:textAppearance="@style/medium_emphasis_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@id/fragment_score_currentPlayer"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHolePar"
-            app:layout_constraintTop_toBottomOf="@id/fragment_score_currentHole"
-            app:layout_constraintBottom_toTopOf="@id/fragment_score_currentPlayer" />
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_score_currentHole" />
 
         <TextView
             android:id="@+id/fragment_score_currentHolePar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
             android:textAppearance="@style/high_emphasis_h4"
             app:layout_constraintBaseline_toBaselineOf="@id/fragment_score_currentHolePar_label"
-            app:layout_constraintStart_toEndOf="@id/fragment_score_currentHolePar_label"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/fragment_score_currentHolePar_label"
             tools:text="3" />
 
         <Button
@@ -66,6 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:textSize="30sp"
+            app:layout_constraintBottom_toBottomOf="@+id/fragment_score_previousHole"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHole"
             app:layout_constraintTop_toTopOf="@id/fragment_score_previousHole"
@@ -133,12 +138,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:textAppearance="@style/high_emphasis_h4"
+            app:layout_constraintBottom_toTopOf="@id/fragment_score_currentHoleBest_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fragment_score_currentPlayer"
-            app:layout_constraintBottom_toTopOf="@id/fragment_score_currentHoleBest_label"
             tools:text="+4" />
 
         <!-- TODO - Linear layout containing the label and item? -->
@@ -151,7 +157,7 @@
             android:layout_marginBottom="8dp"
             android:text="@string/best_label"
             android:textAppearance="@style/medium_emphasis_label"
-            app:layout_constraintBottom_toTopOf="@id/score_button_layout"
+            app:layout_constraintBottom_toTopOf="@id/fragment_score_button_layout"
             app:layout_constraintEnd_toStartOf="@id/fragment_score_currentHoleAverage_label"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
@@ -209,164 +215,150 @@
             app:layout_constraintStart_toEndOf="@id/fragment_score_currentHoleLatest_label"
             tools:text="3" />
 
-        <LinearLayout
-            android:id="@+id/score_button_layout"
-            android:orientation="vertical"
-            android:layout_height="0dp"
+        <GridLayout
+            android:id="@+id/fragment_score_button_layout"
             android:layout_width="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_height="0dp"
+            android:columnCount="3"
+            android:rowCount="4"
+            android:useDefaultMargins="false"
             app:layout_constraintHeight_percent="0.55"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fragment_score_currentHoleBest_label">
 
-            <LinearLayout
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+            <include
+                android:id="@+id/fragment_score_button_1"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_result"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:baselineAligned="false">
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                app:score="@{&quot;1&quot;}" />
 
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_1"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_result"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:score="@{&quot;1&quot;}" />
-
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_2"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_result"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:score="@{&quot;2&quot;}" />
-
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_3"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_result"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:score="@{&quot;3&quot;}" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_2"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_result"
+                app:score="@{&quot;2&quot;}"
                 android:layout_height="0dp"
-                android:baselineAligned="false">
+                android:layout_width="0dp" />
 
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_4"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_result"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:score="@{&quot;4&quot;}" />
-
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_5"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_result"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:score="@{&quot;5&quot;}" />
-
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_6"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_result"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    bind:score="@{&quot;6&quot;}" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_3"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_result"
+                app:score="@{&quot;3&quot;}"
                 android:layout_height="0dp"
-                android:baselineAligned="false">
+                android:layout_width="0dp" />
 
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_7"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_result"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:score="@{&quot;7&quot;}" />
-
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_8"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_result"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:score="@{&quot;8&quot;}" />
-
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_9"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_result"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    bind:score="@{&quot;9&quot;}" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_4"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_result"
+                app:score="@{&quot;4&quot;}"
                 android:layout_height="0dp"
-                android:baselineAligned="false">
+                android:layout_width="0dp" />
 
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_ob"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_text_only"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    bind:text="@{@string/button_ob_text}" />
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_5"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_result"
+                app:score="@{&quot;5&quot;}"
+                android:layout_height="0dp"
+                android:layout_width="0dp" />
 
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_more"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_text_only"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    bind:text="@{@string/button_more_text}" />
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_6"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_result"
+                bind:score="@{&quot;6&quot;}"
+                android:layout_height="0dp"
+                android:layout_width="0dp" />
 
-                <include
-                    android:layout_weight="1"
-                    android:id="@+id/fragment_score_button_dnf"
-                    style="@style/ThrowResultButton"
-                    layout="@layout/button_score_text_only"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    bind:text="@{@string/button_dnf_text}"
-                    tools:text="DNF" />
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_7"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_result"
+                app:score="@{&quot;7&quot;}"
+                android:layout_height="0dp"
+                android:layout_width="0dp" />
 
-            </LinearLayout>
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_8"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_result"
+                app:score="@{&quot;8&quot;}"
+                android:layout_height="0dp"
+                android:layout_width="0dp" />
 
-        </LinearLayout>
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_9"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_result"
+                bind:score="@{&quot;9&quot;}"
+                android:layout_height="0dp"
+                android:layout_width="0dp" />
 
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_ob"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_text_only"
+                bind:text="@{@string/button_ob_text}"
+                android:layout_height="0dp"
+                android:layout_width="0dp" />
+
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_more"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_text_only"
+                bind:text="@{@string/button_more_text}"
+                android:layout_height="0dp"
+                android:layout_width="0dp" />
+
+            <include
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_gravity="fill"
+                android:id="@+id/fragment_score_button_dnf"
+                style="@style/ThrowResultButton"
+                layout="@layout/button_score_text_only"
+                bind:text="@{@string/button_dnf_text}"
+                tools:text="DNF"
+                android:layout_height="0dp"
+                android:layout_width="0dp" />
+        </GridLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
