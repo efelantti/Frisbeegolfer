@@ -132,7 +132,9 @@ class FragmentScorecard : Fragment() {
                         val cell = Cell(
                             score.score.result.toString(),
                             color,
-                            ScoreViewModel.plusMinus(player, currentRound.scores, hole.holeNumber)
+                            ScoreViewModel.plusMinus(player, currentRound.scores, hole.holeNumber),
+                            score.score.didNotFinish,
+                            score.score.isOutOfBounds
                         )
                         listToAdd.add(cell)
                     }

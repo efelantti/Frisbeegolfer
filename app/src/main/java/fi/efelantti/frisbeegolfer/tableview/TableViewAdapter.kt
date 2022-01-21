@@ -53,10 +53,15 @@ class TableViewAdapter() :
 
         val viewHolder =
             holder as MyCellViewHolder
-        if (cell.result.isNullOrBlank() || cell.result == "null") {
+        if (cell.didNotFinish != null && cell.didNotFinish) {
+            // Set the score icon & +/- text to gone.
+            // Set the DNF text to visible
+        } else if (cell.result.isNullOrBlank() || cell.result == "null") {
+            // Set DNF text to gone
             viewHolder.plusMinusCumulativeTextView.text = ""
             viewHolder.resultImageView.visibility = View.GONE
         } else {
+            // Set DNF text to gone.
             viewHolder.resultImageView.visibility = View.VISIBLE
             val icon = viewHolder.builder.build(cell.result, cell.resultColor ?: Color.GRAY)
             viewHolder.resultImageView.setImageDrawable(icon)

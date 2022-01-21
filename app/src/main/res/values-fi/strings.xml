@@ -118,4 +118,5 @@
     <string name="light_theme_description">Vaalea tila</string>
     <string name="system_theme_description">Järjestelmän käyttämä</string>
     <string name="preferences_language">Kieli</string>
+    <string name="contentDescription_dnf">Teksti \"ei lopettanut\".</string>
 </resources>
