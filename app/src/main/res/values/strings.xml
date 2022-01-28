@@ -238,4 +238,5 @@
     <string name="language_setting_english" translatable="false">English</string>
     <string name="language_setting_finnish" translatable="false">Suomi</string>
     <string name="contentDescription_dnf">Text \"did not finish\".</string>
+    <string name="dnf_text">DNF</string>
 </resources>

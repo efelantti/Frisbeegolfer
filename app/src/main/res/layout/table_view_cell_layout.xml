@@ -16,7 +16,8 @@
     <TextView
         android:id="@+id/dnf"
         android:visibility="gone"
-        style="@style/CellTextViewStyle"
+        android:text="@string/dnf_text"
+        style="@style/DNFTextViewStyle"
         android:maxLines="1"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

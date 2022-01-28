@@ -65,6 +65,10 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="DNFTextViewStyle" parent="CellText">
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
     <style name="CellText" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:textColor">@color/black_60</item>
     </style>

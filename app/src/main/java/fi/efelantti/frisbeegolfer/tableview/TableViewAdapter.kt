@@ -31,6 +31,7 @@ class TableViewAdapter() :
         val resultImageView: ImageView = itemView.findViewById(R.id.result)
         val plusMinusCumulativeTextView: TextView =
             itemView.findViewById(R.id.plus_minus_cumulative)
+        val dnfTextView: TextView = itemView.findViewById(R.id.dnf)
     }
 
     override fun onCreateCellViewHolder(
@@ -54,15 +55,17 @@ class TableViewAdapter() :
         val viewHolder =
             holder as MyCellViewHolder
         if (cell.didNotFinish != null && cell.didNotFinish) {
-            // Set the score icon & +/- text to gone.
-            // Set the DNF text to visible
+            viewHolder.plusMinusCumulativeTextView.visibility = View.GONE
+            viewHolder.resultImageView.visibility = View.GONE
+            viewHolder.dnfTextView.visibility = View.VISIBLE
         } else if (cell.result.isNullOrBlank() || cell.result == "null") {
-            // Set DNF text to gone
+            viewHolder.dnfTextView.visibility = View.GONE
             viewHolder.plusMinusCumulativeTextView.text = ""
             viewHolder.resultImageView.visibility = View.GONE
         } else {
-            // Set DNF text to gone.
+            viewHolder.dnfTextView.visibility = View.GONE
             viewHolder.resultImageView.visibility = View.VISIBLE
+            viewHolder.plusMinusCumulativeTextView.visibility = View.VISIBLE
             val icon = viewHolder.builder.build(cell.result, cell.resultColor ?: Color.GRAY)
             viewHolder.resultImageView.setImageDrawable(icon)
             viewHolder.plusMinusCumulativeTextView.text = cell.plusMinusCumulative.toString()
