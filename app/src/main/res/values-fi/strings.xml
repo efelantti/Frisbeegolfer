@@ -120,6 +120,6 @@
     <string name="preferences_language">Kieli</string>
     <string name="contentDescription_dnf">Teksti \"ei lopettanut\".</string>
     <string name="dnf_text">DNF</string>
-    <string name="ob_shape_description">Kiekko pelialueen ulkopuolella</string>
+    <string name="ob_shape_description">OB - kiekko pelialueen ulkopuolella</string>
     <string name="dnf_text_description">Did not finish (väylää ei pelattu loppuun)</string>
 </resources>

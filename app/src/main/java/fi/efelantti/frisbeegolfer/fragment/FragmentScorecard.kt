@@ -19,7 +19,7 @@ import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModelFactory
 import java.time.OffsetDateTime
 
-
+// TODO - Add skeleton UI while loading.
 class FragmentScorecard : Fragment() {
 
     private var _binding: FragmentScorecardBinding? = null
@@ -142,6 +142,20 @@ class FragmentScorecard : Fragment() {
                 }
 
                 adapter.setAllItems(mColumnHeaderList, mRowHeaderList, mCellList)
+            }
+            if (currentRound.scores.any { it.score.didNotFinish }) {
+                binding.dnfText.visibility = View.VISIBLE
+                binding.dnfTextDescription.visibility = View.VISIBLE
+            } else {
+                binding.dnfText.visibility = View.GONE
+                binding.dnfTextDescription.visibility = View.GONE
+            }
+            if (currentRound.scores.any { it.score.isOutOfBounds }) {
+                binding.obShape.visibility = View.VISIBLE
+                binding.obShapeDescription.visibility = View.VISIBLE
+            } else {
+                binding.obShape.visibility = View.GONE
+                binding.obShapeDescription.visibility = View.GONE
             }
         }
     }
