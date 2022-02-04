@@ -1,13 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
     <com.evrencoskun.tableview.TableView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-</FrameLayout>
+    <View
+        android:id="@+id/ob_shape"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/content_container"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="50dp"
+        android:layout_height="21dp"
+        android:background="@drawable/ob_cell_background"></View>
+
+    <TextView
+        android:id="@+id/ob_shape_description"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="@id/ob_shape"
+        app:layout_constraintBottom_toBottomOf="@id/ob_shape"
+        app:layout_constraintStart_toEndOf="@id/ob_shape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ob_shape_description"
+        style="@style/medium_emphasis_text"></TextView>
+
+    <TextView
+        android:id="@+id/dnf_text"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/ob_shape"
+        app:layout_constraintTop_toBottomOf="@id/ob_shape"
+        android:text="@string/dnf_text"
+        style="@style/medium_emphasis_text"></TextView>
+
+    <TextView
+        android:id="@+id/dnf_text_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dnf_text_description"
+        app:layout_constraintTop_toTopOf="@id/dnf_text"
+        app:layout_constraintStart_toStartOf="@id/ob_shape_description"></TextView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

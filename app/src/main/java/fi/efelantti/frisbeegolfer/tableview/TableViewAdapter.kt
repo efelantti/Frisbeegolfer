@@ -4,10 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.amulyakhare.textdrawable.TextDrawable
 import com.evrencoskun.tableview.adapter.AbstractTableAdapter
@@ -28,6 +25,8 @@ class TableViewAdapter() :
             .endConfig()
             .round()
         val cellContainer: ConstraintLayout = itemView.findViewById(R.id.cell_container)
+        val cellFrameLayout: FrameLayout = itemView.findViewById(R.id.cell_framelayout)
+        val obShape: FrameLayout = itemView.findViewById(R.id.ob_shape)
         val resultImageView: ImageView = itemView.findViewById(R.id.result)
         val plusMinusCumulativeTextView: TextView =
             itemView.findViewById(R.id.plus_minus_cumulative)
@@ -54,6 +53,11 @@ class TableViewAdapter() :
 
         val viewHolder =
             holder as MyCellViewHolder
+        if (cell.isOutOfBounds == true) {
+            viewHolder.obShape.visibility = View.VISIBLE
+        } else {
+            viewHolder.obShape.visibility = View.GONE
+        }
         if (cell.didNotFinish != null && cell.didNotFinish) {
             viewHolder.plusMinusCumulativeTextView.visibility = View.GONE
             viewHolder.resultImageView.visibility = View.GONE

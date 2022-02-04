@@ -42,6 +42,7 @@
     <color name="table_content_cell_bg_stroke">#AFAFAF</color>
     <color name="table_header_cell_bg_solid">#0074f1</color>
     <color name="table_header_cell_bg_stroke">#AFAFAF</color>
+    <color name="ob_shape_stroke">#F44336</color>
 
     <color name="result_ace">#3F51B5</color>
     <color name="result_condor">#3F51B5</color>

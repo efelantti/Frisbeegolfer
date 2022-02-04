@@ -9,9 +9,18 @@
     android:layout_height="@dimen/cell_height">
 
     <FrameLayout
+        android:id="@+id/cell_framelayout"
         style="@style/CellFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:layout_margin="1dp"
+        android:id="@+id/ob_shape"
+        android:background="@drawable/ob_cell_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/dnf"
