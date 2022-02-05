@@ -32,7 +32,7 @@ import java.util.*
         )
     ]
 )
-// TODO - Display DNF in the score card in some way.
+
 @Parcelize
 class Score(
     @PrimaryKey(autoGenerate = true)

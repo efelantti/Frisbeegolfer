@@ -31,12 +31,8 @@ import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.io.*
 
 // TODO - Restart application after importing Discscores data in order to refresh the app.
-// TODO - Menu for changing dark / light mode.
-// TODO - Translate strings
-// TODO - Menu option for language.
+// TODO - Create tests where missing - especially UI tests.
 // TODO - Add statistics (to relevant fragments + a separate fragment).
-// TODO - Clicking on avatar icon also acts the same way as OnLongClick.
-// TODO - OnLongClick -> Change icon to selected icon (like gmail and outlook).
 // TODO - "Paste this link on the website where your app is available for download or in the description section of the platform or marketplace you’re using." - <a href="https://www.flaticon.com/free-icons/disc-golf" title="disc golf icons">Disc golf icons created by Freepik - Flaticon</a>
 class MainActivity : BaseActivity(), DialogConfirmImport.OnConfirmationSelected,
     DialogConfirmImportFromDiscscores.OnConfirmationSelectedImportDiscscores {

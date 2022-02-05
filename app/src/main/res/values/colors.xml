@@ -57,5 +57,9 @@
     <color name="result_other">#808080</color>
 
     <color name="selected_item_grey">#424242</color>
+
+    <color name="checked_icon_color">#ffffff</color>
+    <color name="checked_icon_background">#757575</color>
+
     <color name="textDrawable_text_color">#ffffff</color>
 </resources>

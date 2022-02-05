@@ -101,12 +101,20 @@ class PlayerListAdapter internal constructor(
             playerCard.isActivated = selectedPosition == position
 
             val current = players[position]
-            val color = generator.getColor(current.name)
-            val initial = current.name?.take(1)
-            val icon = builder.build(initial, color)
-            playerIcon.setImageDrawable(icon)
+            if (!playerCard.isActivated) {
+                val color = generator.getColor(current.name)
+                val initial = current.name?.take(1)
+                val icon = builder.build(initial, color)
+                playerIcon.setImageDrawable(icon)
+            } else {
+                playerIcon.setImageResource(R.drawable.recyclerview_selected_item_icon)
+            }
+
             playerItemViewName.text = current.name
             playerItemViewEmail.text = res.getString(R.string.email_descriptor, current.email)
+            playerIcon.setOnClickListener {
+                onLongClick(it)
+            }
         }
     }
 
@@ -171,12 +179,20 @@ class PlayerListAdapter internal constructor(
             playerCard.isActivated = selectedPosition == position
 
             val current = players[position]
-            val color = generator.getColor(current.name)
 
-            val initial = current.name?.take(1)
-            val icon = builder.build(initial, color)
-            playerIcon.setImageDrawable(icon)
+            if (!playerCard.isActivated) {
+                val color = generator.getColor(current.name)
+                val initial = current.name?.take(1)
+                val icon = builder.build(initial, color)
+                playerIcon.setImageDrawable(icon)
+            } else {
+                playerIcon.setImageResource(R.drawable.recyclerview_selected_item_icon)
+            }
+
             playerItemViewName.text = current.name
+            playerIcon.setOnClickListener {
+                onLongClick(it)
+            }
         }
     }
 

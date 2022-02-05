@@ -103,10 +103,18 @@ class CourseListAdapter internal constructor(
         holder.courseItemViewCourseName.text =
             res.getString(R.string.courseName, current.course.name)
         holder.courseItemViewCity.text = res.getString(R.string.city, current.course.city)
-        val numberOfHoles = current.holes.count().toString()
-        val color = generator.getColor(current.course.city)
-        val icon = builder.build(numberOfHoles, color)
-        holder.icon.setImageDrawable(icon)
+        if (!holder.courseCard.isActivated) {
+            val numberOfHoles = current.holes.count().toString()
+            val color = generator.getColor(current.course.city)
+            val icon = builder.build(numberOfHoles, color)
+            holder.icon.setImageDrawable(icon)
+        } else {
+            holder.icon.setImageResource(R.drawable.recyclerview_selected_item_icon)
+        }
+
+        holder.icon.setOnClickListener {
+            holder.onLongClick(it)
+        }
     }
 
     internal fun setCourses(courses: List<CourseWithHoles>) {

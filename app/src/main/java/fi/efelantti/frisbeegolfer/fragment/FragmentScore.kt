@@ -65,7 +65,6 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
         return binding.root
     }
 
-    // TODO - Disable buttons while setting score is loading.
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?

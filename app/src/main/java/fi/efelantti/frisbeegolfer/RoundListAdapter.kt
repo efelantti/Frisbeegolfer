@@ -1,7 +1,6 @@
 package fi.efelantti.frisbeegolfer
 
 import android.content.Context
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +24,7 @@ class RoundListAdapter internal constructor(
         fun onListItemLongClick(position: Int, clickedOnSame: Boolean)
     }
 
-    private val res: Resources = context.resources
+    private val resources = context.resources
     private var rounds = emptyList<RoundWithCourseAndScores>()
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
@@ -111,10 +110,15 @@ class RoundListAdapter internal constructor(
         val scores = current.scores
         val players = current.scores.distinctBy { it.player.name }.sortedBy { it.player.name }
 
-        val color = generator.getColor(current.course.course.name)
-        val initial = current.course.course.name?.take(1)
-        val icon = builder.build(initial, color)
-        holder.roundIcon.setImageDrawable(icon)
+        if (!holder.roundCard.isActivated) {
+            val color = generator.getColor(current.course.course.name)
+            val initial = current.course.course.name?.take(1)
+            val icon = builder.build(initial, color)
+            holder.roundIcon.setImageDrawable(icon)
+        } else {
+            holder.roundIcon.setImageResource(R.drawable.recyclerview_selected_item_icon)
+        }
+
         holder.roundItemViewCourseName.text = current.course.course.name
         holder.roundItemViewCity.text = current.course.course.city
         holder.roundItemViewStartedOnDate.text =
@@ -130,6 +134,10 @@ class RoundListAdapter internal constructor(
                     )
                 })"
             }
+
+        holder.roundIcon.setOnClickListener {
+            holder.onLongClick(it)
+        }
     }
 
     internal fun setRounds(rounds: List<RoundWithCourseAndScores>) {

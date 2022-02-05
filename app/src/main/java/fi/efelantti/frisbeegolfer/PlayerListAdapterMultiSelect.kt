@@ -67,10 +67,16 @@ class PlayerListAdapterMultiSelect internal constructor(
         fun bind(position: Int) {
             val selectedPlayer = players[position]
             playerCard.isActivated = selectedIndeces.contains(position)
-            val color = generator.getColor(selectedPlayer.name)
-            val initial = selectedPlayer.name?.take(1)
-            val icon = builder.build(initial, color)
-            playerIcon.setImageDrawable(icon)
+
+            if (!playerCard.isActivated) {
+                val color = generator.getColor(selectedPlayer.name)
+                val initial = selectedPlayer.name?.take(1)
+                val icon = builder.build(initial, color)
+                playerIcon.setImageDrawable(icon)
+            } else {
+                playerIcon.setImageResource(R.drawable.recyclerview_selected_item_icon)
+            }
+
             playerItemViewName.text = selectedPlayer.name
             playerItemViewEmail.text =
                 res.getString(R.string.email_descriptor, selectedPlayer.email)
@@ -107,10 +113,14 @@ class PlayerListAdapterMultiSelect internal constructor(
             val selectedPlayer = players[position]
             playerCard.isActivated = selectedIndeces.contains(position)
 
-            val color = generator.getColor(selectedPlayer.name)
-            val initial = selectedPlayer.name?.take(1)
-            val icon = builder.build(initial, color)
-            playerIcon.setImageDrawable(icon)
+            if (!playerCard.isActivated) {
+                val color = generator.getColor(selectedPlayer.name)
+                val initial = selectedPlayer.name?.take(1)
+                val icon = builder.build(initial, color)
+                playerIcon.setImageDrawable(icon)
+            } else {
+                playerIcon.setImageResource(R.drawable.recyclerview_selected_item_icon)
+            }
             playerItemViewName.text = selectedPlayer.name
         }
     }

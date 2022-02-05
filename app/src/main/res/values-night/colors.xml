@@ -10,4 +10,7 @@
     <color name="table_header_cell_bg_stroke">#616161</color>
 
     <color name="textDrawable_text_color">#000000</color>
+
+    <color name="checked_icon_color">#000000</color>
+    <color name="checked_icon_background">#6abf69</color>
 </resources>

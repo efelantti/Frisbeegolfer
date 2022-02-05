@@ -11,8 +11,6 @@ import androidx.preference.PreferenceManager
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.ThemeProvider
 
-
-// TODO - https://github.com/akexorcist/Localization/issues/112
 class FragmentSettings : PreferenceFragmentCompat(),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -24,11 +22,6 @@ class FragmentSettings : PreferenceFragmentCompat(),
     private val themeProvider by lazy { ThemeProvider(requireContext()) }
     private val themePreference by lazy {
         findPreference<ListPreference>(KEY_PREF_THEME)
-    }
-
-    // TODO - Never used???
-    private val languagePreference by lazy {
-        findPreference<ListPreference>(KEY_PREF_LANGUAGE)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
