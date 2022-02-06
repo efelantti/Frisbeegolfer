@@ -3,6 +3,7 @@ package fi.efelantti.frisbeegolfer.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
@@ -18,9 +19,10 @@ import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 
+
 // TODO - Allow to filter rounds (for example, by player or course)
 class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickListener,
-    DialogConfirmDelete.OnConfirmationSelected {
+    DialogConfirmDelete.OnConfirmationSelected, SearchView.OnQueryTextListener {
 
     private var _binding: FragmentRoundsBinding? = null
     private val binding get() = _binding!!
@@ -88,6 +90,12 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
         _binding = FragmentRoundsBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView: SearchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(this)
     }
 
     override fun onViewCreated(
@@ -197,5 +205,15 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
 
     override fun returnUserConfirmation(objectToDelete: Any) {
         roundViewModel.delete(objectToDelete as RoundWithCourseAndScores)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        adapter.filter(query)
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        adapter.filter(newText)
+        return true
     }
 }

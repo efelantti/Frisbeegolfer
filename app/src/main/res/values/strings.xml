@@ -241,4 +241,5 @@
     <string name="dnf_text">DNF</string>
     <string name="ob_shape_description">Out of bounds</string>
     <string name="dnf_text_description">Did not finish (hole)</string>
+    <string name="action_search">Search</string>
 </resources>

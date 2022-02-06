@@ -12,6 +12,7 @@ import fi.efelantti.frisbeegolfer.databinding.RecyclerviewRoundBinding
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 class RoundListAdapter internal constructor(
@@ -25,7 +26,8 @@ class RoundListAdapter internal constructor(
     }
 
     private val resources = context.resources
-    private var rounds = emptyList<RoundWithCourseAndScores>()
+    private var rounds = mutableListOf<RoundWithCourseAndScores>()
+    private var roundsCopy = mutableListOf<RoundWithCourseAndScores>()
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: ListItemClickListener = onClickListener
@@ -141,8 +143,37 @@ class RoundListAdapter internal constructor(
     }
 
     internal fun setRounds(rounds: List<RoundWithCourseAndScores>) {
-        this.rounds = rounds
+        this.rounds = rounds.toMutableList()
+        this.roundsCopy.addAll(this.rounds)
         notifyDataSetChanged()
+    }
+
+    // TODO - Add filter possibilities.
+    // Email
+    // Date
+    // Result
+    // more?
+    fun filter(text: String?) {
+        if (text != null) {
+            var filterText = text.toLowerCase()
+            rounds.clear()
+            if (text.isEmpty()) {
+                rounds.addAll(roundsCopy)
+            } else {
+                filterText = text.toLowerCase(Locale.ROOT)
+                for (item in roundsCopy) {
+                    if (item.course.course.name?.toLowerCase()?.contains(text) == true ||
+                        item.course.course.city?.toLowerCase()?.contains(text) == true ||
+                        item.scores.any {
+                            it.player.name?.toLowerCase()?.contains(text) == true
+                        }
+                    ) {
+                        rounds.add(item)
+                    }
+                }
+            }
+            notifyDataSetChanged()
+        }
     }
 
     internal fun isRoundSelected(): Boolean {
