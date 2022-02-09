@@ -27,7 +27,8 @@ class PlayerListAdapter internal constructor(
     }
 
     private val res: Resources = context.resources
-    private var players = emptyList<Player>()
+    private var displayedPlayers = mutableListOf<Player>()
+    private var allPlayers = mutableListOf<Player>()
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: ListItemClickListener = onClickListener
@@ -35,7 +36,7 @@ class PlayerListAdapter internal constructor(
     private val generator = ColorGenerator.MATERIAL
 
     override fun getItemViewType(position: Int): Int {
-        return if (players[position].hasEmail()) Player.PlayerType.PlayerWithoutEmail.id
+        return if (displayedPlayers[position].hasEmail()) Player.PlayerType.PlayerWithoutEmail.id
         else Player.PlayerType.PlayerWithEmail.id
     }
 
@@ -100,7 +101,7 @@ class PlayerListAdapter internal constructor(
         fun bind(position: Int) {
             playerCard.isActivated = selectedPosition == position
 
-            val current = players[position]
+            val current = displayedPlayers[position]
             if (!playerCard.isActivated) {
                 val color = generator.getColor(current.name)
                 val initial = current.name?.take(1)
@@ -178,7 +179,7 @@ class PlayerListAdapter internal constructor(
         fun bind(position: Int) {
             playerCard.isActivated = selectedPosition == position
 
-            val current = players[position]
+            val current = displayedPlayers[position]
 
             if (!playerCard.isActivated) {
                 val color = generator.getColor(current.name)
@@ -230,12 +231,32 @@ class PlayerListAdapter internal constructor(
 
     internal fun getSelectedPlayer(): Player? {
         return if (selectedPosition == defaultSelectedPosition) null
-        else players[selectedPosition]
+        else displayedPlayers[selectedPosition]
     }
 
     internal fun setPlayers(players: List<Player>) {
-        this.players = players
+        this.displayedPlayers = players.toMutableList()
+        this.allPlayers.addAll(displayedPlayers)
         notifyDataSetChanged()
+    }
+
+    fun filter(text: String?) {
+        if (text != null) {
+            val filterText = text.toLowerCase()
+            displayedPlayers.clear()
+            if (text.isEmpty()) {
+                displayedPlayers.addAll(allPlayers)
+            } else {
+                for (item in allPlayers) {
+                    if (item.name?.toLowerCase()?.contains(filterText) == true ||
+                        item.email?.toLowerCase()?.contains(filterText) == true
+                    ) {
+                        displayedPlayers.add(item)
+                    }
+                }
+            }
+            notifyDataSetChanged()
+        }
     }
 
     internal fun resetSelectedPosition() {
@@ -245,5 +266,5 @@ class PlayerListAdapter internal constructor(
         notifyItemChanged(selectedPosition)
     }
 
-    override fun getItemCount() = players.size
+    override fun getItemCount() = displayedPlayers.size
 }

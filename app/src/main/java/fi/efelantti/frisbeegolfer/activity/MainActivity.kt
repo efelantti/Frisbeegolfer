@@ -30,6 +30,7 @@ import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.io.*
 
+// TODO - Wrong result text when filtering and no matching results found.
 // TODO - Restart application after importing Discscores data in order to refresh the app.
 // TODO - Create tests where missing - especially UI tests.
 // TODO - Add statistics (to relevant fragments + a separate fragment).

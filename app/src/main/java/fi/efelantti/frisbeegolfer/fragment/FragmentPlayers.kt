@@ -2,6 +2,7 @@ package fi.efelantti.frisbeegolfer.fragment
 
 import android.os.Bundle
 import android.view.*
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -15,7 +16,7 @@ import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModelFactory
 
 class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickListener,
-    DialogConfirmDelete.OnConfirmationSelected {
+    DialogConfirmDelete.OnConfirmationSelected, SearchView.OnQueryTextListener {
 
     private var _binding: FragmentPlayersBinding? = null
     private val binding get() = _binding!!
@@ -90,6 +91,12 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
         _binding = FragmentPlayersBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView: SearchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(this)
     }
 
     override fun onViewCreated(
@@ -174,5 +181,15 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
 
     override fun returnUserConfirmation(playerToDelete: Any) {
         playerViewModel.delete(playerToDelete as Player)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        adapter.filter(query)
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        adapter.filter(newText)
+        return true
     }
 }

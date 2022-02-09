@@ -3,6 +3,7 @@ package fi.efelantti.frisbeegolfer.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,7 +19,8 @@ import fi.efelantti.frisbeegolfer.databinding.FragmentChooseACourseBinding
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory
 
-class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener {
+class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener,
+    SearchView.OnQueryTextListener {
 
     private var _binding: FragmentChooseACourseBinding? = null
     private val binding get() = _binding!!
@@ -81,6 +83,12 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
         _binding = FragmentChooseACourseBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView: SearchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(this)
     }
 
     override fun onViewCreated(
@@ -157,6 +165,16 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
                 }
             }
         }
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        adapter.filter(query)
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        adapter.filter(newText)
+        return true
     }
 
     override fun onDestroyView() {

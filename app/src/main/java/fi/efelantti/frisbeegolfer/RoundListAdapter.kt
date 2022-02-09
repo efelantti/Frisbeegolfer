@@ -12,7 +12,6 @@ import fi.efelantti.frisbeegolfer.databinding.RecyclerviewRoundBinding
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 
 class RoundListAdapter internal constructor(
@@ -26,8 +25,8 @@ class RoundListAdapter internal constructor(
     }
 
     private val resources = context.resources
-    private var rounds = mutableListOf<RoundWithCourseAndScores>()
-    private var roundsCopy = mutableListOf<RoundWithCourseAndScores>()
+    private var displayedRounds = mutableListOf<RoundWithCourseAndScores>()
+    private var allRounds = mutableListOf<RoundWithCourseAndScores>()
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: ListItemClickListener = onClickListener
@@ -108,7 +107,7 @@ class RoundListAdapter internal constructor(
     override fun onBindViewHolder(holder: RoundViewHolder, position: Int) {
         holder.roundCard.isActivated = selectedPosition == position
 
-        val current = rounds[position]
+        val current = displayedRounds[position]
         val scores = current.scores
         val players = current.scores.distinctBy { it.player.name }.sortedBy { it.player.name }
 
@@ -143,32 +142,32 @@ class RoundListAdapter internal constructor(
     }
 
     internal fun setRounds(rounds: List<RoundWithCourseAndScores>) {
-        this.rounds = rounds.toMutableList()
-        this.roundsCopy.addAll(this.rounds)
+        this.displayedRounds = rounds.toMutableList()
+        this.allRounds.addAll(this.displayedRounds)
         notifyDataSetChanged()
     }
 
     // TODO - Add filter possibilities.
-    // Email
     // Date
-    // Result
     // more?
     fun filter(text: String?) {
         if (text != null) {
-            var filterText = text.toLowerCase()
-            rounds.clear()
+            val filterText = text.toLowerCase()
+            displayedRounds.clear()
             if (text.isEmpty()) {
-                rounds.addAll(roundsCopy)
+                displayedRounds.addAll(allRounds)
             } else {
-                filterText = text.toLowerCase(Locale.ROOT)
-                for (item in roundsCopy) {
-                    if (item.course.course.name?.toLowerCase()?.contains(text) == true ||
-                        item.course.course.city?.toLowerCase()?.contains(text) == true ||
+                for (item in allRounds) {
+                    if (item.course.course.name?.toLowerCase()?.contains(filterText) == true ||
+                        item.course.course.city?.toLowerCase()?.contains(filterText) == true ||
                         item.scores.any {
-                            it.player.name?.toLowerCase()?.contains(text) == true
+                            it.player.name?.toLowerCase()?.contains(filterText) == true
+                        } ||
+                        item.scores.any {
+                            it.player.email?.toLowerCase()?.contains(filterText) == true
                         }
                     ) {
-                        rounds.add(item)
+                        displayedRounds.add(item)
                     }
                 }
             }
@@ -182,7 +181,7 @@ class RoundListAdapter internal constructor(
 
     internal fun getSelectedRound(): RoundWithCourseAndScores? {
         return if (selectedPosition == defaultSelectedPosition) null
-        else rounds[selectedPosition]
+        else displayedRounds[selectedPosition]
     }
 
     internal fun resetSelectedPosition() {
@@ -192,5 +191,5 @@ class RoundListAdapter internal constructor(
         notifyItemChanged(selectedPosition)
     }
 
-    override fun getItemCount() = rounds.size
+    override fun getItemCount() = displayedRounds.size
 }

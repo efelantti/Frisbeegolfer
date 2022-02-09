@@ -26,14 +26,15 @@ class PlayerListAdapterMultiSelect internal constructor(
     }
 
     private val res: Resources = context.resources
-    private var players = emptyList<Player>()
+    private var displayedPlayers = mutableListOf<Player>()
+    private var allPlayers = mutableListOf<Player>()
     var selectedIndeces = mutableListOf<Int>()
     private val mOnClickListener: ListItemClickListener = onClickListener
     private lateinit var builder: TextDrawable.IBuilder
     private val generator = ColorGenerator.MATERIAL
 
     override fun getItemViewType(position: Int): Int {
-        return if (players[position].hasEmail()) Player.PlayerType.PlayerWithoutEmail.id
+        return if (displayedPlayers[position].hasEmail()) Player.PlayerType.PlayerWithoutEmail.id
         else Player.PlayerType.PlayerWithEmail.id
     }
 
@@ -65,7 +66,7 @@ class PlayerListAdapterMultiSelect internal constructor(
         }
 
         fun bind(position: Int) {
-            val selectedPlayer = players[position]
+            val selectedPlayer = displayedPlayers[position]
             playerCard.isActivated = selectedIndeces.contains(position)
 
             if (!playerCard.isActivated) {
@@ -110,7 +111,7 @@ class PlayerListAdapterMultiSelect internal constructor(
         }
 
         fun bind(position: Int) {
-            val selectedPlayer = players[position]
+            val selectedPlayer = displayedPlayers[position]
             playerCard.isActivated = selectedIndeces.contains(position)
 
             if (!playerCard.isActivated) {
@@ -157,12 +158,32 @@ class PlayerListAdapterMultiSelect internal constructor(
     }
 
     internal fun getSelectedPlayers(): List<Player> {
-        return selectedIndeces.map { players[it] }
+        return selectedIndeces.map { displayedPlayers[it] }
     }
 
     internal fun setPlayers(players: List<Player>) {
-        this.players = players
+        this.displayedPlayers = players.toMutableList()
+        this.allPlayers.addAll(displayedPlayers)
         notifyDataSetChanged()
+    }
+
+    fun filter(text: String?) {
+        if (text != null) {
+            val filterText = text.toLowerCase()
+            displayedPlayers.clear()
+            if (text.isEmpty()) {
+                displayedPlayers.addAll(allPlayers)
+            } else {
+                for (item in allPlayers) {
+                    if (item.name?.toLowerCase()?.contains(filterText) == true ||
+                        item.email?.toLowerCase()?.contains(filterText) == true
+                    ) {
+                        displayedPlayers.add(item)
+                    }
+                }
+            }
+            notifyDataSetChanged()
+        }
     }
 
     internal fun resetSelectedPlayers() {
@@ -174,7 +195,7 @@ class PlayerListAdapterMultiSelect internal constructor(
     }
 
     fun onClickHandler(position: Int) {
-        players[position]
+        displayedPlayers[position]
         val shouldStartActionMode: Boolean
         (if (selectedIndeces.contains(position)) {
             selectedIndeces.remove(position)
@@ -188,5 +209,5 @@ class PlayerListAdapterMultiSelect internal constructor(
         mOnClickListener.onListItemClick(position, shouldStartActionMode)
     }
 
-    override fun getItemCount() = players.size
+    override fun getItemCount() = displayedPlayers.size
 }

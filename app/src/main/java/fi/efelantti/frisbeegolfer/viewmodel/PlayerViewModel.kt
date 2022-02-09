@@ -1,14 +1,17 @@
 package fi.efelantti.frisbeegolfer.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import fi.efelantti.frisbeegolfer.IRepository
+import fi.efelantti.frisbeegolfer.LiveDataState
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.getViewModelScope
 import fi.efelantti.frisbeegolfer.model.Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
 
 class PlayerViewModel(
     coroutineScopeProvider: CoroutineScope? = null,
@@ -17,7 +20,25 @@ class PlayerViewModel(
 
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
 
+    lateinit var state: MutableLiveData<LiveDataState>
     val allPlayers: LiveData<List<Player>> = repository.allPlayers
+
+    /*
+    // with a Transformation
+    // this would be the method which returns the database LiveData
+    fun getDatabaseData(): LiveData<List<Player>> {
+        // the view should show a loading indicator
+        state.setValue(LiveDataState.LOADING)
+        // we don't actually map anything, we just use the map function to get
+        // a callback of when the database's LiveData has finished loading
+        return Transformations.map(repository.allPlayers,
+            // the database has just finished fetching the data from the database
+            // and after this method returns it will be available to the observer
+            // in the fragment.
+            // we also need to dismiss the loading indicator
+            state.setValue(LiveDataState.SUCCESS)
+        })
+    }*/
 
     /**
      * Launching a new coroutine to insert the data in a non-blocking way

@@ -24,7 +24,8 @@ class CourseListAdapter internal constructor(
     }
 
     private val res: Resources = context.resources
-    private var courses = emptyList<CourseWithHoles>()
+    private var displayedCourses = mutableListOf<CourseWithHoles>()
+    private var allCourses = mutableListOf<CourseWithHoles>()
     private var defaultSelectedPosition = -1
     var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: ListItemClickListener = onClickListener
@@ -99,7 +100,7 @@ class CourseListAdapter internal constructor(
     override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
         holder.courseCard.isActivated = selectedPosition == position
 
-        val current = courses[position]
+        val current = displayedCourses[position]
         holder.courseItemViewCourseName.text =
             res.getString(R.string.courseName, current.course.name)
         holder.courseItemViewCity.text = res.getString(R.string.city, current.course.city)
@@ -118,22 +119,42 @@ class CourseListAdapter internal constructor(
     }
 
     internal fun setCourses(courses: List<CourseWithHoles>) {
-        this.courses = courses
+        this.displayedCourses = courses.toMutableList()
+        this.allCourses.addAll(displayedCourses)
         notifyDataSetChanged()
+    }
+
+    fun filter(text: String?) {
+        if (text != null) {
+            val filterText = text.toLowerCase()
+            displayedCourses.clear()
+            if (text.isEmpty()) {
+                displayedCourses.addAll(allCourses)
+            } else {
+                for (item in allCourses) {
+                    if (item.course.name?.toLowerCase()?.contains(filterText) == true ||
+                        item.course.city?.toLowerCase()?.contains(filterText) == true ||
+                        filterText == item.holes.count().toString()
+                    ) {
+                        displayedCourses.add(item)
+                    }
+                }
+            }
+            notifyDataSetChanged()
+        }
     }
 
     internal fun getSelectedCourse(): CourseWithHoles? {
         return if (selectedPosition == defaultSelectedPosition) null
-        else courses[selectedPosition]
+        else displayedCourses[selectedPosition]
     }
 
-    internal fun resetSelectedPosition()
-    {
+    internal fun resetSelectedPosition() {
         val previousSelectedPosition = selectedPosition
         selectedPosition = defaultSelectedPosition
         notifyItemChanged(previousSelectedPosition)
         notifyItemChanged(selectedPosition)
     }
 
-    override fun getItemCount() = courses.size
+    override fun getItemCount() = displayedCourses.size
 }
