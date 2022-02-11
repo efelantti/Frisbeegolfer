@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import fi.efelantti.frisbeegolfer.*
+import fi.efelantti.frisbeegolfer.adapter.HoleListAdapter
 import fi.efelantti.frisbeegolfer.databinding.FragmentNewCourseBinding
 import fi.efelantti.frisbeegolfer.model.Course
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles

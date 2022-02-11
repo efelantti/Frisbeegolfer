@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
-import fi.efelantti.frisbeegolfer.RoundListAdapter
+import fi.efelantti.frisbeegolfer.adapter.RoundListAdapter
 import fi.efelantti.frisbeegolfer.databinding.FragmentRoundsBinding
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel

@@ -11,10 +11,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import fi.efelantti.frisbeegolfer.CourseListAdapter
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.adapter.CourseListAdapter
 import fi.efelantti.frisbeegolfer.databinding.FragmentChooseACourseBinding
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.CourseViewModelFactory

@@ -1,4 +1,4 @@
-package fi.efelantti.frisbeegolfer
+package fi.efelantti.frisbeegolfer.adapter
 
 import android.content.Context
 import android.content.res.Resources
@@ -9,6 +9,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
+import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewCourseBinding
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
 
@@ -120,7 +121,7 @@ class CourseListAdapter internal constructor(
 
     internal fun setCourses(courses: List<CourseWithHoles>) {
         this.displayedCourses = courses.toMutableList()
-        this.allCourses.addAll(displayedCourses)
+        this.allCourses = courses.toMutableList()
         notifyDataSetChanged()
     }
 

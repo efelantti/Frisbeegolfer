@@ -8,8 +8,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import fi.efelantti.frisbeegolfer.*
+import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
+import fi.efelantti.frisbeegolfer.LiveDataState
+import fi.efelantti.frisbeegolfer.NewPlayerAction
+import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.adapter.PlayerListAdapter
 import fi.efelantti.frisbeegolfer.databinding.FragmentPlayersBinding
 import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.PlayerViewModel
@@ -25,7 +30,7 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
     }
     private lateinit var adapter: PlayerListAdapter
     private var actionMode: ActionMode? = null
-    private lateinit var recyclerView: EmptyRecyclerView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var emptyView: TextView
     private lateinit var fab: FloatingActionButton
 
@@ -108,7 +113,6 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
         adapter = PlayerListAdapter(requireContext(), this)
         recyclerView = binding.recyclerview
         emptyView = binding.emptyView
-        recyclerView.setEmptyView(emptyView)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -119,10 +123,24 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
             )
         )
 
-        playerViewModel.allPlayers.observe(viewLifecycleOwner, { list ->
+        playerViewModel.state.observe(viewLifecycleOwner, { state ->
+            when (state) {
+                LiveDataState.LOADING -> binding.progressBar.visibility = View.VISIBLE
+                LiveDataState.SUCCESS -> binding.progressBar.visibility = View.GONE
+            }
+        })
+
+        playerViewModel.allPlayers().observe(viewLifecycleOwner, { list ->
             list?.let { players ->
-                val sortedPlayers = players.sortedBy { it.name }
-                adapter.setPlayers(sortedPlayers)
+                if (players.count() == 0) {
+                    binding.emptyView.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                } else {
+                    binding.emptyView.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                    val sortedPlayers = players.sortedBy { it.name }
+                    adapter.setPlayers(sortedPlayers)
+                }
             }
         })
 
@@ -184,12 +202,24 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        adapter.filter(query)
+        val resultsCount = adapter.filter(query)
+        actOnFilterResults(resultsCount)
         return true
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        adapter.filter(newText)
+        val resultsCount = adapter.filter(newText)
+        actOnFilterResults(resultsCount)
         return true
+    }
+
+    private fun actOnFilterResults(resultsCount: Int) {
+        if (resultsCount == 0 && playerViewModel.state.value == LiveDataState.SUCCESS) {
+            binding.recyclerview.visibility = View.GONE
+            binding.noMatches.visibility = View.VISIBLE
+        } else {
+            binding.recyclerview.visibility = View.VISIBLE
+            binding.noMatches.visibility = View.GONE
+        }
     }
 }

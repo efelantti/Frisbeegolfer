@@ -1,4 +1,4 @@
-package fi.efelantti.frisbeegolfer
+package fi.efelantti.frisbeegolfer.adapter
 
 import android.content.Context
 import android.content.res.Resources
@@ -11,24 +11,27 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
+import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerWithEmailBinding
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerWithoutEmailBinding
 import fi.efelantti.frisbeegolfer.model.Player
 
 
-class PlayerListAdapterMultiSelect internal constructor(
+class PlayerListAdapter internal constructor(
     val context: Context,
     onClickListener: ListItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ListItemClickListener {
-        fun onListItemClick(position: Int, shouldStartActionMode: Boolean)
+        fun onListItemClick(position: Int, clickedOnSame: Boolean)
+        fun onListItemLongClick(position: Int, clickedOnSame: Boolean)
     }
 
     private val res: Resources = context.resources
     private var displayedPlayers = mutableListOf<Player>()
     private var allPlayers = mutableListOf<Player>()
-    var selectedIndeces = mutableListOf<Int>()
+    private var defaultSelectedPosition = -1
+    var selectedPosition = defaultSelectedPosition
     private val mOnClickListener: ListItemClickListener = onClickListener
     private lateinit var builder: TextDrawable.IBuilder
     private val generator = ColorGenerator.MATERIAL
@@ -39,7 +42,7 @@ class PlayerListAdapterMultiSelect internal constructor(
     }
 
     inner class PlayerWithEmailViewHolder(binding: RecyclerviewPlayerWithEmailBinding) :
-        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
         private val playerCard: ConstraintLayout = binding.playerItem
         private val playerIcon = binding.playerInitialImage
@@ -48,6 +51,7 @@ class PlayerListAdapterMultiSelect internal constructor(
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
             builder = TextDrawable.builder()
                 .beginConfig()
                 .textColor(
@@ -62,30 +66,62 @@ class PlayerListAdapterMultiSelect internal constructor(
         }
 
         override fun onClick(v: View?) {
-            onClickHandler(bindingAdapterPosition)
+            val position: Int = bindingAdapterPosition
+            val clickedOnSame: Boolean
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                clickedOnSame = true
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                clickedOnSame = false
+            }
+
+            mOnClickListener.onListItemClick(position, clickedOnSame)
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            val position: Int = bindingAdapterPosition
+            val clickedOnSame: Boolean
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                clickedOnSame = true
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                clickedOnSame = false
+            }
+            mOnClickListener.onListItemLongClick(position, clickedOnSame)
+            return true
         }
 
         fun bind(position: Int) {
-            val selectedPlayer = displayedPlayers[position]
-            playerCard.isActivated = selectedIndeces.contains(position)
+            playerCard.isActivated = selectedPosition == position
 
+            val current = displayedPlayers[position]
             if (!playerCard.isActivated) {
-                val color = generator.getColor(selectedPlayer.name)
-                val initial = selectedPlayer.name?.take(1)
+                val color = generator.getColor(current.name)
+                val initial = current.name?.take(1)
                 val icon = builder.build(initial, color)
                 playerIcon.setImageDrawable(icon)
             } else {
                 playerIcon.setImageResource(R.drawable.recyclerview_selected_item_icon)
             }
 
-            playerItemViewName.text = selectedPlayer.name
-            playerItemViewEmail.text =
-                res.getString(R.string.email_descriptor, selectedPlayer.email)
+            playerItemViewName.text = current.name
+            playerItemViewEmail.text = res.getString(R.string.email_descriptor, current.email)
+            playerIcon.setOnClickListener {
+                onLongClick(it)
+            }
         }
     }
 
     inner class PlayerWithoutEmailViewHolder(binding: RecyclerviewPlayerWithoutEmailBinding) :
-        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
         private val playerCard: ConstraintLayout = binding.playerItem
         private val playerIcon = binding.playerInitialImage
@@ -93,6 +129,7 @@ class PlayerListAdapterMultiSelect internal constructor(
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
             builder = TextDrawable.builder()
                 .beginConfig()
                 .textColor(
@@ -107,22 +144,57 @@ class PlayerListAdapterMultiSelect internal constructor(
         }
 
         override fun onClick(v: View?) {
-            onClickHandler(bindingAdapterPosition)
+            val position: Int = bindingAdapterPosition
+            val clickedOnSame: Boolean
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                clickedOnSame = true
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                clickedOnSame = false
+            }
+
+            mOnClickListener.onListItemClick(position, clickedOnSame)
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            val position: Int = bindingAdapterPosition
+            val clickedOnSame: Boolean
+            val previousSelectedPosition = selectedPosition
+            if (selectedPosition == position) {
+                resetSelectedPosition()
+                clickedOnSame = true
+            } else {
+                selectedPosition = position
+                notifyItemChanged(previousSelectedPosition)
+                notifyItemChanged(selectedPosition)
+                clickedOnSame = false
+            }
+            mOnClickListener.onListItemLongClick(position, clickedOnSame)
+            return true
         }
 
         fun bind(position: Int) {
-            val selectedPlayer = displayedPlayers[position]
-            playerCard.isActivated = selectedIndeces.contains(position)
+            playerCard.isActivated = selectedPosition == position
+
+            val current = displayedPlayers[position]
 
             if (!playerCard.isActivated) {
-                val color = generator.getColor(selectedPlayer.name)
-                val initial = selectedPlayer.name?.take(1)
+                val color = generator.getColor(current.name)
+                val initial = current.name?.take(1)
                 val icon = builder.build(initial, color)
                 playerIcon.setImageDrawable(icon)
             } else {
                 playerIcon.setImageResource(R.drawable.recyclerview_selected_item_icon)
             }
-            playerItemViewName.text = selectedPlayer.name
+
+            playerItemViewName.text = current.name
+            playerIcon.setOnClickListener {
+                onLongClick(it)
+            }
         }
     }
 
@@ -155,19 +227,21 @@ class PlayerListAdapterMultiSelect internal constructor(
         } else {
             (holder as PlayerWithoutEmailViewHolder).bind(position)
         }
+
     }
 
-    internal fun getSelectedPlayers(): List<Player> {
-        return selectedIndeces.map { displayedPlayers[it] }
+    internal fun getSelectedPlayer(): Player? {
+        return if (selectedPosition == defaultSelectedPosition) null
+        else displayedPlayers[selectedPosition]
     }
 
     internal fun setPlayers(players: List<Player>) {
+        this.allPlayers = players.toMutableList()
         this.displayedPlayers = players.toMutableList()
-        this.allPlayers.addAll(displayedPlayers)
         notifyDataSetChanged()
     }
 
-    fun filter(text: String?) {
+    fun filter(text: String?): Int {
         if (text != null) {
             val filterText = text.toLowerCase()
             displayedPlayers.clear()
@@ -184,29 +258,14 @@ class PlayerListAdapterMultiSelect internal constructor(
             }
             notifyDataSetChanged()
         }
+        return displayedPlayers.count()
     }
 
-    internal fun resetSelectedPlayers() {
-        val previousSelectedIndeces = selectedIndeces
-        selectedIndeces = mutableListOf()
-        for (index in previousSelectedIndeces) {
-            notifyItemChanged(index)
-        }
-    }
-
-    fun onClickHandler(position: Int) {
-        displayedPlayers[position]
-        val shouldStartActionMode: Boolean
-        (if (selectedIndeces.contains(position)) {
-            selectedIndeces.remove(position)
-            notifyItemChanged(position)
-            selectedIndeces.count() != 0
-        } else {
-            selectedIndeces.add(position)
-            notifyItemChanged(position)
-            true
-        }).also { shouldStartActionMode = it }
-        mOnClickListener.onListItemClick(position, shouldStartActionMode)
+    internal fun resetSelectedPosition() {
+        val previousSelectedPosition = selectedPosition
+        selectedPosition = defaultSelectedPosition
+        notifyItemChanged(previousSelectedPosition)
+        notifyItemChanged(selectedPosition)
     }
 
     override fun getItemCount() = displayedPlayers.size

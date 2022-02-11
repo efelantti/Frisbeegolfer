@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
-import fi.efelantti.frisbeegolfer.PlayerListAdapterMultiSelect
 import fi.efelantti.frisbeegolfer.R
+import fi.efelantti.frisbeegolfer.adapter.PlayerListAdapterMultiSelect
 import fi.efelantti.frisbeegolfer.databinding.FragmentChoosePlayersBinding
 import fi.efelantti.frisbeegolfer.model.Player
 import fi.efelantti.frisbeegolfer.viewmodel.*
@@ -120,7 +120,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
             )
         )
 
-        playerViewModel.allPlayers.observe(viewLifecycleOwner, { list ->
+        playerViewModel.allPlayers().observe(viewLifecycleOwner, { list ->
             list?.let { players ->
                 val sortedPlayers = players.sortedBy { it.name }
                 adapter.setPlayers(sortedPlayers)

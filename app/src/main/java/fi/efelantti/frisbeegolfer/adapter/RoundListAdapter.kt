@@ -1,4 +1,4 @@
-package fi.efelantti.frisbeegolfer
+package fi.efelantti.frisbeegolfer.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.amulyakhare.textdrawable.util.ColorGenerator
+import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewRoundBinding
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
@@ -143,7 +144,7 @@ class RoundListAdapter internal constructor(
 
     internal fun setRounds(rounds: List<RoundWithCourseAndScores>) {
         this.displayedRounds = rounds.toMutableList()
-        this.allRounds.addAll(this.displayedRounds)
+        this.allRounds = rounds.toMutableList()
         notifyDataSetChanged()
     }
 
