@@ -4,16 +4,16 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
+import fi.efelantti.frisbeegolfer.LiveDataState
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.adapter.PlayerListAdapterMultiSelect
 import fi.efelantti.frisbeegolfer.databinding.FragmentChoosePlayersBinding
@@ -39,8 +39,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
     private val args: FragmentChoosePlayersArgs by navArgs()
     private lateinit var adapter: PlayerListAdapterMultiSelect
     private var actionMode: ActionMode? = null
-    private lateinit var recyclerView: EmptyRecyclerView
-    private lateinit var emptyView: TextView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var fab: FloatingActionButton
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -107,9 +106,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
         super.onViewCreated(view, savedInstanceState)
 
         adapter = PlayerListAdapterMultiSelect(activity as Context, this)
-        recyclerView = binding.recyclerviewChoosePlayers
-        emptyView = binding.emptyViewChoosePlayers
-        recyclerView.setEmptyView(emptyView)
+        recyclerView = binding.recyclerview
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -120,10 +117,24 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
             )
         )
 
+        playerViewModel.state.observe(viewLifecycleOwner, { state ->
+            when (state) {
+                LiveDataState.LOADING -> binding.progressBar.visibility = View.VISIBLE
+                LiveDataState.SUCCESS -> binding.progressBar.visibility = View.GONE
+            }
+        })
+
         playerViewModel.allPlayers().observe(viewLifecycleOwner, { list ->
             list?.let { players ->
-                val sortedPlayers = players.sortedBy { it.name }
-                adapter.setPlayers(sortedPlayers)
+                if (players.count() == 0) {
+                    binding.emptyView.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                } else {
+                    binding.emptyView.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                    val sortedPlayers = players.sortedBy { it.name }
+                    adapter.setPlayers(sortedPlayers)
+                }
             }
         })
 
@@ -194,13 +205,25 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        adapter.filter(query)
+        val resultsCount = adapter.filter(query)
+        actOnFilterResults(resultsCount)
         return true
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        adapter.filter(newText)
+        val resultsCount = adapter.filter(newText)
+        actOnFilterResults(resultsCount)
         return true
+    }
+
+    private fun actOnFilterResults(resultsCount: Int) {
+        if (resultsCount == 0 && adapter.itemCount > 0 && playerViewModel.state.value == LiveDataState.SUCCESS) {
+            binding.recyclerview.visibility = View.GONE
+            binding.noMatches.visibility = View.VISIBLE
+        } else {
+            binding.recyclerview.visibility = View.VISIBLE
+            binding.noMatches.visibility = View.GONE
+        }
     }
 
     override fun onDestroyView() {

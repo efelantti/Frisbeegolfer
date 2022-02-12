@@ -73,7 +73,6 @@ class CourseListAdapter internal constructor(
             return true
         }
 
-
         override fun onClick(v: View?) {
             val position: Int = bindingAdapterPosition
             val clickedOnSame: Boolean
@@ -125,7 +124,7 @@ class CourseListAdapter internal constructor(
         notifyDataSetChanged()
     }
 
-    fun filter(text: String?) {
+    fun filter(text: String?): Int {
         if (text != null) {
             val filterText = text.toLowerCase()
             displayedCourses.clear()
@@ -143,11 +142,12 @@ class CourseListAdapter internal constructor(
             }
             notifyDataSetChanged()
         }
+        return displayedCourses.count()
     }
 
     internal fun getSelectedCourse(): CourseWithHoles? {
         return if (selectedPosition == defaultSelectedPosition) null
-        else displayedCourses[selectedPosition]
+        else allCourses[selectedPosition]
     }
 
     internal fun resetSelectedPosition() {
@@ -156,6 +156,8 @@ class CourseListAdapter internal constructor(
         notifyItemChanged(previousSelectedPosition)
         notifyItemChanged(selectedPosition)
     }
+
+    internal fun getAllItemsCount() = allCourses.size
 
     override fun getItemCount() = displayedCourses.size
 }

@@ -11,7 +11,7 @@
     <string name="action_edit">Muokkaa</string>
     <string name="players_activity_title">Pelaajat</string>
     <string name="no_players_available">Pelaajia ei ole vielä lisätty.</string>
-    <string name="no_players_available_when_choosing">Pelaajia ei oel vielä lisätty. Lisää ensin vähintään yksi pelaaja.</string>
+    <string name="no_players_available_when_choosing">Pelaajia ei ole vielä lisätty. Lisää ensin vähintään yksi pelaaja.</string>
     <string name="error_duplicate_player">Samanniminen pelaaja on jo olemassa!</string>
     <string name="player_data_not_edited">Tietoa ei muokattu.</string>
     <string name="email_descriptor">Sähköposti: <xliff:g example="example@example.com" id="email">%s</xliff:g></string>

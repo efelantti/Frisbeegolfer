@@ -73,14 +73,15 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
 
     private fun editSelectedPlayer() {
         val player = adapter.getSelectedPlayer()
-            ?: throw java.lang.IllegalArgumentException("No player was selected.")
-        val action =
-            FragmentPlayersDirections.actionFragmentPlayersToFragmentNewPlayer(
-                NewPlayerAction.EDIT.toString(),
-                player.id
-            )
+        if (player != null) {
+            val action =
+                FragmentPlayersDirections.actionFragmentPlayersToFragmentNewPlayer(
+                    NewPlayerAction.EDIT.toString(),
+                    player.id
+                )
+            findNavController().navigate(action)
+        }
         adapter.resetSelectedPosition()
-        findNavController().navigate(action)
     }
 
     private fun deletePlayer(player: Player) {
@@ -214,7 +215,7 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
     }
 
     private fun actOnFilterResults(resultsCount: Int) {
-        if (resultsCount == 0 && playerViewModel.state.value == LiveDataState.SUCCESS) {
+        if (resultsCount == 0 && adapter.getAllItemsCount() > 0 && playerViewModel.state.value == LiveDataState.SUCCESS) {
             binding.recyclerview.visibility = View.GONE
             binding.noMatches.visibility = View.VISIBLE
         } else {

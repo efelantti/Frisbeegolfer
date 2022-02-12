@@ -111,7 +111,7 @@ class FragmentChooseCourse : Fragment(), CourseListAdapter.ListItemClickListener
             )
         )
 
-        courseViewModel.allCourses.observe(viewLifecycleOwner, { list ->
+        courseViewModel.allCourses().observe(viewLifecycleOwner, { list ->
             list?.let { courses ->
                 val sortedCourses = courses.sortedBy { it.course.city }
                 adapter.setCourses(sortedCourses)

@@ -30,7 +30,9 @@ import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.io.*
 
-// TODO - Wrong result text when no players.
+// TODO - Finish adding the filters.
+// TODO - Remove last player -> Click Add new -> Click Cancel -> "Ghost player" appears. (Fixed by clicking again on Players tab). Force reset fragment after Cancel?
+// TODO - Wrap adapter/fragment logic in base class.
 // TODO - Restart application after importing Discscores data in order to refresh the app.
 // TODO - Create tests where missing - especially UI tests.
 // TODO - Add statistics (to relevant fragments + a separate fragment).

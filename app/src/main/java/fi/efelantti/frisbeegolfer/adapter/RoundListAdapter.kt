@@ -192,5 +192,7 @@ class RoundListAdapter internal constructor(
         notifyItemChanged(selectedPosition)
     }
 
+    fun getAllItemsCount() = allRounds.size
+
     override fun getItemCount() = displayedRounds.size
 }

@@ -21,8 +21,6 @@ class PlayerViewModel(
         MutableLiveData<LiveDataState>(LiveDataState.LOADING)
     var state: LiveData<LiveDataState> = _state
 
-    //val allPlayers: LiveData<List<Player>> = repository.allPlayers
-
     // with a Transformation
     // this would be the method which returns the database LiveData
     fun allPlayers(): LiveData<List<Player>> {

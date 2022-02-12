@@ -4,14 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
-import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import fi.efelantti.frisbeegolfer.EmptyRecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
+import fi.efelantti.frisbeegolfer.LiveDataState
 import fi.efelantti.frisbeegolfer.NewCourseAction
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.adapter.CourseListAdapter
@@ -30,8 +30,7 @@ class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickL
     }
     private lateinit var adapter: CourseListAdapter
     private var actionMode: ActionMode? = null
-    private lateinit var recyclerView: EmptyRecyclerView
-    private lateinit var emptyView: TextView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var fab: FloatingActionButton
 
     private val actionModeCallback = object : ActionMode.Callback {
@@ -105,9 +104,7 @@ class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickL
         super.onViewCreated(view, savedInstanceState)
 
         adapter = CourseListAdapter(activity as Context, this)
-        recyclerView = binding.recyclerviewCourses
-        emptyView = binding.emptyViewCourses
-        recyclerView.setEmptyView(emptyView)
+        recyclerView = binding.recyclerview
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -118,10 +115,24 @@ class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickL
             )
         )
 
-        courseViewModel.allCourses.observe(viewLifecycleOwner, { list ->
+        courseViewModel.state.observe(viewLifecycleOwner, { state ->
+            when (state) {
+                LiveDataState.LOADING -> binding.progressBar.visibility = View.VISIBLE
+                LiveDataState.SUCCESS -> binding.progressBar.visibility = View.GONE
+            }
+        })
+
+        courseViewModel.allCourses().observe(viewLifecycleOwner, { list ->
             list?.let { courses ->
-                val coursesSortedByCity = courses.sortedBy { it.course.city }
-                adapter.setCourses(coursesSortedByCity)
+                if (courses.count() == 0) {
+                    binding.emptyView.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                } else {
+                    binding.emptyView.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                    val sortedCourses = courses.sortedBy { it.course.city }
+                    adapter.setCourses(sortedCourses)
+                }
             }
         })
 
@@ -133,14 +144,15 @@ class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickL
 
     private fun editSelectedCourse() {
         val course = adapter.getSelectedCourse()
-            ?: throw java.lang.IllegalArgumentException("No course was selected.")
-        val action =
-            FragmentCoursesDirections.actionFragmentCoursesToFragmentNewCourse(
-                NewCourseAction.EDIT.toString(),
-                course.course.courseId
-            )
-        adapter.resetSelectedPosition()
-        findNavController().navigate(action)
+        if (course != null) {
+            val action =
+                FragmentCoursesDirections.actionFragmentCoursesToFragmentNewCourse(
+                    NewCourseAction.EDIT.toString(),
+                    course.course.courseId
+                )
+            adapter.resetSelectedPosition()
+            findNavController().navigate(action)
+        }
     }
 
     private fun showNewCourseDialog() {
@@ -194,12 +206,24 @@ class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickL
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        adapter.filter(query)
+        val resultsCount = adapter.filter(query)
+        actOnFilterResults(resultsCount)
         return true
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        adapter.filter(newText)
+        val resultsCount = adapter.filter(newText)
+        actOnFilterResults(resultsCount)
         return true
+    }
+
+    private fun actOnFilterResults(resultsCount: Int) {
+        if (resultsCount == 0 && adapter.getAllItemsCount() > 0 && courseViewModel.state.value == LiveDataState.SUCCESS) {
+            binding.recyclerview.visibility = View.GONE
+            binding.noMatches.visibility = View.VISIBLE
+        } else {
+            binding.recyclerview.visibility = View.VISIBLE
+            binding.noMatches.visibility = View.GONE
+        }
     }
 }

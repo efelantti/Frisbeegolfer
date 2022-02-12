@@ -268,5 +268,7 @@ class PlayerListAdapter internal constructor(
         notifyItemChanged(selectedPosition)
     }
 
+    internal fun getAllItemsCount() = allPlayers.size
+
     override fun getItemCount() = displayedPlayers.size
 }

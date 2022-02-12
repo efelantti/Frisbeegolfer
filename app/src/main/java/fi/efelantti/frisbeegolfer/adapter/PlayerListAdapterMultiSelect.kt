@@ -168,7 +168,7 @@ class PlayerListAdapterMultiSelect internal constructor(
         notifyDataSetChanged()
     }
 
-    fun filter(text: String?) {
+    fun filter(text: String?): Int {
         if (text != null) {
             val filterText = text.toLowerCase()
             displayedPlayers.clear()
@@ -185,6 +185,7 @@ class PlayerListAdapterMultiSelect internal constructor(
             }
             notifyDataSetChanged()
         }
+        return displayedPlayers.count()
     }
 
     internal fun resetSelectedPlayers() {
@@ -210,5 +211,5 @@ class PlayerListAdapterMultiSelect internal constructor(
         mOnClickListener.onListItemClick(position, shouldStartActionMode)
     }
 
-    override fun getItemCount() = displayedPlayers.size
+    override fun getItemCount() = allPlayers.size
 }

@@ -1,9 +1,8 @@
 package fi.efelantti.frisbeegolfer.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import fi.efelantti.frisbeegolfer.IRepository
+import fi.efelantti.frisbeegolfer.LiveDataState
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.getViewModelScope
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
@@ -17,7 +16,18 @@ class CourseViewModel(
 ) : ViewModel() {
 
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
-    val allCourses: LiveData<List<CourseWithHoles>> = repository.allCourses
+
+    private var _state: MutableLiveData<LiveDataState> =
+        MutableLiveData<LiveDataState>(LiveDataState.LOADING)
+    var state: LiveData<LiveDataState> = _state
+
+    fun allCourses(): LiveData<List<CourseWithHoles>> {
+        _state.value = LiveDataState.LOADING
+        return Transformations.map(repository.allCourses) {
+            _state.value = LiveDataState.SUCCESS
+            return@map it
+        }
+    }
 
     fun delete(hole: Hole) = coroutineScope.launch {
         repository.delete(hole)
