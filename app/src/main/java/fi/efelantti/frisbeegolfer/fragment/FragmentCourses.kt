@@ -62,6 +62,7 @@ class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickL
                         ?: throw java.lang.IllegalArgumentException("No player was selected.")
                     deleteCourse(course)
                     mode.finish()
+
                     true
                 }
                 else -> false
@@ -124,14 +125,17 @@ class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickL
 
         courseViewModel.allCourses().observe(viewLifecycleOwner, { list ->
             list?.let { courses ->
-                if (courses.count() == 0) {
-                    binding.emptyView.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
-                } else {
-                    binding.emptyView.visibility = View.GONE
-                    recyclerView.visibility = View.VISIBLE
+                if (courseViewModel.state.value == LiveDataState.SUCCESS) {
                     val sortedCourses = courses.sortedBy { it.course.city }
                     adapter.setCourses(sortedCourses)
+
+                    if (courses.count() == 0) {
+                        binding.emptyView.visibility = View.VISIBLE
+                        recyclerView.visibility = View.GONE
+                    } else {
+                        binding.emptyView.visibility = View.GONE
+                        recyclerView.visibility = View.VISIBLE
+                    }
                 }
             }
         })

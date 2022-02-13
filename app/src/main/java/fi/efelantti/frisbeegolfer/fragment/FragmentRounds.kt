@@ -10,8 +10,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import fi.efelantti.frisbeegolfer.EmptyRecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
+import fi.efelantti.frisbeegolfer.LiveDataState
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.adapter.RoundListAdapter
 import fi.efelantti.frisbeegolfer.databinding.FragmentRoundsBinding
@@ -19,8 +20,6 @@ import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
 import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 
-
-// TODO - Allow to filter rounds (for example, by player or course)
 class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickListener,
     DialogConfirmDelete.OnConfirmationSelected, SearchView.OnQueryTextListener {
 
@@ -29,7 +28,7 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
     private val roundViewModel: RoundViewModel by activityViewModels {
         RoundViewModelFactory((requireActivity().applicationContext as FrisbeegolferApplication).repository)
     }
-    private lateinit var recyclerView: EmptyRecyclerView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RoundListAdapter
     private lateinit var emptyView: TextView
     private var actionMode: ActionMode? = null
@@ -105,10 +104,8 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
         super.onViewCreated(view, savedInstanceState)
 
         adapter = RoundListAdapter(activity as Context, this)
-        recyclerView = binding.recyclerviewContinueRound
-        emptyView = binding.emptyViewRounds
+        recyclerView = binding.recyclerview
 
-        recyclerView.setEmptyView(emptyView)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.addItemDecoration(
@@ -118,8 +115,27 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
             )
         )
 
-        roundViewModel.allRounds.observe(viewLifecycleOwner, { round ->
-            round?.let { adapter.setRounds(it) }
+        roundViewModel.state.observe(viewLifecycleOwner, { state ->
+            when (state) {
+                LiveDataState.LOADING -> binding.progressBar.visibility = View.VISIBLE
+                LiveDataState.SUCCESS -> binding.progressBar.visibility = View.GONE
+            }
+        })
+
+        roundViewModel.allRounds().observe(viewLifecycleOwner, { round ->
+            round?.let { rounds ->
+                if (roundViewModel.state.value == LiveDataState.SUCCESS) {
+                    adapter.setRounds(rounds)
+
+                    if (rounds.count() == 0) {
+                        binding.emptyView.visibility = View.VISIBLE
+                        recyclerView.visibility = View.GONE
+                    } else {
+                        binding.emptyView.visibility = View.GONE
+                        recyclerView.visibility = View.VISIBLE
+                    }
+                }
+            }
         })
 
         binding.fabStartRound.setOnClickListener {
@@ -208,12 +224,24 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        adapter.filter(query)
+        val resultsCount = adapter.filter(query)
+        actOnFilterResults(resultsCount)
         return true
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        adapter.filter(newText)
+        val resultsCount = adapter.filter(newText)
+        actOnFilterResults(resultsCount)
         return true
+    }
+
+    private fun actOnFilterResults(resultsCount: Int) {
+        if (resultsCount == 0 && adapter.getAllItemsCount() > 0 && roundViewModel.state.value == LiveDataState.SUCCESS) {
+            binding.recyclerview.visibility = View.GONE
+            binding.noMatches.visibility = View.VISIBLE
+        } else {
+            binding.recyclerview.visibility = View.VISIBLE
+            binding.noMatches.visibility = View.GONE
+        }
     }
 }

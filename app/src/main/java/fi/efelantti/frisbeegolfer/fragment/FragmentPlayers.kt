@@ -133,14 +133,17 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
 
         playerViewModel.allPlayers().observe(viewLifecycleOwner, { list ->
             list?.let { players ->
-                if (players.count() == 0) {
-                    binding.emptyView.visibility = View.VISIBLE
-                    recyclerView.visibility = View.GONE
-                } else {
-                    binding.emptyView.visibility = View.GONE
-                    recyclerView.visibility = View.VISIBLE
+                if (playerViewModel.state.value == LiveDataState.SUCCESS) {
                     val sortedPlayers = players.sortedBy { it.name }
                     adapter.setPlayers(sortedPlayers)
+
+                    if (players.count() == 0) {
+                        binding.emptyView.visibility = View.VISIBLE
+                        recyclerView.visibility = View.GONE
+                    } else {
+                        binding.emptyView.visibility = View.GONE
+                        recyclerView.visibility = View.VISIBLE
+                    }
                 }
             }
         })

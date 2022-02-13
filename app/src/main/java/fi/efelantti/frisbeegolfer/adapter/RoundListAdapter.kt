@@ -151,7 +151,7 @@ class RoundListAdapter internal constructor(
     // TODO - Add filter possibilities.
     // Date
     // more?
-    fun filter(text: String?) {
+    fun filter(text: String?): Int {
         if (text != null) {
             val filterText = text.toLowerCase()
             displayedRounds.clear()
@@ -174,6 +174,7 @@ class RoundListAdapter internal constructor(
             }
             notifyDataSetChanged()
         }
+        return displayedRounds.count()
     }
 
     internal fun isRoundSelected(): Boolean {

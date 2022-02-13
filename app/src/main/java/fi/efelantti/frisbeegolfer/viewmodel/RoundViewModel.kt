@@ -1,9 +1,8 @@
 package fi.efelantti.frisbeegolfer.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import fi.efelantti.frisbeegolfer.IRepository
+import fi.efelantti.frisbeegolfer.LiveDataState
 import fi.efelantti.frisbeegolfer.Repository
 import fi.efelantti.frisbeegolfer.getViewModelScope
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
@@ -21,7 +20,18 @@ class RoundViewModel(
 
     //var isReadOnly: Boolean? = null
     private val coroutineScope = getViewModelScope(coroutineScopeProvider)
-    val allRounds: LiveData<List<RoundWithCourseAndScores>> = repository.allRounds
+
+    private var _state: MutableLiveData<LiveDataState> =
+        MutableLiveData<LiveDataState>(LiveDataState.LOADING)
+    var state: LiveData<LiveDataState> = _state
+
+    fun allRounds(): LiveData<List<RoundWithCourseAndScores>> {
+        _state.value = LiveDataState.LOADING
+        return Transformations.map(repository.allRounds) {
+            _state.value = LiveDataState.SUCCESS
+            return@map it
+        }
+    }
 
     fun getRoundWithRoundId(roundId: OffsetDateTime): LiveData<RoundWithCourseAndScores> {
         return repository.getRoundWithRoundId(roundId)

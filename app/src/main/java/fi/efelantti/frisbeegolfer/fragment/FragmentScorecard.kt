@@ -47,6 +47,7 @@ class FragmentScorecard : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         val menuItemsToHide = mutableListOf(
+            R.id.action_search,
             R.id.action_import_data,
             R.id.action_export_data,
             R.id.action_import_data_from_discscores
