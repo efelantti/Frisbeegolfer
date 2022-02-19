@@ -34,7 +34,11 @@ class CourseViewModel(
     }
 
     fun getCourseWithHolesById(id: Long): LiveData<CourseWithHoles> {
-        return repository.getCourseWithHolesById(id)
+        _state.value = LiveDataState.LOADING
+        return Transformations.map(repository.getCourseWithHolesById(id)) {
+            _state.value = LiveDataState.SUCCESS
+            return@map it
+        }
     }
 
     /**

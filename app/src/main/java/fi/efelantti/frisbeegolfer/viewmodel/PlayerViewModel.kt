@@ -46,7 +46,11 @@ class PlayerViewModel(
     }
 
     fun getPlayerById(id: Long): LiveData<Player> {
-        return repository.getPlayerById(id)
+        _state.value = LiveDataState.LOADING
+        return Transformations.map(repository.getPlayerById(id)) {
+            _state.value = LiveDataState.SUCCESS
+            return@map it
+        }
     }
 
     /**

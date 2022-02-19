@@ -6,7 +6,10 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import android.widget.Toolbar
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -92,7 +95,7 @@ class FragmentNewCourse : DialogFragment() {
         numberOfHolesLayout = binding.editNumberOfHolesLayout
         applyHolesButton = binding.applyHoles
 
-        val adapter = HoleListAdapter()
+        val adapter = HoleListAdapter(requireContext())
         recyclerView = binding.recyclerviewHoles
 
         recyclerView.adapter = adapter
@@ -129,18 +132,28 @@ class FragmentNewCourse : DialogFragment() {
             }
             toolbar.setOnMenuItemClickListener(saveAction)
         } else if (actionCategory == NewCourseAction.EDIT) {
+            requireActivity().invalidateOptionsMenu()
+
+            applyHolesButton.isEnabled = false
+            numberOfHolesView.isEnabled = false
+            toolbar.title = getString(R.string.text_activity_new_course_title_edit)
+
+            courseViewModel.state.observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    LiveDataState.LOADING -> binding.progressBar.visibility = View.VISIBLE
+                    LiveDataState.SUCCESS -> binding.progressBar.visibility = View.GONE
+                    null -> binding.progressBar.visibility = View.GONE
+                }
+            }
+
             courseViewModel.getCourseWithHolesById(oldCourseId)
                 .observe(viewLifecycleOwner) { oldCourseData ->
                     if (oldCourseData != null) {
                         isFinalized = false
-                        requireActivity().invalidateOptionsMenu()
-
-                        applyHolesButton.isEnabled = false
-                        numberOfHolesView.isEnabled = false
 
                         oldHolePars = oldCourseData.holes.map { it.par }
                         oldHoleLengthMeter = oldCourseData.holes.map { it.lengthMeters }
-                        toolbar.title = getString(R.string.text_activity_new_course_title_edit)
+
                         courseNameEditText.setText(oldCourseData.course.name)
                         cityEditText.setText(oldCourseData.course.city)
                         oldCourseData.holes.let { adapter.setHoles(it) }
@@ -292,7 +305,7 @@ class FragmentNewCourse : DialogFragment() {
 
     /*
 Function for editing an existing course and updating it in the database.
-Parses the data from the UI, validates it and then udpates the course in the database, checking that it's new information doesn't already exist in the database.
+Parses the data from the UI, validates it and then updates the course in the database, checking that it's new information doesn't already exist in the database.
  */
     private fun editCourse(
         oldCourseData: CourseWithHoles,
@@ -369,7 +382,7 @@ Parses the data from the UI, validates it and then udpates the course in the dat
     }
 
     /**
-     * Function to get the current values of the holes's attributes from the UI.
+     * Function to get the current values of the holes' attributes from the UI.
      */
     private fun getHoles(holes: List<Hole>): List<Hole> {
         val listToReturn: MutableList<Hole> = mutableListOf()

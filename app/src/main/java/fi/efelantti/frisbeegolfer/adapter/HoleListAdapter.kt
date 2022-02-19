@@ -1,15 +1,20 @@
 package fi.efelantti.frisbeegolfer.adapter
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewHoleBinding
 import fi.efelantti.frisbeegolfer.model.Hole
 
-class HoleListAdapter internal constructor() :
+class HoleListAdapter internal constructor(
+    val context: Context
+) :
     RecyclerView.Adapter<HoleListAdapter.HoleViewHolder>() {
 
     private var holes: List<Hole> = emptyList()
@@ -52,7 +57,7 @@ class HoleListAdapter internal constructor() :
 
     override fun onBindViewHolder(holder: HoleViewHolder, position: Int) {
         val hole: Hole = holes[position]
-        holder.holeIndexTextView.text = (position + 1).toString()
+        holder.holeIndexTextView.text = context.getString(R.string.hole_index, position + 1)
         holder.parCountView.text = hole.par.toString()
         holder.par = holder.parCountView.text.toString().toInt()
         holder.holeLengthView.text = hole.lengthMeters?.toString()
@@ -72,6 +77,7 @@ class HoleListAdapter internal constructor() :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     internal fun setHoles(holes: List<Hole>) {
         this.holes = holes.sortedBy{it.holeNumber}
         notifyDataSetChanged()

@@ -124,4 +124,8 @@
     <string name="dnf_text_description">Did not finish (väylää ei pelattu loppuun)</string>
     <string name="action_search">Hae</string>
     <string name="no_matches">Ei tuloksia.</string>
+    <plurals name="numberPlayersSelected">
+        <item quantity="one">%d</item>
+        <item quantity="other">%d</item>
+    </plurals>
 </resources>

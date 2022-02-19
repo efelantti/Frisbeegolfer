@@ -117,14 +117,15 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
             )
         )
 
-        playerViewModel.state.observe(viewLifecycleOwner, { state ->
+        playerViewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 LiveDataState.LOADING -> binding.progressBar.visibility = View.VISIBLE
                 LiveDataState.SUCCESS -> binding.progressBar.visibility = View.GONE
+                null -> binding.progressBar.visibility = View.GONE
             }
-        })
+        }
 
-        playerViewModel.allPlayers().observe(viewLifecycleOwner, { list ->
+        playerViewModel.allPlayers().observe(viewLifecycleOwner) { list ->
             list?.let { players ->
                 if (players.count() == 0) {
                     binding.emptyView.visibility = View.VISIBLE
@@ -136,14 +137,14 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
                     adapter.setPlayers(sortedPlayers)
                 }
             }
-        })
+        }
 
         fab = binding.fabChoosePlayers
         fab.setOnClickListener {
             val players = chooseSelectedPlayers()
             val playerIds = players.sortedBy { it.name }.map { it.id }
             val courseId = args.courseId
-            courseViewModel.getCourseWithHolesById(courseId).observe(viewLifecycleOwner, { course ->
+            courseViewModel.getCourseWithHolesById(courseId).observe(viewLifecycleOwner) { course ->
                 val roundId = OffsetDateTime.now()
                 val holeIds = course.holes.sortedBy { it.holeNumber }.map { it.holeId }
                 val roundName =
@@ -155,7 +156,7 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
                     playerIds.toLongArray(),
                     roundName
                 )
-            })
+            }
         }
     }
 

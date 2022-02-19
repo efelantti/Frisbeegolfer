@@ -43,7 +43,7 @@ class ScoreViewModel(
     val currentScore: MediatorLiveData<ScoreWithPlayerAndHole?> = combine(
         currentRound, currentPlayerId, currentHoleId
     ) { round, playerId, holeId ->
-        if (round != null && round.scores != null && round.scores.count() == expectedScoresCount)
+        if (round?.scores != null && round.scores.count() == expectedScoresCount)
             round.scores.find { it.player.id == playerId && it.hole.holeId == holeId }
         else null
     }
@@ -208,7 +208,7 @@ class ScoreViewModel(
             player: Player,
             scores: List<ScoreWithPlayerAndHole>,
             holeNumber: Int
-        ): String? {
+        ): String {
             val scoresForPlayer =
                 scores.filter { it.player == player && it.hole.holeNumber <= holeNumber }
             var totalResult = 0
@@ -242,7 +242,7 @@ class ScoreViewModel(
     }
 }
 
-enum class ScoringTerm() {
+enum class ScoringTerm {
     NoName,
     Ace,
     Condor,

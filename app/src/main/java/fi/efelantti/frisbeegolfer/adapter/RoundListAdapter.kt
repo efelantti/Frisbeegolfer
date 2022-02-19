@@ -1,5 +1,6 @@
 package fi.efelantti.frisbeegolfer.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import fi.efelantti.frisbeegolfer.databinding.RecyclerviewRoundBinding
 import fi.efelantti.frisbeegolfer.model.RoundWithCourseAndScores
 import fi.efelantti.frisbeegolfer.viewmodel.ScoreViewModel
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 class RoundListAdapter internal constructor(
@@ -25,7 +27,6 @@ class RoundListAdapter internal constructor(
         fun onListItemLongClick(position: Int, clickedOnSame: Boolean)
     }
 
-    private val resources = context.resources
     private var displayedRounds = mutableListOf<RoundWithCourseAndScores>()
     private var allRounds = mutableListOf<RoundWithCourseAndScores>()
     private var defaultSelectedPosition = -1
@@ -142,6 +143,7 @@ class RoundListAdapter internal constructor(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     internal fun setRounds(rounds: List<RoundWithCourseAndScores>) {
         this.displayedRounds = rounds.toMutableList()
         this.allRounds = rounds.toMutableList()
@@ -151,21 +153,26 @@ class RoundListAdapter internal constructor(
     // TODO - Add filter possibilities.
     // Date
     // more?
+    @SuppressLint("NotifyDataSetChanged")
     fun filter(text: String?): Int {
         if (text != null) {
-            val filterText = text.toLowerCase()
+            val filterText = text.toLowerCase(Locale.getDefault())
             displayedRounds.clear()
             if (text.isEmpty()) {
                 displayedRounds.addAll(allRounds)
             } else {
                 for (item in allRounds) {
-                    if (item.course.course.name?.toLowerCase()?.contains(filterText) == true ||
-                        item.course.course.city?.toLowerCase()?.contains(filterText) == true ||
+                    if (item.course.course.name?.toLowerCase(Locale.getDefault())
+                            ?.contains(filterText) == true ||
+                        item.course.course.city?.toLowerCase(Locale.getDefault())
+                            ?.contains(filterText) == true ||
                         item.scores.any {
-                            it.player.name?.toLowerCase()?.contains(filterText) == true
+                            it.player.name?.toLowerCase(Locale.getDefault())
+                                ?.contains(filterText) == true
                         } ||
                         item.scores.any {
-                            it.player.email?.toLowerCase()?.contains(filterText) == true
+                            it.player.email?.toLowerCase(Locale.getDefault())
+                                ?.contains(filterText) == true
                         }
                     ) {
                         displayedRounds.add(item)
@@ -175,10 +182,6 @@ class RoundListAdapter internal constructor(
             notifyDataSetChanged()
         }
         return displayedRounds.count()
-    }
-
-    internal fun isRoundSelected(): Boolean {
-        return selectedPosition == defaultSelectedPosition
     }
 
     internal fun getSelectedRound(): RoundWithCourseAndScores? {

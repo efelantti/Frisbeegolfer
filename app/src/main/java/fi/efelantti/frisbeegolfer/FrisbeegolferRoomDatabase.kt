@@ -152,8 +152,11 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
             zipPathDir.mkdir()
         }
         // Remove obsolete backups.
-        for (file: File in zipPathDir.listFiles()) {
-            file.delete()
+        val obsoleteBackups = zipPathDir.listFiles()
+        if (obsoleteBackups != null) {
+            for (file: File in obsoleteBackups) {
+                file.delete()
+            }
         }
 
         val zippedDatabase = File(
@@ -184,8 +187,11 @@ abstract class FrisbeegolferRoomDatabase : RoomDatabase() {
             tempDir.mkdir()
         }
         // Remove previous import files.
-        for (file: File in tempDir.listFiles()) {
-            file.delete()
+        val previousImportFiles = tempDir.listFiles()
+        if (previousImportFiles != null) {
+            for (file: File in previousImportFiles) {
+                file.delete()
+            }
         }
         unzip(zippedDatabase, tempDir)
         if (tempDir.listFiles().size != 3) throw IllegalArgumentException("Imported database zip did not contain 3 files.")

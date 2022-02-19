@@ -1,5 +1,6 @@
 package fi.efelantti.frisbeegolfer.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewCourseBinding
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
+import java.util.*
 
 
 class CourseListAdapter internal constructor(
@@ -118,22 +120,26 @@ class CourseListAdapter internal constructor(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     internal fun setCourses(courses: List<CourseWithHoles>) {
         this.displayedCourses = courses.toMutableList()
         this.allCourses = courses.toMutableList()
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun filter(text: String?): Int {
         if (text != null) {
-            val filterText = text.toLowerCase()
+            val filterText = text.toLowerCase(Locale.getDefault())
             displayedCourses.clear()
             if (text.isEmpty()) {
                 displayedCourses.addAll(allCourses)
             } else {
                 for (item in allCourses) {
-                    if (item.course.name?.toLowerCase()?.contains(filterText) == true ||
-                        item.course.city?.toLowerCase()?.contains(filterText) == true ||
+                    if (item.course.name?.toLowerCase(Locale.getDefault())
+                            ?.contains(filterText) == true ||
+                        item.course.city?.toLowerCase(Locale.getDefault())
+                            ?.contains(filterText) == true ||
                         filterText == item.holes.count().toString()
                     ) {
                         displayedCourses.add(item)

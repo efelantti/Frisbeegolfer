@@ -94,24 +94,32 @@ class FragmentNewPlayer : DialogFragment() {
             }
             toolbar.setOnMenuItemClickListener(onSaveButtonClick)
         } else if (actionCategory == NewPlayerAction.EDIT) {
+            requireActivity().invalidateOptionsMenu()
+            toolbar.title = getString(R.string.text_activity_new_player_title_edit)
+
+            playerViewModel.state.observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    LiveDataState.LOADING -> binding.progressBar.visibility = View.VISIBLE
+                    LiveDataState.SUCCESS -> binding.progressBar.visibility = View.GONE
+                    null -> binding.progressBar.visibility = View.GONE
+                }
+            }
             playerViewModel.getPlayerById(oldPlayerId).observe(viewLifecycleOwner) { player ->
-                if (player != null) {
+                if (player != null && playerViewModel.state.value == LiveDataState.SUCCESS) {
                     isFinalized = true
-                    requireActivity().invalidateOptionsMenu()
-                    toolbar.title = getString(R.string.text_activity_new_player_title_edit)
                     nameEditText.setText(player.name)
                     emailEditText.setText(player.email)
-                }
-                onSaveButtonClick = Toolbar.OnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.action_save -> {
-                            editPlayer(player)
-                            return@OnMenuItemClickListener true
+                    onSaveButtonClick = Toolbar.OnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.action_save -> {
+                                editPlayer(player)
+                                return@OnMenuItemClickListener true
+                            }
                         }
+                        false
                     }
-                    false
+                    toolbar.setOnMenuItemClickListener(onSaveButtonClick)
                 }
-                toolbar.setOnMenuItemClickListener(onSaveButtonClick)
             }
         }
 
@@ -141,7 +149,7 @@ class FragmentNewPlayer : DialogFragment() {
         }
         if (isValidName && isValidEmail) {
             playerViewModel.playerExists(name).observeOnce(viewLifecycleOwner) {
-                it?.let { playerFound ->
+                it.let { playerFound ->
                     if (!playerFound) {
                         val playerData = Player(
                             name = name,
@@ -271,7 +279,7 @@ Gets the text from the EditTexts, trims them and packs them to a Pair.
                 else {
                     playerViewModel.playerExists(playerData.name!!)
                         .observeOnce(viewLifecycleOwner) {
-                            it?.let { playerFound ->
+                            it.let { playerFound ->
                                 if (!playerFound) {
                                     playerViewModel.update(playerData)
                                     dismiss()

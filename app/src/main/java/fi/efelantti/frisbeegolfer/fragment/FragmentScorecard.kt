@@ -90,7 +90,7 @@ class FragmentScorecard : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        val roundName = requireArguments().getString(ROUNDNAME)
+        val roundName = requireArguments().getString(ROUND_NAME)
             ?: throw IllegalArgumentException("Round name was not provided.")
         val currentTitle = (requireActivity() as MainActivity).supportActionBar?.title
         if (currentTitle != roundName)
@@ -190,7 +190,7 @@ class FragmentScorecard : Fragment() {
         const val PLAYER_IDS = "player_Ids"
         const val HOLE_IDS = "hole_Ids"
         const val READONLY = "readOnly"
-        const val ROUNDNAME = "roundName"
+        const val ROUND_NAME = "roundName"
 
         fun newInstance(
             roundId: OffsetDateTime,
@@ -205,7 +205,7 @@ class FragmentScorecard : Fragment() {
                     PLAYER_IDS to playerIds,
                     HOLE_IDS to holeIds,
                     READONLY to readOnly,
-                    ROUNDNAME to roundName
+                    ROUND_NAME to roundName
                 )
             }
     }

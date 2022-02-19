@@ -33,10 +33,6 @@ class RoundViewModel(
         }
     }
 
-    fun getRoundWithRoundId(roundId: OffsetDateTime): LiveData<RoundWithCourseAndScores> {
-        return repository.getRoundWithRoundId(roundId)
-    }
-
     fun delete(round: RoundWithCourseAndScores) = coroutineScope.launch {
         repository.delete(round)
     }
@@ -60,11 +56,6 @@ class RoundViewModel(
     fun update(score: Score) = coroutineScope.launch {
         repository.update(score)
     }
-
-    fun updateStartTimeForRoundWithId(roundId: OffsetDateTime, newRoundId: OffsetDateTime) =
-        coroutineScope.launch {
-            repository.updateStartTimeForRoundWithId(roundId, newRoundId)
-        }
 
     /**
      * Adds an entry to the database for the round. Creates all the necessary scores, that are

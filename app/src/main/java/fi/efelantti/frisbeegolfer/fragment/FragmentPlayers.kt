@@ -100,6 +100,7 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
         val searchItem = menu.findItem(R.id.action_search)
         val searchView: SearchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
@@ -124,14 +125,15 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
             )
         )
 
-        playerViewModel.state.observe(viewLifecycleOwner, { state ->
+        playerViewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 LiveDataState.LOADING -> binding.progressBar.visibility = View.VISIBLE
                 LiveDataState.SUCCESS -> binding.progressBar.visibility = View.GONE
+                null -> binding.progressBar.visibility = View.GONE
             }
-        })
+        }
 
-        playerViewModel.allPlayers().observe(viewLifecycleOwner, { list ->
+        playerViewModel.allPlayers().observe(viewLifecycleOwner) { list ->
             list?.let { players ->
                 if (playerViewModel.state.value == LiveDataState.SUCCESS) {
                     val sortedPlayers = players.sortedBy { it.name }
@@ -146,7 +148,7 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
                     }
                 }
             }
-        })
+        }
 
         fab = binding.fab
         fab.setOnClickListener {
@@ -201,8 +203,8 @@ class FragmentPlayers : SettingsMenuFragment(), PlayerListAdapter.ListItemClickL
         actionMode?.finish()
     }
 
-    override fun returnUserConfirmation(playerToDelete: Any) {
-        playerViewModel.delete(playerToDelete as Player)
+    override fun returnUserConfirmation(objectToDelete: Any) {
+        playerViewModel.delete(objectToDelete as Player)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

@@ -21,13 +21,12 @@ class DialogScoreAmount(private val onScoreAmountSelectedListener: OnScoreAmount
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogScoreAmountBinding.inflate(LayoutInflater.from(context))
-        val dialog = AlertDialog.Builder(requireContext())
+        return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .setTitle(R.string.dialog_score_amount_title)
             .setPositiveButton(getString(R.string.set_score), null)
             .setNegativeButton(getString(R.string.cancel), null)
             .create()
-        return dialog
     }
 
     override fun onResume() {

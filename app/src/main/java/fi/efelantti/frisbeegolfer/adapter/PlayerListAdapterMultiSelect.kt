@@ -1,5 +1,6 @@
 package fi.efelantti.frisbeegolfer.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerWithEmailBinding
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerWithoutEmailBinding
 import fi.efelantti.frisbeegolfer.model.Player
+import java.util.*
 
 
 class PlayerListAdapterMultiSelect internal constructor(
@@ -162,22 +164,24 @@ class PlayerListAdapterMultiSelect internal constructor(
         return selectedIndeces.map { displayedPlayers[it] }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     internal fun setPlayers(players: List<Player>) {
         this.displayedPlayers = players.toMutableList()
         this.allPlayers = players.toMutableList()
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun filter(text: String?): Int {
         if (text != null) {
-            val filterText = text.toLowerCase()
+            val filterText = text.toLowerCase(Locale.getDefault())
             displayedPlayers.clear()
             if (text.isEmpty()) {
                 displayedPlayers.addAll(allPlayers)
             } else {
                 for (item in allPlayers) {
-                    if (item.name?.toLowerCase()?.contains(filterText) == true ||
-                        item.email?.toLowerCase()?.contains(filterText) == true
+                    if (item.name?.toLowerCase(Locale.getDefault())?.contains(filterText) == true ||
+                        item.email?.toLowerCase(Locale.getDefault())?.contains(filterText) == true
                     ) {
                         displayedPlayers.add(item)
                     }

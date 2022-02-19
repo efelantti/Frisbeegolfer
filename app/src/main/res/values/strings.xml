@@ -243,4 +243,5 @@
     <string name="dnf_text_description">Did not finish (hole)</string>
     <string name="action_search">Search</string>
     <string name="no_matches">No results matching the filter.</string>
+    <string name="hole_index" translatable="false">%d</string>
 </resources>

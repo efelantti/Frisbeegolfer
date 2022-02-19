@@ -31,8 +31,6 @@ import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.io.*
 
 // TODO - Change ProgressBars to SkeletonUI.
-// TODO - Remove SearchView from FragmentSettings.
-// TODO - Add waiting to FragmentNewPlayer/FragmentNewCourse.
 // TODO - Wrap adapter/fragment logic in base class.
 // TODO - Restart application after importing Discscores data in order to refresh the app.
 // TODO - Create tests where missing - especially UI tests.

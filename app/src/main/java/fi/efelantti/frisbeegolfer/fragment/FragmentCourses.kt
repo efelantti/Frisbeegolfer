@@ -93,6 +93,7 @@ class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickL
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
         val searchItem = menu.findItem(R.id.action_search)
         val searchView: SearchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
@@ -116,14 +117,15 @@ class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickL
             )
         )
 
-        courseViewModel.state.observe(viewLifecycleOwner, { state ->
+        courseViewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 LiveDataState.LOADING -> binding.progressBar.visibility = View.VISIBLE
                 LiveDataState.SUCCESS -> binding.progressBar.visibility = View.GONE
+                null -> binding.progressBar.visibility = View.GONE
             }
-        })
+        }
 
-        courseViewModel.allCourses().observe(viewLifecycleOwner, { list ->
+        courseViewModel.allCourses().observe(viewLifecycleOwner) { list ->
             list?.let { courses ->
                 if (courseViewModel.state.value == LiveDataState.SUCCESS) {
                     val sortedCourses = courses.sortedBy { it.course.city }
@@ -138,7 +140,7 @@ class FragmentCourses : SettingsMenuFragment(), CourseListAdapter.ListItemClickL
                     }
                 }
             }
-        })
+        }
 
         fab = binding.fabAddCourse
         fab.setOnClickListener {

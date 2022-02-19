@@ -3,6 +3,7 @@ package fi.efelantti.frisbeegolfer.fragment
 import LocaleHelper.setLocale
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -24,11 +25,22 @@ class FragmentSettings : PreferenceFragmentCompat(),
         findPreference<ListPreference>(KEY_PREF_THEME)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        // No options menu is needed in the settings fragment.
+        super.onPrepareOptionsMenu(menu)
+        menu.clear()
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
         setThemePreferenceSummaryProvider()
     }
-    
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             KEY_PREF_LANGUAGE -> {

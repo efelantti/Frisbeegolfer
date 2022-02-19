@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -30,7 +29,6 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
     }
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RoundListAdapter
-    private lateinit var emptyView: TextView
     private var actionMode: ActionMode? = null
 
     private val actionModeCallback = object : ActionMode.Callback {
@@ -92,6 +90,7 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
         val searchItem = menu.findItem(R.id.action_search)
         val searchView: SearchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(this)
@@ -115,14 +114,15 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
             )
         )
 
-        roundViewModel.state.observe(viewLifecycleOwner, { state ->
+        roundViewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 LiveDataState.LOADING -> binding.progressBar.visibility = View.VISIBLE
                 LiveDataState.SUCCESS -> binding.progressBar.visibility = View.GONE
+                null -> binding.progressBar.visibility = View.GONE
             }
-        })
+        }
 
-        roundViewModel.allRounds().observe(viewLifecycleOwner, { round ->
+        roundViewModel.allRounds().observe(viewLifecycleOwner) { round ->
             round?.let { rounds ->
                 if (roundViewModel.state.value == LiveDataState.SUCCESS) {
                     adapter.setRounds(rounds)
@@ -136,7 +136,7 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
                     }
                 }
             }
-        })
+        }
 
         binding.fabStartRound.setOnClickListener {
             navigateToNewRound()
@@ -154,7 +154,7 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
             FragmentScorecard.PLAYER_IDS to playerIds,
             FragmentScorecard.HOLE_IDS to holeIds,
             FragmentScorecard.READONLY to false,
-            FragmentScorecard.ROUNDNAME to round.course.course.name
+            FragmentScorecard.ROUND_NAME to round.course.course.name
         )
         findNavController().navigate(R.id.action_fragmentChooseRound_to_fragmentScoreCard, bundle)
     }

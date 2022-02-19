@@ -3,18 +3,14 @@ package fi.efelantti.frisbeegolfer.fragment
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import fi.efelantti.frisbeegolfer.FrisbeegolferApplication
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.activity.MainActivity
 import fi.efelantti.frisbeegolfer.databinding.FragmentGameBinding
-import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
-import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.time.OffsetDateTime
 
 class FragmentGame : SettingsMenuFragment() {
@@ -22,9 +18,6 @@ class FragmentGame : SettingsMenuFragment() {
     private lateinit var viewPager: ViewPager2
     private val args: FragmentGameArgs by navArgs()
     private var _binding: FragmentGameBinding? = null
-    private val roundViewModel: RoundViewModel by viewModels {
-        RoundViewModelFactory((requireActivity().applicationContext as FrisbeegolferApplication).repository)
-    }
     private val binding get() = _binding!!
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -54,10 +47,6 @@ class FragmentGame : SettingsMenuFragment() {
         _binding = FragmentGameBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding.root
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

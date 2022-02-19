@@ -25,11 +25,6 @@ class Player(
         return email.isNullOrBlank()
     }
 
-    fun getType(): PlayerType {
-        return if (hasEmail()) PlayerType.PlayerWithEmail
-        else PlayerType.PlayerWithoutEmail
-    }
-
     enum class PlayerType(val id: Int) {
         PlayerWithEmail(id = 0),
         PlayerWithoutEmail(id = 1)

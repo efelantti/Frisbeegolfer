@@ -107,7 +107,7 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
         // TODO - Show skeleton view before data has been loaded.
         scoreViewModel.currentScore.observe(viewLifecycleOwner) {
             it?.let { currentScore ->
-                currentScore?.let {
+                currentScore.let {
 
                     binding.fragmentScoreCurrentHolePar.text = currentScore.hole.par.toString()
 
@@ -125,7 +125,7 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
             }
         }
 
-        scoreViewModel.holeStatistics.observe(viewLifecycleOwner) { it ->
+        scoreViewModel.holeStatistics.observe(viewLifecycleOwner) {
             it?.let { holeStatistics ->
                 if (holeStatistics.bestResult == null || holeStatistics.bestResult == -1) binding.fragmentScoreCurrentHoleBest.text =
                     getString(R.string.notApplicable)
@@ -224,7 +224,7 @@ class FragmentScore : Fragment(), DialogScoreAmount.OnScoreAmountSelected {
             binding.fragmentScoreButton9
         )
         scoreButtons.forEachIndexed { index, buttonScoreResultBinding ->
-            buttonScoreResultBinding.button.setOnClickListener() {
+            buttonScoreResultBinding.button.setOnClickListener {
                 scoreViewModel.setResult(index + 1)
                 scoreViewModel.nextScore()
             }

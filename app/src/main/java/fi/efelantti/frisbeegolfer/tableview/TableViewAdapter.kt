@@ -4,8 +4,10 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.amulyakhare.textdrawable.TextDrawable
 import com.evrencoskun.tableview.adapter.AbstractTableAdapter
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder
@@ -14,7 +16,7 @@ import fi.efelantti.frisbeegolfer.tableview.model.Cell
 import fi.efelantti.frisbeegolfer.tableview.model.ColumnHeader
 import fi.efelantti.frisbeegolfer.tableview.model.RowHeader
 
-class TableViewAdapter() :
+class TableViewAdapter :
     AbstractTableAdapter<ColumnHeader, RowHeader, Cell>() {
 
     class MyCellViewHolder(itemView: View) :
@@ -24,8 +26,6 @@ class TableViewAdapter() :
             .bold()
             .endConfig()
             .round()
-        val cellContainer: ConstraintLayout = itemView.findViewById(R.id.cell_container)
-        val cellFrameLayout: FrameLayout = itemView.findViewById(R.id.cell_framelayout)
         val obShape: FrameLayout = itemView.findViewById(R.id.ob_shape)
         val resultImageView: ImageView = itemView.findViewById(R.id.result)
         val plusMinusCumulativeTextView: TextView =
@@ -121,7 +121,6 @@ class TableViewAdapter() :
 
     class MyRowHeaderViewHolder(itemView: View) :
         AbstractViewHolder(itemView) {
-        val parentView: RelativeLayout = itemView.findViewById(R.id.row_root)
         val cellTextView: TextView = itemView.findViewById(R.id.row_header_textView)
         val cellTextViewParCount: TextView =
             itemView.findViewById(R.id.row_header_textView_par_count)

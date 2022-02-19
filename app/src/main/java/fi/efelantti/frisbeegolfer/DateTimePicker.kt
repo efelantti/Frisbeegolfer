@@ -9,7 +9,7 @@ import java.time.OffsetDateTime
 
 class DateTimePicker(
     val context: Context,
-    var pickTime: Boolean = false,
+    private var pickTime: Boolean = false,
     var callback: (it: DateTimePicker) -> Unit
 ) {
 
