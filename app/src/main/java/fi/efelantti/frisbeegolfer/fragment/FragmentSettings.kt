@@ -46,14 +46,15 @@ class FragmentSettings : PreferenceFragmentCompat(),
             KEY_PREF_LANGUAGE -> {
                 setLocale(
                     requireContext(), PreferenceManager.getDefaultSharedPreferences(
-                        context
+                        requireContext()
                     ).getString(key, "")
                 )
                 requireActivity().recreate() // necessary here because this Activity is currently running and thus a recreate() in onResume() would be too late
             }
             KEY_PREF_THEME -> {
                 val newValue =
-                    PreferenceManager.getDefaultSharedPreferences(context).getString(key, "")
+                    PreferenceManager.getDefaultSharedPreferences(requireContext())
+                        .getString(key, "")
                 if (newValue != null) {
                     val theme = themeProvider.getTheme(newValue)
                     AppCompatDelegate.setDefaultNightMode(theme)
@@ -73,11 +74,11 @@ class FragmentSettings : PreferenceFragmentCompat(),
 
     override fun onResume() {
         super.onResume()
-        preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        preferenceScreen.sharedPreferences?.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onPause() {
         super.onPause()
-        preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        preferenceScreen.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(this)
     }
 }

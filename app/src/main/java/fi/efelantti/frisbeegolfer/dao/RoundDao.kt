@@ -77,5 +77,5 @@ interface RoundDao {
     ): LiveData<ScoreWithPlayerAndHole?>
 
     @RawQuery
-    fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery?): Int
+    fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery): Int
 }

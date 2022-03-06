@@ -170,7 +170,6 @@ class FragmentRounds : SettingsMenuFragment(), RoundListAdapter.ListItemClickLis
                 round.round.dateStarted,
                 holeIds,
                 playerIds,
-                false,
                 round.course.course.name ?: throw IllegalStateException("Course had no name.")
             )
         findNavController().navigate(action)

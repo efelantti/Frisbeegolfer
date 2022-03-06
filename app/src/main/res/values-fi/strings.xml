@@ -103,7 +103,7 @@
     <string name="error_exporting_database">Virhe tietokantaa viedessä.</string>
     <string name="import_confirmation_title">Tietokannan tuominen</string>
     <string name="import_confirmation_message">Haluatko varmasti tuoda tietokannan? Discscores-tietokannan tuomisessa ei toistaiseksi tueta tietojen yhdistämistä. Tämä tarkoittaa, että tämän sovelluksen tiedot tyhjennetään ennen Discscores-tietokannan tuomista.</string>
-    <string name="action_import_from_discscores">Tietokannan tuominen Discscores-sovelluksesta</string>
+    <string name="action_import_from_discscores">Tuo Discscores-sovelluksesta</string>
     <string name="import_discscores">Tuo Discscores-sovelluksen tietokanta toisesta sovelluksesta</string>
     <string name="error_importing_discscores">Virhe Discscores-tietokannan tuomisessa.</string>
     <string name="adding_discscores_players">Lisätään pelaajia…</string>

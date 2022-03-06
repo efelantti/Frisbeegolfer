@@ -51,7 +51,7 @@ class MainActivity : BaseActivity(), DialogConfirmImport.OnConfirmationSelected,
     private val downloadedDiscscoresFilesToImportFolderName =
         "downloaded_discscores_files_to_import"
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.actionbar, menu)
         return true

@@ -199,7 +199,6 @@ class FragmentChoosePlayers : Fragment(), PlayerListAdapterMultiSelect.ListItemC
                 roundId,
                 holeIds,
                 playerIds,
-                false,
                 roundName
             )
         findNavController().navigate(action)

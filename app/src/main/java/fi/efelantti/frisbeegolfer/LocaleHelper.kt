@@ -15,7 +15,7 @@ object LocaleHelper {
         return setLocale(context, locale)
     }
 
-    fun getPersistedLocale(context: Context?): String? {
+    fun getPersistedLocale(context: Context): String? {
         val preferences = getDefaultSharedPreferences(context)
         return preferences.getString(FragmentSettings.KEY_PREF_LANGUAGE, "")
     }
