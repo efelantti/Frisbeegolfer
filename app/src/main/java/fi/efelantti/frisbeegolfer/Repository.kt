@@ -1,6 +1,7 @@
 package fi.efelantti.frisbeegolfer
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.sqlite.db.SimpleSQLiteQuery
 import fi.efelantti.frisbeegolfer.dao.CourseDao
 import fi.efelantti.frisbeegolfer.dao.PlayerDao
@@ -59,6 +60,8 @@ interface IRepository {
     )
 
     fun getHoleById(id: Long): LiveData<Hole?>
+
+    val allData: LiveData<Triple<List<Player>, List<CourseWithHoles>, List<RoundWithCourseAndScores>>>
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -171,6 +174,37 @@ class Repository(// Room executes all queries on a separate thread.
     override fun getHoleById(id: Long): LiveData<Hole?> {
         return courseDao.getHoleById(id)
     }
+
+    // https://stackoverflow.com/questions/63528738/kotlin-wait-for-multiple-livedata-to-be-observe-before-running-function
+    // TODO - Continue.
+    override val allData: LiveData<Triple<List<Player>, List<CourseWithHoles>, List<RoundWithCourseAndScores>>> =
+        object :
+            MediatorLiveData<Triple<List<Player>, List<CourseWithHoles>, List<RoundWithCourseAndScores>>>() {
+            var players: List<Player>? = null
+            var courses: List<CourseWithHoles>? = null
+            var scores: List<RoundWithCourseAndScores>? = null
+
+            init {
+                addSource(allPlayers) { players ->
+                    this.players = players
+                    if (courses != null && scores != null) {
+                        value = Triple(players, courses!!, scores!!)
+                    }
+                }
+                addSource(allCourses) { courses ->
+                    this.courses = courses
+                    if (players != null && scores != null) {
+                        value = Triple(players!!, courses, scores!!)
+                    }
+                }
+                addSource(allRounds) { rounds ->
+                    this.scores = rounds
+                    if (players != null && courses != null) {
+                        value = Triple(players!!, courses!!, rounds)
+                    }
+                }
+            }
+        }
 
     override fun playerExists(name: String): LiveData<Boolean> {
         return playerDao.playerExists(name)

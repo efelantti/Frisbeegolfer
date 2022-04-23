@@ -1,6 +1,5 @@
 package fi.efelantti.frisbeegolfer.fragment
 
-import LocaleHelper.setLocale
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
@@ -9,6 +8,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import fi.efelantti.frisbeegolfer.LocaleHelper.setLocale
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.ThemeProvider
 

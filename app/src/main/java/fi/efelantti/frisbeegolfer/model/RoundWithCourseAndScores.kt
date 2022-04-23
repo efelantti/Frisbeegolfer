@@ -21,6 +21,4 @@ class RoundWithCourseAndScores(
     )
     var course: CourseWithHoles
 ) : Parcelable
-{
-}
 

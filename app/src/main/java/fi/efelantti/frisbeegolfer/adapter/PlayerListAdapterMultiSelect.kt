@@ -16,7 +16,6 @@ import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerWithEmailBinding
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewPlayerWithoutEmailBinding
 import fi.efelantti.frisbeegolfer.model.Player
-import java.util.*
 
 
 class PlayerListAdapterMultiSelect internal constructor(
@@ -174,14 +173,14 @@ class PlayerListAdapterMultiSelect internal constructor(
     @SuppressLint("NotifyDataSetChanged")
     fun filter(text: String?): Int {
         if (text != null) {
-            val filterText = text.toLowerCase(Locale.getDefault())
+            val filterText = text.lowercase()
             displayedPlayers.clear()
             if (text.isEmpty()) {
                 displayedPlayers.addAll(allPlayers)
             } else {
                 for (item in allPlayers) {
-                    if (item.name?.toLowerCase(Locale.getDefault())?.contains(filterText) == true ||
-                        item.email?.toLowerCase(Locale.getDefault())?.contains(filterText) == true
+                    if (item.name?.lowercase()?.contains(filterText) == true ||
+                        item.email?.lowercase()?.contains(filterText) == true
                     ) {
                         displayedPlayers.add(item)
                     }

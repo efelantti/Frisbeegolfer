@@ -1,10 +1,10 @@
 package fi.efelantti.frisbeegolfer.activity
 
-import LocaleHelper.getPersistedLocale
-import LocaleHelper.onAttach
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import fi.efelantti.frisbeegolfer.LocaleHelper.getPersistedLocale
+import fi.efelantti.frisbeegolfer.LocaleHelper.onAttach
 
 /**
  * Automatically recreates the activity when the locale has changed.

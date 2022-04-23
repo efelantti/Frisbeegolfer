@@ -1,3 +1,5 @@
+package fi.efelantti.frisbeegolfer
+
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Resources

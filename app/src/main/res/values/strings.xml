@@ -244,4 +244,5 @@
     <string name="action_search">Search</string>
     <string name="no_matches">No results matching the filter.</string>
     <string name="hole_index" translatable="false">%d</string>
+    <string name="error_wrong_file_type">Invalid file type - .zip expected!</string>
 </resources>

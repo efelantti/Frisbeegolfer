@@ -133,6 +133,9 @@ dependencies {
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.13.0'
     testImplementation "androidx.room:room-testing:2.4.2"
     androidTestImplementation "androidx.room:room-testing:2.4.2"
+
+    // Room backup
+    implementation 'de.raphaelebner:roomdatabasebackup:1.0.0-beta10'
     // For score card data table
     //implementation 'com.github.ISchwarz23:SortableTableView:2.8.1'
 }

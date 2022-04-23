@@ -1,3 +1,5 @@
+package fi.efelantti.frisbeegolfer
+
 import android.content.Context
 import android.net.Uri
 import java.io.*

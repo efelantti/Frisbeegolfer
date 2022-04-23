@@ -13,7 +13,6 @@ import com.amulyakhare.textdrawable.util.ColorGenerator
 import fi.efelantti.frisbeegolfer.R
 import fi.efelantti.frisbeegolfer.databinding.RecyclerviewCourseBinding
 import fi.efelantti.frisbeegolfer.model.CourseWithHoles
-import java.util.*
 
 
 class CourseListAdapter internal constructor(
@@ -130,15 +129,15 @@ class CourseListAdapter internal constructor(
     @SuppressLint("NotifyDataSetChanged")
     fun filter(text: String?): Int {
         if (text != null) {
-            val filterText = text.toLowerCase(Locale.getDefault())
+            val filterText = text.lowercase()
             displayedCourses.clear()
             if (text.isEmpty()) {
                 displayedCourses.addAll(allCourses)
             } else {
                 for (item in allCourses) {
-                    if (item.course.name?.toLowerCase(Locale.getDefault())
+                    if (item.course.name?.lowercase()
                             ?.contains(filterText) == true ||
-                        item.course.city?.toLowerCase(Locale.getDefault())
+                        item.course.city?.lowercase()
                             ?.contains(filterText) == true ||
                         filterText == item.holes.count().toString()
                     ) {
