@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -23,10 +22,9 @@ import de.raphaelebner.roomdatabasebackup.core.RoomBackup
 import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.databinding.ActivityMainWithNavigationBinding
 import fi.efelantti.frisbeegolfer.fragment.DialogConfirmImportFromDiscscores
-import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModel
-import fi.efelantti.frisbeegolfer.viewmodel.RoundViewModelFactory
 import java.io.*
 
+// TODO - Toasts to import/export success and failures.
 // TODO - See how Backup is implemented and do similar for Discscores import...
 // TODO - Change primary key in Round to long instead of start date.
 // TODO - Change ProgressBars to SkeletonUI.
@@ -41,9 +39,6 @@ class MainActivity : BaseActivity(),
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainWithNavigationBinding
-    private val roundViewModel: RoundViewModel by viewModels {
-        RoundViewModelFactory((applicationContext as FrisbeegolferApplication).repository)
-    }
     private lateinit var getDiscscoresFileLauncher: ActivityResultLauncher<Intent>
     private val downloadedDiscscoresFilesToImportFolderName =
         "downloaded_discscores_files_to_import"
@@ -103,6 +98,7 @@ class MainActivity : BaseActivity(),
             R.id.action_import_data -> {
                 backup
                     .database(ServiceLocator.provideDatabase(this))
+                    .customRestoreDialogTitle(getString(R.string.import_confirmation_title))
                     .enableLogDebug(true)
                     .backupLocation(RoomBackup.BACKUP_FILE_LOCATION_CUSTOM_DIALOG)
                     .apply {
