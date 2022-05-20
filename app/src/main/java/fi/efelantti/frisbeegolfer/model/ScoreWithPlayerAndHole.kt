@@ -3,10 +3,12 @@ package fi.efelantti.frisbeegolfer.model
 import android.os.Parcelable
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 class ScoreWithPlayerAndHole(
     @Embedded val score: Score,
     @Relation(

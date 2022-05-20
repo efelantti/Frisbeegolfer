@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -17,6 +18,7 @@ import java.util.*
     )]
 )
 @Parcelize
+@JsonClass(generateAdapter = true)
 class Hole(
     @PrimaryKey(autoGenerate = true)
     var holeId: Long = 0,

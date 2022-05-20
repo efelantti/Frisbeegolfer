@@ -18,10 +18,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import de.raphaelebner.roomdatabasebackup.core.RoomBackup
 import fi.efelantti.frisbeegolfer.*
 import fi.efelantti.frisbeegolfer.databinding.ActivityMainWithNavigationBinding
 import fi.efelantti.frisbeegolfer.fragment.DialogConfirmImportFromDiscscores
+import fi.efelantti.frisbeegolfer.json.OffsetDateTimeAdapter
+import fi.efelantti.frisbeegolfer.model.*
 import java.io.*
 
 // TODO - Toasts to import/export success and failures.
@@ -54,7 +58,7 @@ class MainActivity : BaseActivity(),
         // Handle presses on the action bar items
         return when (item.itemId) {
             R.id.action_export_data -> {
-                backup
+                /*backup
                     .database(ServiceLocator.provideDatabase(this))
                     .enableLogDebug(true)
                     .backupLocation(RoomBackup.BACKUP_FILE_LOCATION_CUSTOM_DIALOG)
@@ -72,27 +76,48 @@ class MainActivity : BaseActivity(),
                             )
                         }
                     }
-                    .backup()
+                    .backup()*/
 
                 // JSON export
-                /*val repo = (applicationContext as FrisbeegolferApplication).repository
+                val repo = (applicationContext as FrisbeegolferApplication).repository
                 repo.allData.observeOnce { triple ->
 
                     val players = triple.first
                     val courses = triple.second
                     val rounds = triple.third
 
-                    val moshi: Moshi = Moshi.Builder().build()
-                    val type = Types.newParameterizedType(List::class.java, Player::class.java)
-                    val jsonAdapter = moshi.adapter<List<Player>>(type)
+                    val moshi: Moshi = Moshi.Builder()
+                        .add(OffsetDateTimeAdapter())
+                        .build()
 
-                    val playersJson = jsonAdapter.toJson(players)
+                    val playerType =
+                        Types.newParameterizedType(List::class.java, Player::class.java)
+                    val playerAdapter = moshi.adapter<List<Player>>(playerType)
+                    val playersJson = playerAdapter.toJson(players)
+                    File("$filesDir/players.json").writeText(playersJson)
 
-                    Log.i("All data", "Players: " + players.count().toString())
-                    Log.i("All data", "Courses: " + courses.count().toString())
-                    Log.i("All data", "Rounds: " + rounds.count().toString())
+                    val courseType =
+                        Types.newParameterizedType(List::class.java, Course::class.java)
+                    val courseAdapter = moshi.adapter<List<Course>>(courseType)
+                    val coursesJson = courseAdapter.toJson(courses.map { it.course })
+                    File("$filesDir/courses.json").writeText(coursesJson)
+
+                    val holeType = Types.newParameterizedType(List::class.java, Hole::class.java)
+                    val holeAdapter = moshi.adapter<List<Hole>>(holeType)
+                    val holesJson = holeAdapter.toJson(courses.flatMap { it.holes })
+                    File("$filesDir/holes.json").writeText(holesJson)
+
+                    val roundType = Types.newParameterizedType(List::class.java, Round::class.java)
+                    val roundAdapter = moshi.adapter<List<Round>>(roundType)
+                    val roundsJson = roundAdapter.toJson(rounds.map { it.round })
+                    File("$filesDir/rounds.json").writeText(roundsJson)
+
+                    val scoreType = Types.newParameterizedType(List::class.java, Score::class.java)
+                    val scoreAdapter = moshi.adapter<List<Score>>(scoreType)
+                    val scoresJson =
+                        scoreAdapter.toJson(rounds.flatMap { it.scores.map { it.score } })
+                    File("$filesDir/scores.json").writeText(scoresJson)
                 }
-                */
                 true
             }
             R.id.action_import_data -> {
