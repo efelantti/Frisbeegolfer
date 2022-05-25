@@ -18,14 +18,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import de.raphaelebner.roomdatabasebackup.core.RoomBackup
 import fi.efelantti.frisbeegolfer.*
+import fi.efelantti.frisbeegolfer.csv.writeCsvFile
 import fi.efelantti.frisbeegolfer.databinding.ActivityMainWithNavigationBinding
 import fi.efelantti.frisbeegolfer.fragment.DialogConfirmImportFromDiscscores
-import fi.efelantti.frisbeegolfer.json.OffsetDateTimeAdapter
-import fi.efelantti.frisbeegolfer.model.*
 import java.io.*
 
 // TODO - Toasts to import/export success and failures.
@@ -79,7 +76,7 @@ class MainActivity : BaseActivity(),
                     .backup()*/
 
                 // JSON export
-                val repo = (applicationContext as FrisbeegolferApplication).repository
+                /*val repo = (applicationContext as FrisbeegolferApplication).repository
                 repo.allData.observeOnce { triple ->
 
                     val players = triple.first
@@ -117,7 +114,26 @@ class MainActivity : BaseActivity(),
                     val scoresJson =
                         scoreAdapter.toJson(rounds.flatMap { it.scores.map { it.score } })
                     File("$filesDir/scores.json").writeText(scoresJson)
+                }*/
+
+                // Csv export
+                val repo = (applicationContext as FrisbeegolferApplication).repository
+                repo.allData.observeOnce { triple ->
+
+                    val players = triple.first
+                    val courses = triple.second
+                    val rounds = triple.third
+
+                    writeCsvFile(players, "$filesDir/players.csv")
+                    writeCsvFile(courses.map { it.course }, "$filesDir/courses.csv")
+                    writeCsvFile(courses.flatMap { it.holes }, "$filesDir/holes.csv")
+                    writeCsvFile(rounds.map { it.round }, "$filesDir/rounds.csv")
+                    writeCsvFile(
+                        rounds.flatMap { roundWithScores -> roundWithScores.scores.map { score -> score.score } },
+                        "$filesDir/scores.csv"
+                    )
                 }
+
                 true
             }
             R.id.action_import_data -> {
