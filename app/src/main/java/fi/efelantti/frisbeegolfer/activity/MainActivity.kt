@@ -20,7 +20,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import de.raphaelebner.roomdatabasebackup.core.RoomBackup
 import fi.efelantti.frisbeegolfer.*
-import fi.efelantti.frisbeegolfer.csv.writeCsvFile
+import fi.efelantti.frisbeegolfer.backup.CsvBackup
 import fi.efelantti.frisbeegolfer.databinding.ActivityMainWithNavigationBinding
 import fi.efelantti.frisbeegolfer.fragment.DialogConfirmImportFromDiscscores
 import java.io.*
@@ -43,7 +43,7 @@ class MainActivity : BaseActivity(),
     private lateinit var getDiscscoresFileLauncher: ActivityResultLauncher<Intent>
     private val downloadedDiscscoresFilesToImportFolderName =
         "downloaded_discscores_files_to_import"
-    private lateinit var backup: RoomBackup
+    private lateinit var backup: CsvBackup
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -119,19 +119,40 @@ class MainActivity : BaseActivity(),
                 // Csv export
                 val repo = (applicationContext as FrisbeegolferApplication).repository
                 repo.allData.observeOnce { triple ->
-
                     val players = triple.first
                     val courses = triple.second
                     val rounds = triple.third
 
-                    writeCsvFile(players, "$filesDir/players.csv")
+                    val coursesOnly = courses.map { it.course }
+                    val holes = courses.flatMap { it.holes }
+                    val roundsOnly = rounds.map { it.round }
+                    val scores =
+                        rounds.flatMap { roundWithScores -> roundWithScores.scores.map { score -> score.score } }
+
+                    backup
+                        .database(ServiceLocator.provideDatabase(this))
+                        .enableLogDebug(true)
+                        .apply {
+                            onCompleteListener { success, message, exitCode ->
+                                Log.d(
+                                    "CsvBackup",
+                                    "success: $success, message: $message, exitCode: $exitCode"
+                                )
+                                if (success) {
+                                    // Actions after succesful export?
+                                }
+                            }
+                        }
+                        .backup(players, coursesOnly, holes, roundsOnly, scores)
+
+                    /*writeCsvFile(players, "$filesDir/players.csv")
                     writeCsvFile(courses.map { it.course }, "$filesDir/courses.csv")
                     writeCsvFile(courses.flatMap { it.holes }, "$filesDir/holes.csv")
                     writeCsvFile(rounds.map { it.round }, "$filesDir/rounds.csv")
                     writeCsvFile(
                         rounds.flatMap { roundWithScores -> roundWithScores.scores.map { score -> score.score } },
                         "$filesDir/scores.csv"
-                    )
+                    )*/
                 }
 
                 true
